@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "materialize-good-food"
+    "name": "good-food"
   },
   "apps": [
     {
@@ -19,9 +19,13 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "food",
       "styles": [
-        "styles.css"
+        "styles.css",
+        "../node_modules/materialize-css/dist/css/materialize.min.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/materialize-css/dist/js/materialize.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
