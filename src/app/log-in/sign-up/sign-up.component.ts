@@ -13,7 +13,7 @@ export class SignUpComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    $(document).ready(function() {
+    $(document).ready(function () {
       Materialize.updateTextFields();
     });
   }
