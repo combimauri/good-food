@@ -1,37 +1,43 @@
 <header>
   <nav>
     <div class="nav-wrapper">
-      <a routerLink="/home" class="brand-logo">
+      <a routerLink="/home" class="brand-logo center">
         <i class="material-icons">local_dining</i>Good Food</a>
       <a data-activates="mobile-sidenav" class="button-collapse">
         <i class="material-icons">menu</i>
       </a>
       <ul class="right hide-on-med-and-down">
-        <li>
+        <li *ngIf="authService.isLoggedIn()">
           <a routerLink="/favourite-food">Comida favorita</a>
         </li>
-        <li>
+        <li *ngIf="authService.isLoggedIn()">
           <a routerLink="/restaurant-profile">Perfil del restaurante</a>
         </li>
-        <li>
+        <li *ngIf="!authService.isLoggedIn()">
           <a routerLink="/sign-in">Ingresar</a>
         </li>
-        <li>
+        <li *ngIf="!authService.isLoggedIn()">
           <a routerLink="/sign-up">Registrarse</a>
+        </li>
+        <li *ngIf="authService.isLoggedIn()">
+          <a (click)="authService.logOut()">Cerrar sesión</a>
         </li>
       </ul>
       <ul class="side-nav" id="mobile-sidenav">
-        <li>
+        <li *ngIf="authService.isLoggedIn()">
           <a routerLink="/favourite-food">Comida favorita</a>
         </li>
-        <li>
+        <li *ngIf="authService.isLoggedIn()">
           <a routerLink="/restaurant-profile">Perfil del restaurante</a>
         </li>
-        <li>
+        <li *ngIf="!authService.isLoggedIn()">
           <a routerLink="/sign-in">Ingresar</a>
         </li>
-        <li>
+        <li *ngIf="!authService.isLoggedIn()">
           <a routerLink="/sign-up">Registrarse</a>
+        </li>
+        <li *ngIf="authService.isLoggedIn()">
+          <a (click)="authService.logOut()">Cerrar sesión</a>
         </li>
       </ul>
     </div>

@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SignInComponent } from './log-in/sign-in/sign-in.component';
-import { SignUpComponent } from './log-in/sign-up/sign-up.component';
-import { HomeComponent } from './home/home.component';
-import { FavouriteFoodSelectorComponent } from './favourite-food-selector/favourite-food-selector.component';
-import { RestaurantProfileComponent } from './restaurant-profile/restaurant-profile.component';
+
+import { SignInComponent } from './components/log-in/sign-in/sign-in.component';
+import { SignUpComponent } from './components/log-in/sign-up/sign-up.component';
+import { HomeComponent } from './components/home/home.component';
+import { FavouriteFoodSelectorComponent } from './components/favourite-food-selector/favourite-food-selector.component';
+import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
+
+import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { LogInGuardService } from './services/authentication/log-in-guard.service';
 
 const routes: Routes = [
   {
@@ -18,19 +22,31 @@ const routes: Routes = [
   },
   {
     path: 'sign-in',
-    component: SignInComponent
+    component: SignInComponent,
+    canActivate: [
+      LogInGuardService
+    ]
   },
   {
     path: 'sign-up',
-    component: SignUpComponent
+    component: SignUpComponent,
+    canActivate: [
+      LogInGuardService
+    ]
   },
   {
     path: 'favourite-food',
-    component: FavouriteFoodSelectorComponent
+    component: FavouriteFoodSelectorComponent,
+    canActivate: [
+      AuthenticationGuardService
+    ]
   },
   {
     path: 'restaurant-profile',
-    component: RestaurantProfileComponent
+    component: RestaurantProfileComponent,
+    canActivate: [
+      AuthenticationGuardService
+    ]
   }
 ];
 

@@ -1,3 +1,5 @@
+<food-loader *ngIf="showLoader"></food-loader>
+
 <div class="row">
   <div class="col s12 offset-m3 m6">
     <div class="card blue-grey darken-1">
@@ -6,38 +8,28 @@
         <div class="row">
           <form class="col s12">
             <div class="row">
-              <div class="input-field col s6">
-                <input id="first_name" type="text" class="validate">
-                <label for="first_name">Nombres</label>
-              </div>
-              <div class="input-field col s6">
-                <input id="last_name" type="text" class="validate">
-                <label for="last_name">Apellidos</label>
-              </div>
-            </div>
-            <div class="row">
               <div class="input-field col s12">
-                <input id="email" type="email" class="validate">
+                <input id="email" type="email" name="email" class="validate" [(ngModel)]="user.Email">
                 <label for="email">Correo electrónico</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input id="password" type="password" class="validate">
+                <input id="password" type="password" name="password" class="validate" [(ngModel)]="user.Password">
                 <label for="password">Contraseña</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input id="password" type="password" class="validate">
-                <label for="password">Vuelva a escribir su contraseña</label>
+                <input id="confirm-password" type="password" name="confirm-password" class="validate" [(ngModel)]="user.ConfirmPassword">
+                <label for="confirm-password">Vuelva a escribir su contraseña</label>
               </div>
             </div>
           </form>
         </div>
       </div>
       <div class="card-action center-align">
-        <a class="waves-effect waves-light btn">Registrarse</a>
+        <a class="waves-effect waves-light btn" (click)="signUp()">Registrarse</a>
       </div>
     </div>
   </div>
