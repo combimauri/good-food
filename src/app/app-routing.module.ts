@@ -1,52 +1,60 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { SignInComponent } from './components/log-in/sign-in/sign-in.component';
-import { SignUpComponent } from './components/log-in/sign-up/sign-up.component';
-import { HomeComponent } from './components/home/home.component';
-import { FavouriteFoodSelectorComponent } from './components/favourite-food-selector/favourite-food-selector.component';
-import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
-
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-import { LogInGuardService } from './services/authentication/log-in-guard.service';
+import { LoginGuardService } from './services/authentication/login-guard.service';
+
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/home/home.component';
+import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
+import { RestaurantLocationsComponent } from './components/restaurant-locations/restaurant-locations.component';
+import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [
+      LoginGuardService
+    ]
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    canActivate: [
+      LoginGuardService
+    ]
+  },
+  {
     path: 'home',
-    component: HomeComponent
-  },
-  {
-    path: 'sign-in',
-    component: SignInComponent,
-    canActivate: [
-      LogInGuardService
-    ]
-  },
-  {
-    path: 'sign-up',
-    component: SignUpComponent,
-    canActivate: [
-      LogInGuardService
-    ]
-  },
-  {
-    path: 'favourite-food',
-    component: FavouriteFoodSelectorComponent,
+    component: HomeComponent,
     canActivate: [
       AuthenticationGuardService
     ]
   },
   {
-    path: 'restaurant-profile',
+    path: 'restaurant-profile/:id',
     component: RestaurantProfileComponent,
     canActivate: [
       AuthenticationGuardService
     ]
+  },
+  {
+    path: 'restaurant-locations',
+    component: RestaurantLocationsComponent,
+    canActivate: [
+      AuthenticationGuardService
+    ]
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent
   }
 ];
 

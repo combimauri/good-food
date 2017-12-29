@@ -19,11 +19,19 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "food",
       "styles": [
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/font-awesome/css/font-awesome.min.css",
+        "../node_modules/admin-lte/plugins/iCheck/square/blue.css",
+        "../node_modules/admin-lte/dist/css/AdminLTE.min.css",
+        "../node_modules/admin-lte/dist/css/skins/_all-skins.min.css",
         "styles.scss"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/materialize-css/dist/js/materialize.min.js"
+        "../node_modules/bootstrap/dist/js/bootstrap.min.js",
+        "../node_modules/jquery-slimscroll/jquery.slimscroll.min.js",
+        "../node_modules/admin-lte/plugins/iCheck/icheck.min.js",
+        "../node_modules/admin-lte/dist/js/adminlte.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

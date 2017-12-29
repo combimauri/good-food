@@ -1,24 +1,8 @@
-@import '~materialize-css/sass/components/color';
-
-$primary-color: color("blue-grey", "darken-1") !default;
-$primary-color-light: lighten($primary-color, 15%) !default;
-$primary-color-dark: darken($primary-color, 15%) !default;
-
-$secondary-color: color("indigo", "accent-2") !default;
-$success-color: color("green", "base") !default;
-$error-color: color("red", "base") !default;
-$link-color: color("light-blue", "darken-1") !default;
-
-$roboto-font-path: '../node_modules/materialize-css/dist/fonts/roboto/' !default;
-
-@import '~materialize-css/sass/materialize';
-
-food-root {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
+@font-face {
+    font-family: 'montserrat';
+    src: url('./assets/fonts/montserrat/Montserrat-Regular.otf');
 }
 
-main {
-    flex: 1 0 auto;
+body {
+    font-family: 'montserrat';
 }

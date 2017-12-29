@@ -1,45 +1,45 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { AgmCoreModule } from '@agm/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
-
-import { LoaderComponent } from './components/loader/loader.component';
-import { SignInComponent } from './components/log-in/sign-in/sign-in.component';
-import { SignUpComponent } from './components/log-in/sign-up/sign-up.component';
-import { HomeComponent } from './components/home/home.component';
-import { FavouriteFoodSelectorComponent } from './components/favourite-food-selector/favourite-food-selector.component';
-import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-import { LogInGuardService } from './services/authentication/log-in-guard.service';
+import { LoginGuardService } from './services/authentication/login-guard.service';
+
+import { environment } from '../environments/environment';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/home/home.component';
+import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
+import { RestaurantLocationsComponent } from './components/restaurant-locations/restaurant-locations.component';
+import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SignInComponent,
-    SignUpComponent,
+    LoginComponent,
+    RegisterComponent,
     HomeComponent,
-    FavouriteFoodSelectorComponent,
     RestaurantProfileComponent,
-    LoaderComponent
+    PageNotFoundComponent,
+    RestaurantLocationsComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    HttpClientModule,
     AppRoutingModule,
-    environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : []
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyAYVqWMdgwJUIKviVoxpcWfTtGTgWN6LYU'
+    })
   ],
   providers: [
     AuthenticationService,
     AuthenticationGuardService,
-    LogInGuardService
+    LoginGuardService
   ],
   bootstrap: [AppComponent]
 })
