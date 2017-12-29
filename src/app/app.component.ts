@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthenticationService } from './services/authentication/authentication.service';
 
 @Component({
   selector: 'food-root',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'food';
+  showWrapper = false;
+
+  constructor(public authService: AuthenticationService) { }
 }

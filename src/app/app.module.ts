@@ -1,23 +1,46 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { AgmCoreModule } from '@agm/core';
 
 import { AppRoutingModule } from './app-routing.module';
-
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from './app.component';
 
+import { AuthenticationService } from './services/authentication/authentication.service';
+import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { LoginGuardService } from './services/authentication/login-guard.service';
+
 import { environment } from '../environments/environment';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/home/home.component';
+import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
+import { RestaurantLocationsComponent } from './components/restaurant-locations/restaurant-locations.component';
+import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    HomeComponent,
+    RestaurantProfileComponent,
+    PageNotFoundComponent,
+    RestaurantLocationsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyAYVqWMdgwJUIKviVoxpcWfTtGTgWN6LYU'
+    })
   ],
-  providers: [],
+  providers: [
+    AuthenticationService,
+    AuthenticationGuardService,
+    LoginGuardService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

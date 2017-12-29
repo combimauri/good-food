@@ -1,21 +1,103 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div [ngClass]="{'wrapper': authService.isLoggedIn()}">
 
-<router-outlet></router-outlet>
+  <header class="main-header" *ngIf="authService.isLoggedIn()">
+    <a class="logo">
+      <span class="logo-mini">
+        <b>G</b>F</span>
+      <span class="logo-lg">
+        <b>Good</b>Food</span>
+    </a>
+
+    <nav class="navbar navbar-static-top">
+      <a class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+    </nav>
+  </header>
+
+  <aside class="main-sidebar" *ngIf="authService.isLoggedIn()">
+    <section class="sidebar">
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="./assets/img/avatar04.png" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>Mauricio Arce</p>
+          <p>
+            <i class="fa fa-circle text-success"></i> Cliente</p>
+        </div>
+      </div>
+
+      <form class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+          <span class="input-group-btn">
+            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MENÚ</li>
+        <li class="treeview">
+          <a href>
+            <i class="fa fa-dashboard"></i>
+            <span>Restaurantes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li>
+              <a [routerLink]="['/restaurant-profile', 1]">
+                <i class="fa fa-circle-o"></i> Perfil restaurante</a>
+            </li>
+            <li>
+              <a routerLink="/restaurant-locations">
+                <i class="fa fa-circle-o"></i> Ubicación restaurante</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a>
+            <i class="fa fa-book"></i>
+            <span>Documentation</span>
+          </a>
+        </li>
+        <li>
+          <a (click)="authService.logOut()">
+            <i class="fa fa-book"></i>
+            <span>Cerrar sesión</span>
+          </a>
+        </li>
+        <li class="header">LABELS</li>
+        <li>
+          <a>
+            <i class="fa fa-circle-o text-red"></i>
+            <span>Important</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </aside>
+
+  <div [ngClass]="{'content-wrapper': authService.isLoggedIn()}">
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <!-- <footer class="main-footer" *ngIf="authService.isLoggedIn()">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.0
+    </div>
+    <strong>Copyright &copy; 2017-2018
+      <a href>Mauricio Arce</a>.</strong> Todos los derechos reservados.
+  </footer> -->
+
+</div>

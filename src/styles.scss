@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: 'montserrat';
+    src: url('./assets/fonts/montserrat/Montserrat-Regular.otf');
+}
+
+body {
+    font-family: 'montserrat';
+}
