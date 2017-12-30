@@ -29,8 +29,8 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
+    AppRoutingModule
+    // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthenticationService,
