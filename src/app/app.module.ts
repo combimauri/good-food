@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { AgmCoreModule } from '@agm/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,10 +30,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyAYVqWMdgwJUIKviVoxpcWfTtGTgWN6LYU'
-    })
+    ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthenticationService,
