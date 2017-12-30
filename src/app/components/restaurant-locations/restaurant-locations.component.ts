@@ -16,8 +16,12 @@ export class RestaurantLocationsComponent implements OnInit {
       center: { lat: -34.397, lng: 150.644 },
       zoom: 17
     });
-    var infoWindow = new google.maps.InfoWindow({ map: map });
 
+    var infoWindow = new google.maps.InfoWindow({ map: map });
+    this.positionMap(infoWindow, map);
+  }
+
+  positionMap(infoWindow, map) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
