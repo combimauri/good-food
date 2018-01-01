@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MapStyleService } from '../../services/map-style/map-style.service';
 
 declare const google: any;
-declare const LocateButton: any;
 
 @Component({
   selector: 'food-restaurant-locations',
@@ -12,7 +11,7 @@ declare const LocateButton: any;
 export class RestaurantLocationsComponent implements AfterViewInit {
 
   private map: any;
-  private infoWindow: any;
+  private currentPositionMarker: any;
   private cochabamba: Object;
 
   constructor(private styleService: MapStyleService) {
@@ -51,29 +50,31 @@ export class RestaurantLocationsComponent implements AfterViewInit {
         mapTypeId: 'styled_map'
       }
     });
-
     this.map.mapTypes.set('styled_map', styledMap);
     this.map.setMapTypeId('styled_map');
 
-    this.infoWindow = new google.maps.InfoWindow({ map: this.map });
+    let currentPositionIcon = './assets/current-human-location.png';
+    this.currentPositionMarker = new google.maps.Marker({
+      map: this.map,
+      icon: currentPositionIcon
+    });
 
     let locationControlDiv = document.getElementById('location-control-div');
     this.centerControl();
 
-    this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationControlDiv);
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationControlDiv);
 
-    this.centerCurrentLocation(this.map, this.infoWindow);
+    this.centerCurrentLocation(this.map, this.currentPositionMarker);
   }
 
   centerControl() {
     let controlUI = document.getElementById('location-button');
     controlUI.onclick = () => {
-      this.centerCurrentLocation(this.map, this.infoWindow);
+      this.centerCurrentLocation(this.map, this.currentPositionMarker);
     }
   }
 
-  centerCurrentLocation(map, infoWindow) {
-    // let infoWindow = new google.maps.InfoWindow({ map: map });
+  centerCurrentLocation(map, marker) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
@@ -81,22 +82,22 @@ export class RestaurantLocationsComponent implements AfterViewInit {
           lng: position.coords.longitude
         };
 
-        infoWindow.setPosition(pos);
-        infoWindow.setContent('Location found.');
+        marker.setPosition(pos);
         map.setCenter(pos);
       }, function () {
-        this.handleLocationError(true, infoWindow, map.getCenter());
+        this.handleLocationError(true, marker, map.getCenter());
       });
     } else {
-      this.handleLocationError(false, infoWindow, map.getCenter());
+      this.handleLocationError(false, marker, map.getCenter());
     }
   }
 
-  handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-      'Error: The Geolocation service failed.' :
-      'Error: Your browser doesn\'t support geolocation.');
+  handleLocationError(browserHasGeolocation, marker, pos) {
+    marker.setPosition(pos);
+    let errorMessage = browserHasGeolocation ?
+      'Error: El servicio de Geolocalización falló.' :
+      'Error: Tu navegador no soporta geolocalización.'
+    console.error(errorMessage);
   }
 
 }
