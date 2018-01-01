@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +9,7 @@ import { AppComponent } from './app.component';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
 import { LoginGuardService } from './services/authentication/login-guard.service';
+import { MapStyleService } from './services/map-style/map-style.service';
 
 import { environment } from '../environments/environment';
 import { LoginComponent } from './components/login/login.component';
@@ -29,13 +31,15 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
     // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthenticationService,
     AuthenticationGuardService,
-    LoginGuardService
+    LoginGuardService,
+    MapStyleService
   ],
   bootstrap: [AppComponent]
 })
