@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from './services/authentication/authentication.service';
 
 @Component({
   selector: 'food-root',
@@ -8,6 +7,6 @@ import { AuthenticationService } from './services/authentication/authentication.
 })
 export class AppComponent {
 
-  constructor(public authService: AuthenticationService) { }
+  constructor() { }
 
 }

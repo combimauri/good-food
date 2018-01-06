@@ -12,4 +12,8 @@ export class PageNotFoundComponent implements OnInit {
   ngOnInit() {
   }
 
+  redirectToHome(): void {
+    window.location.replace('');
+  }
+
 }

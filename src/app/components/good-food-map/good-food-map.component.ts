@@ -49,7 +49,7 @@ export class GoodFoodMapComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setMapStyle();
   }
 
