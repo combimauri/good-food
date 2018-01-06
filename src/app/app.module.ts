@@ -20,22 +20,22 @@ import { MapStyleService } from './services/maps/map-style.service';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 import { GoodFoodMapComponent } from './components/good-food-map/good-food-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { MenuComponent } from './components/menu/menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    MenuComponent,
     HomeComponent,
     RestaurantProfileComponent,
     GoodFoodMapComponent,
-    PageNotFoundComponent,
-    MenuComponent
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
