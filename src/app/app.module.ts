@@ -24,6 +24,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 import { GoodFoodMapComponent } from './components/good-food-map/good-food-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     HomeComponent,
     RestaurantProfileComponent,
     GoodFoodMapComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

@@ -8,7 +8,7 @@ export class AuthenticationService {
 
   logIn(): void {
     localStorage.setItem('token', 'mauri');
-    this.router.navigate(['/home']);
+    window.location.replace('');
   }
 
   logOut(): void {
