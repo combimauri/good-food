@@ -46,7 +46,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'map',
+    path: 'restaurants-map',
     component: GoodFoodMapComponent,
     canActivate: [
       AuthenticationGuardService

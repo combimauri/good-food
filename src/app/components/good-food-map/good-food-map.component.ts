@@ -15,18 +15,28 @@ const cochaLng: number = -66.157126;
 })
 export class GoodFoodMapComponent implements OnInit {
 
-  map: any;
   lat: number;
+
   lng: number;
-  styles: any;
-  markers: any;
+
+  styles: Array<any>;
+
   isRestaurantInfoWindowOpen: boolean;
+
   isNewRestaurantInfoWindowOpen: boolean;
+
   currentRestaurant: Restaurant;
+
   newRestaurant: Restaurant;
+
   restaurants: Observable<Restaurant[]>;
+
+  private map: any;
+
   private restaurantsRef: AngularFireList<Restaurant>;
-  @ViewChild("locationElement") locationControlElement: ElementRef;
+
+  @ViewChild("locationElement")
+  private locationControlElement: ElementRef;
 
   constructor(private styleService: MapStyleService, private db: AngularFireDatabase) {
     this.isRestaurantInfoWindowOpen = false;
@@ -41,28 +51,28 @@ export class GoodFoodMapComponent implements OnInit {
 
   ngOnInit() {
     this.setMapStyle();
-    this.getUserLocation();
   }
 
-  addLocationElement(event: any) {
+  addLocationElement(event: any): void {
     this.map = event;
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM]
       .push(this.locationControlElement.nativeElement);
+    this.centerMapOnUserLocation();
   }
 
-  showNewRestaurantInfoWindow(event: any) {
+  showNewRestaurantInfoWindow(event: any): void {
     this.newRestaurant.lat = event.coords.lat;
     this.newRestaurant.lng = event.coords.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
-  showNewRestaurantInfoWindowHere() {
+  showNewRestaurantInfoWindowHere(): void {
     this.newRestaurant.lat = this.lat;
     this.newRestaurant.lng = this.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
-  showRestaurantInfoWindow(restaurant) {
+  showRestaurantInfoWindow(restaurant): void {
     this.currentRestaurant = restaurant;
     this.isRestaurantInfoWindowOpen = true;
   }
@@ -80,12 +90,14 @@ export class GoodFoodMapComponent implements OnInit {
     this.isNewRestaurantInfoWindowOpen = false;
   }
 
-  getUserLocation() {
+  centerMapOnUserLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
           this.lat = position.coords.latitude;
           this.lng = position.coords.longitude;
+
+          this.map.setCenter({ lat: this.lat, lng: this.lng });
         },
         () => {
           this.handleLocationError(true);
@@ -95,7 +107,7 @@ export class GoodFoodMapComponent implements OnInit {
     }
   }
 
-  private setMapStyle() {
+  private setMapStyle(): void {
     this.styleService.getStyles().subscribe(
       response => {
         this.styles = response;
@@ -116,6 +128,8 @@ export class GoodFoodMapComponent implements OnInit {
   private handleLocationError(browserHasGeolocation): void {
     this.lat = cochaLat;
     this.lng = cochaLng;
+    this.map.setCenter({ lat: this.lat, lng: this.lng });
+
     let errorMessage = browserHasGeolocation ?
       'Error: El servicio de Geolocalización falló.' :
       'Error: Tu navegador no soporta Geolocalización.'
