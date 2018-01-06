@@ -48,27 +48,27 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
         <li>
-          <a [routerLink]="['/restaurant-profile', 1]">
-            <i class="fa fa-book"></i>
+          <a [routerLink]="['/restaurant-profile', 1]" data-toggle="push-menu">
+            <i class="fa fa-cutlery"></i>
             <span>Perfil restaurante</span>
           </a>
         </li>
         <li>
-          <a routerLink="/restaurant-locations">
-            <i class="fa fa-book"></i>
+          <a routerLink="/map" data-toggle="push-menu">
+            <i class="fa fa-map-marker"></i>
             <span>Ubicación restaurante</span>
           </a>
         </li>
         <li class="header">SESIÓN</li>
         <li>
-          <a (click)="authService.logOut()">
-            <i class="fa fa-book"></i>
+          <a (click)="authService.logOut()" data-toggle="push-menu">
+            <i class="fa fa-sign-out"></i>
             <span>Cerrar sesión</span>
           </a>
         </li>
         <li class="header">ETIQUETAS</li>
         <li>
-          <a>
+          <a data-toggle="push-menu">
             <i class="fa fa-circle-o text-red"></i>
             <span>Importante</span>
           </a>
@@ -80,13 +80,5 @@
   <div [ngClass]="{'content-wrapper': authService.isLoggedIn()}">
     <router-outlet></router-outlet>
   </div>
-
-  <!-- <footer class="main-footer" *ngIf="authService.isLoggedIn()">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> 1.0
-    </div>
-    <strong>Copyright &copy; 2017-2018
-      <a href>Mauricio Arce</a>.</strong> Todos los derechos reservados.
-  </footer> -->
 
 </div>

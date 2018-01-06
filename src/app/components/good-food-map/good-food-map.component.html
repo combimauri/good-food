@@ -1,0 +1,51 @@
+<agm-map [latitude]="lat" [longitude]="lng" [zoom]="17" [styles]="styles" (mapReady)="addLocationElement($event)" (mapClick)="showNewRestaurantInfoWindow($event)">
+
+  <agm-marker [latitude]="lat" [longitude]="lng" [iconUrl]="'./assets/current-human-location_64x64.png'" (markerClick)="showNewRestaurantInfoWindowHere()"></agm-marker>
+
+  <agm-marker *ngFor="let restaurant of restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng" [iconUrl]="'./assets/ic_restaurant_black_24dp_1x.png'"
+    (markerClick)="showRestaurantInfoWindow(restaurant)"></agm-marker>
+
+  <agm-info-window [latitude]="currentRestaurant.lat" [longitude]="currentRestaurant.lng" [isOpen]="isRestaurantInfoWindowOpen"
+    (infoWindowClose)="closeRestaurantInfoWindow()">
+    {{currentRestaurant.name}}
+  </agm-info-window>
+
+  <agm-info-window [latitude]="newRestaurant.lat" [longitude]="newRestaurant.lng" [isOpen]="isNewRestaurantInfoWindowOpen"
+    (infoWindowClose)="closeNewRestaurantInfoWindow()">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-info">
+      Añadir restaurante
+    </button>
+  </agm-info-window>
+
+  <div #locationElement>
+    <a id="location-button" (click)="getUserLocation()">
+      <img src="./assets/ic_my_location_black_24dp_1x.png">
+    </a>
+  </div>
+</agm-map>
+
+<div class="modal modal-info fade" id="modal-info">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Añadir restaurante</h4>
+      </div>
+      <form #restaurantForm="ngForm" role="form" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Nombre del restaurant</label>
+            <input type="text" class="form-control" placeholder="Ingrese el nombre" name="restaurant-name" [(ngModel)]="newRestaurant.name"
+              required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline pull-left" (click)="closeNewRestaurantInfoWindow()" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-outline" (click)="saveRestaurant()" data-dismiss="modal" [disabled]="restaurantForm.invalid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

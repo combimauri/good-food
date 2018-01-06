@@ -8,7 +8,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
-import { RestaurantLocationsComponent } from './components/restaurant-locations/restaurant-locations.component';
+import { GoodFoodMapComponent } from './components/good-food-map/good-food-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 const routes: Routes = [
@@ -46,8 +46,8 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'restaurant-locations',
-    component: RestaurantLocationsComponent,
+    path: 'map',
+    component: GoodFoodMapComponent,
     canActivate: [
       AuthenticationGuardService
     ]
