@@ -14,7 +14,6 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-import { LoginGuardService } from './services/authentication/login-guard.service';
 import { MapStyleService } from './services/maps/map-style.service';
 
 import { AppComponent } from './app.component';
@@ -53,7 +52,6 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   providers: [
     AuthenticationService,
     AuthenticationGuardService,
-    LoginGuardService,
     MapStyleService
   ],
   bootstrap: [AppComponent]

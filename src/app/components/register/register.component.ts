@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-declare var $: any;
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'food-register',
@@ -9,14 +9,15 @@ declare var $: any;
 })
 export class RegisterComponent implements OnInit {
 
-  constructor() { }
+  name: string;
+
+  email: string;
+
+  password: string;
+
+  constructor(public authService: AuthenticationService) { }
 
   ngOnInit() {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%'
-    });
   }
 
 }
