@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 declare var $: any;

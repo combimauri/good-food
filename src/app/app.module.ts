@@ -15,6 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
 import { MapStyleService } from './services/maps/map-style.service';
+import { MessageService } from './services/message/message.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -22,7 +23,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
-import { GoodFoodMapComponent } from './components/good-food-map/good-food-map.component';
+import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 @NgModule({
@@ -33,7 +34,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     MenuComponent,
     HomeComponent,
     RestaurantProfileComponent,
-    GoodFoodMapComponent,
+    RestaurantsMapComponent,
     PageNotFoundComponent
   ],
   imports: [
@@ -52,7 +53,8 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   providers: [
     AuthenticationService,
     AuthenticationGuardService,
-    MapStyleService
+    MapStyleService,
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

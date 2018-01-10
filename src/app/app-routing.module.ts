@@ -8,7 +8,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
-import { GoodFoodMapComponent } from './components/good-food-map/good-food-map.component';
+import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 const routes: Routes = [
@@ -48,7 +48,7 @@ const routes: Routes = [
       },
       {
         path: 'restaurants-map',
-        component: GoodFoodMapComponent
+        component: RestaurantsMapComponent
       }
     ]
   },

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
+
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { Restaurant } from '../../models/restaurant';
 
@@ -9,11 +10,11 @@ const cochaLat: number = -17.393695;
 const cochaLng: number = -66.157126;
 
 @Component({
-  selector: 'food-good-food-map',
-  templateUrl: './good-food-map.component.html',
-  styleUrls: ['./good-food-map.component.scss']
+  selector: 'food-restaurants-map',
+  templateUrl: './restaurants-map.component.html',
+  styleUrls: ['./restaurants-map.component.scss']
 })
-export class GoodFoodMapComponent implements OnInit {
+export class RestaurantsMapComponent implements OnInit {
 
   lat: number;
 
