@@ -5,6 +5,7 @@
 
 body {
     font-family: 'montserrat';
+    background-color: #ecf0f5;
 }
 
 .fixed .content-wrapper {
@@ -13,4 +14,10 @@ body {
 
 .main-sidebar {
     padding-top: 50px;
+}
+
+@media (min-height: 500px) {
+    .vertical-center-align {
+        margin-top: calc((100vh - 500px) / 2);
+    }
 }

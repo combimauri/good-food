@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+
+declare var $: any;
+const noDisplayName: string = 'Nuevo Usuario';
+const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
   selector: 'food-menu',
@@ -8,9 +13,22 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 })
 export class MenuComponent implements OnInit {
 
-  constructor(public authService: AuthenticationService) { }
+  userName: string;
 
-  ngOnInit() {
+  userPhotoURL: string;
+
+  @ViewChild("toggleButton")
+  private toggleButtonElement: ElementRef;
+
+  constructor(public authService: AuthenticationService) {
+    this.userName = this.authService.currentUser.displayName === null ?
+      noDisplayName : this.authService.currentUser.displayName;
+    this.userPhotoURL = this.authService.currentUser.photoURL === null ?
+      noPhotoURL : this.authService.currentUser.photoURL;
+  }
+
+  ngOnInit(): void {
+    $(this.toggleButtonElement.nativeElement).pushMenu('toggle');
   }
 
 }
