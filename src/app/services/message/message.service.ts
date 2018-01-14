@@ -12,20 +12,17 @@ export class MessageService {
   showMessage: boolean;
 
   constructor() {
-    this.message = '';
-    this.messageClass = '';
-    this.messageIcon = '';
-    this.showMessage = false;
+    this.hideMessage();
   }
 
-  setMessage(message, messageClass, messageIcon) {
+  setMessage(message, messageClass, messageIcon): void {
     this.message = message;
     this.messageClass = messageClass;
     this.messageIcon = messageIcon;
     this.showMessage = true;
   }
 
-  hideMessage() {
+  hideMessage(): void {
     this.message = '';
     this.messageClass = '';
     this.messageIcon = '';

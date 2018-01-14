@@ -16,8 +16,8 @@ body {
     padding-top: 50px;
 }
 
-@media (min-height: 500px) {
+@media (min-height: 520px) {
     .vertical-center-align {
-        margin-top: calc((100vh - 500px) / 2);
+        margin-top: calc((100vh - 520px) / 2);
     }
 }
