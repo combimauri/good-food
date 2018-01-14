@@ -8,10 +8,10 @@
     <p class="login-box-msg">Iniciar sesión</p>
 
     <form #loginForm="ngForm" role="form" novalidate>
-      <div class="form-group has-error" *ngIf="false">
+      <div class="form-group" [ngClass]="messageService.messageClass" *ngIf="messageService.showMessage">
         <label class="control-label">
-          <i class="fa fa-times-circle-o"></i>
-          El correo o la contraseña son incorrectos.
+          <i [ngClass]="messageService.messageIcon"></i>
+          {{messageService.message}}
         </label>
       </div>
       <div class="form-group has-feedback">

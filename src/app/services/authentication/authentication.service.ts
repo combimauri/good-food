@@ -31,16 +31,19 @@ export class AuthenticationService {
     return this.firebaseAuth.authState;
   }
 
-  signUp(name, email, password): void {
+  signUp(email, password, confirmPassword): void {
     this.showLoading = true;
-    this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        this.logIn(user);
-      })
-      .catch(error => {
-        this.showLoading = false;
-        console.log('Something went wrong:', error.message);
-      });
+    if (password === confirmPassword) {
+      this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          this.logIn(user);
+        })
+        .catch(error => {
+          this.handleError(error.message);
+        });
+    } else {
+      this.handleError('Password and Confirm Password are not equals.');
+    }
   }
 
   logInWithEmail(email: string, password: string): void {
@@ -50,28 +53,29 @@ export class AuthenticationService {
         this.logIn(user);
       })
       .catch(error => {
-        this.showLoading = false;
-        console.log('Something went wrong:', error.message);
+        this.handleError(error.message);
       });
   }
 
   logInWithFacebook(): void {
+    this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(user => {
         this.logIn(user);
       })
       .catch(error => {
-        console.log('Something went wrong:', error.message);
+        this.handleError(error.message);
       });
   }
 
   logInWithGmail(): void {
+    this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(user => {
         this.logIn(user);
       })
       .catch(error => {
-        console.log('Something went wrong:', error.message);
+        this.handleError(error.message);
       });
   }
 
@@ -81,7 +85,7 @@ export class AuthenticationService {
         this.router.navigate(['/login']);
       })
       .catch(error => {
-        console.log('Something went wrong:', error.message);
+        this.handleError(error.message);
       });
   }
 
@@ -89,6 +93,12 @@ export class AuthenticationService {
     this.showLoading = false;
     this.currentUser = user;
     this.router.navigate(['/home']);
+  }
+
+  private handleError(errorMessage): void {
+    this.showLoading = false;
+    this.messageService.setMessage(errorMessage, 'has-error', 'fa fa-times-circle-o');
+    console.log('Something went wrong:', errorMessage);
   }
 
 }

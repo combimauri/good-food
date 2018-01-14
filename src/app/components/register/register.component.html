@@ -7,18 +7,30 @@
   <div class="register-box-body">
     <p class="login-box-msg">Registrarse</p>
 
-    <form>
+    <form #registerForm="ngForm" role="form" novalidate>
+      <div class="form-group" [ngClass]="messageService.messageClass" *ngIf="messageService.showMessage">
+        <label class="control-label">
+          <i [ngClass]="messageService.messageIcon"></i>
+          {{messageService.message}}
+        </label>
+      </div>
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Correo" name="email" [(ngModel)]="email">
+        <input type="email" class="form-control" placeholder="Correo" name="email" [(ngModel)]="email" required>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Contraseña" name="password" [(ngModel)]="password">
+        <input type="password" class="form-control" placeholder="Contraseña" name="password" [(ngModel)]="password" required>
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" class="form-control" placeholder="Confirmar Contraseña" name="confirm-password" [(ngModel)]="confirmPassword"
+          required>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-offset-7 col-xs-5">
-          <button type="button" class="btn btn-primary btn-block btn-flat" (click)="authService.signUp(email, password)">Registrar</button>
+          <button type="button" class="btn btn-primary btn-block btn-flat" (click)="authService.signUp(email, password, confirmPassword)"
+            [disabled]="registerForm.invalid">Registrar</button>
         </div>
       </div>
     </form>
