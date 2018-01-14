@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { MessageService } from '../../services/message/message.service';
 
 @Component({
   selector: 'food-register',
@@ -13,7 +14,9 @@ export class RegisterComponent implements OnInit {
 
   password: string;
 
-  constructor(public authService: AuthenticationService) { }
+  confirmPassword: string;
+
+  constructor(public authService: AuthenticationService, public messageService: MessageService) { }
 
   ngOnInit() {
   }

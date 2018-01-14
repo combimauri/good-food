@@ -3,10 +3,30 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class MessageService {
 
+  message: string;
+  
+  messageClass: string;
+
+  messageIcon: string;
+
   showMessage: boolean;
 
-  showLoading: boolean;
+  constructor() {
+    this.hideMessage();
+  }
 
-  constructor() { }
+  setMessage(message, messageClass, messageIcon): void {
+    this.message = message;
+    this.messageClass = messageClass;
+    this.messageIcon = messageIcon;
+    this.showMessage = true;
+  }
+
+  hideMessage(): void {
+    this.message = '';
+    this.messageClass = '';
+    this.messageIcon = '';
+    this.showMessage = false;
+  }
 
 }

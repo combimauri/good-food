@@ -7,13 +7,15 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/do';
 
 import { AuthenticationService } from './authentication.service';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class AuthenticationGuardService implements CanActivate {
 
-  constructor(private authService: AuthenticationService, private router: Router) { }
+  constructor(private authService: AuthenticationService, private messageService: MessageService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    this.messageService.hideMessage();
     let authState = this.authService.getAuthState().take(1);
     if (state.url === '/login' || state.url === '/register') {
       return authState.map(user => {

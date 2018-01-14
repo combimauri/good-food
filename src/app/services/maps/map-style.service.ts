@@ -8,7 +8,7 @@ export class MapStyleService {
   constructor(private http: HttpClient) { }
 
   public getStyles(): Observable<any> {
-    return this.http.get('./assets/map-style.json');
+    return this.http.get('./assets/data/map-style.json');
   }
 
 }
