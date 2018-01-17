@@ -7,10 +7,10 @@
 
   <agm-info-window [latitude]="currentRestaurant.lat" [longitude]="currentRestaurant.lng" [isOpen]="isRestaurantInfoWindowOpen"
     (infoWindowClose)="closeRestaurantInfoWindow()">
-    {{currentRestaurant.name}}
+    <a [routerLink]="['/restaurant-profile', currentRestaurant.id]">{{currentRestaurant.name}}</a>
   </agm-info-window>
 
-  <agm-info-window [latitude]="newRestaurant.lat" [longitude]="newRestaurant.lng" [isOpen]="isNewRestaurantInfoWindowOpen"
+  <agm-info-window [latitude]="newRestaurantLat" [longitude]="newRestaurantLng" [isOpen]="isNewRestaurantInfoWindowOpen"
     (infoWindowClose)="closeNewRestaurantInfoWindow()">
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-info">
       Añadir restaurante
@@ -36,14 +36,24 @@
       <form #restaurantForm="ngForm" role="form" novalidate>
         <div class="modal-body">
           <div class="form-group">
-            <label for="exampleInputEmail1">Nombre del restaurant</label>
-            <input type="text" class="form-control" placeholder="Ingrese el nombre" name="restaurant-name" [(ngModel)]="newRestaurant.name"
-              required>
+            <label for="restaurant-name">Nombre del restaurant</label>
+            <input id="restaurant-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newRestaurantName" required>
+          </div>
+          <div class="form-group">
+            <label for="restaurant-type">Tipo de restaurante</label>
+            <input id="restaurant-type" type="text" class="form-control" name="type" placeholder="Ingrese el tipo" name="type" [(ngModel)]="newRestaurantType" required>
+          </div>
+          <div class="form-group">
+            <label for="restaurant-category">Categoría del restaurante</label>
+            <select id="restaurant-category" class="form-control" name="category" [(ngModel)]="newRestaurantCategory" required>
+              <option [value]="undefined" disabled selected>Ingrese la categoría</option>
+              <option *ngFor="let category of categories | async" [value]="category.id">{{category.name}}</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline pull-left" (click)="closeNewRestaurantInfoWindow()" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-outline" (click)="saveRestaurant()" data-dismiss="modal" [disabled]="restaurantForm.invalid">Guardar</button>
+          <button type="button" class="btn btn-outline" (click)="saveRestaurant(newRestaurantName.value)" data-dismiss="modal" [disabled]="restaurantForm.invalid">Guardar</button>
         </div>
       </form>
     </div>

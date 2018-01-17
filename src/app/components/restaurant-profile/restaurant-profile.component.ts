@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
+import 'rxjs/add/operator/switchMap';
+
+import { Irestaurant } from '../../interfaces/irestaurant';
+import { Restaurant } from '../../models/restaurant';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'food-restaurant-profile',
@@ -7,9 +14,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RestaurantProfileComponent implements OnInit {
 
-  constructor() { }
+  restaurant: Observable<Irestaurant>;
 
-  ngOnInit() {
+  private restaurantDoc: AngularFirestoreDocument<Irestaurant>;
+
+  constructor(private route: ActivatedRoute, private router: Router, private afs: AngularFirestore) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      let id: string = params['id'];
+      this.restaurantDoc = this.afs.doc<Irestaurant>(`restaurants/${id}`);
+      this.restaurant = this.restaurantDoc.valueChanges();
+    });
   }
 
 }

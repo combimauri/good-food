@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AgmCoreModule } from '@agm/core';
 
@@ -43,6 +44,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'good-food'),
     AngularFireDatabaseModule,
+    AngularFirestoreModule,
     AngularFireAuthModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googlemaps

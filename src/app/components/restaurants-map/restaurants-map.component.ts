@@ -1,8 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 
 import { MapStyleService } from '../../services/maps/map-style.service';
+import { Irestaurant } from '../../interfaces/irestaurant';
+import { IrestaurantId } from '../../interfaces/irestaurant-id';
+import { Icategory } from '../../interfaces/icategory';
+import { IcategoryId } from '../../interfaces/icategory-id';
 import { Restaurant } from '../../models/restaurant';
 
 declare const google: any;
@@ -15,10 +19,19 @@ const cochaLng: number = -66.157126;
   styleUrls: ['./restaurants-map.component.scss']
 })
 export class RestaurantsMapComponent implements OnInit {
-
   lat: number;
 
   lng: number;
+
+  newRestaurantLat: number;
+
+  newRestaurantLng: number;
+
+  newRestaurantName: string;
+
+  newRestaurantType: string;
+
+  newRestaurantCategory: string;
 
   styles: Array<any>;
 
@@ -26,27 +39,42 @@ export class RestaurantsMapComponent implements OnInit {
 
   isNewRestaurantInfoWindowOpen: boolean;
 
-  currentRestaurant: Restaurant;
+  currentRestaurant: Irestaurant;
 
-  newRestaurant: Restaurant;
+  restaurants: Observable<IrestaurantId[]>;
 
-  restaurants: Observable<Restaurant[]>;
+  categories: Observable<IcategoryId[]>;
 
   private map: any;
 
-  private restaurantsRef: AngularFireList<Restaurant>;
+  private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
+
+  private categoriesCollection: AngularFirestoreCollection<Icategory>;
 
   @ViewChild("locationElement")
   private locationControlElement: ElementRef;
 
-  constructor(private styleService: MapStyleService, private db: AngularFireDatabase) {
+  constructor(private styleService: MapStyleService, private afs: AngularFirestore) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
-    this.newRestaurant = new Restaurant();
-    this.restaurantsRef = db.list<Restaurant>('restaurants');
-    this.restaurants = this.restaurantsRef.snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+
+    this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
+    this.restaurants = this.restaurantsCollection.snapshotChanges().map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data() as Irestaurant;
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      });
+    });
+
+    this.categoriesCollection = this.afs.collection<Icategory>('restaurant-categories');
+    this.categories = this.categoriesCollection.snapshotChanges().map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data() as Irestaurant;
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      });
     });
   }
 
@@ -56,20 +84,21 @@ export class RestaurantsMapComponent implements OnInit {
 
   addLocationElement(event: any): void {
     this.map = event;
+
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM]
       .push(this.locationControlElement.nativeElement);
     this.centerMapOnUserLocation();
   }
 
   showNewRestaurantInfoWindow(event: any): void {
-    this.newRestaurant.lat = event.coords.lat;
-    this.newRestaurant.lng = event.coords.lng;
+    this.newRestaurantLat = event.coords.lat;
+    this.newRestaurantLng = event.coords.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
   showNewRestaurantInfoWindowHere(): void {
-    this.newRestaurant.lat = this.lat;
-    this.newRestaurant.lng = this.lng;
+    this.newRestaurantLat = this.lat;
+    this.newRestaurantLng = this.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
@@ -79,7 +108,14 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   saveRestaurant(): void {
-    this.restaurantsRef.push(this.newRestaurant);
+    const name: string = this.newRestaurantName;
+    const type: string = this.newRestaurantType;
+    const category: string = this.newRestaurantCategory;
+    const lat: number = this.newRestaurantLat;
+    const lng: number = this.newRestaurantLng;
+    const restaurant: Irestaurant = { name, type, category, lat, lng };
+
+    this.restaurantsCollection.add(restaurant);
     this.closeNewRestaurantInfoWindow();
   }
 
@@ -129,11 +165,11 @@ export class RestaurantsMapComponent implements OnInit {
   private handleLocationError(browserHasGeolocation): void {
     this.lat = cochaLat;
     this.lng = cochaLng;
-    this.map.setCenter({ lat: this.lat, lng: this.lng });
-
     let errorMessage = browserHasGeolocation ?
       'Error: El servicio de Geolocalización falló.' :
-      'Error: Tu navegador no soporta Geolocalización.'
+      'Error: Tu navegador no soporta Geolocalización.';
+
+    this.map.setCenter({ lat: this.lat, lng: this.lng });
     console.error(errorMessage);
   }
 
