@@ -19,19 +19,10 @@ const cochaLng: number = -66.157126;
   styleUrls: ['./restaurants-map.component.scss']
 })
 export class RestaurantsMapComponent implements OnInit {
+
   lat: number;
 
   lng: number;
-
-  newRestaurantLat: number;
-
-  newRestaurantLng: number;
-
-  newRestaurantName: string;
-
-  newRestaurantType: string;
-
-  newRestaurantCategory: string;
 
   styles: Array<any>;
 
@@ -40,6 +31,8 @@ export class RestaurantsMapComponent implements OnInit {
   isNewRestaurantInfoWindowOpen: boolean;
 
   currentRestaurant: Irestaurant;
+
+  newRestaurant: Irestaurant;
 
   restaurants: Observable<IrestaurantId[]>;
 
@@ -58,6 +51,7 @@ export class RestaurantsMapComponent implements OnInit {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
+    this.newRestaurant = new Restaurant();
 
     this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
     this.restaurants = this.restaurantsCollection.snapshotChanges().map(actions => {
@@ -91,14 +85,14 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   showNewRestaurantInfoWindow(event: any): void {
-    this.newRestaurantLat = event.coords.lat;
-    this.newRestaurantLng = event.coords.lng;
+    this.newRestaurant.lat = event.coords.lat;
+    this.newRestaurant.lng = event.coords.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
   showNewRestaurantInfoWindowHere(): void {
-    this.newRestaurantLat = this.lat;
-    this.newRestaurantLng = this.lng;
+    this.newRestaurant.lat = this.lat;
+    this.newRestaurant.lng = this.lng;
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
@@ -108,11 +102,11 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   saveRestaurant(): void {
-    const name: string = this.newRestaurantName;
-    const type: string = this.newRestaurantType;
-    const category: string = this.newRestaurantCategory;
-    const lat: number = this.newRestaurantLat;
-    const lng: number = this.newRestaurantLng;
+    const name: string = this.newRestaurant.name;
+    const type: string = this.newRestaurant.type;
+    const category: string = this.newRestaurant.category;
+    const lat: number = this.newRestaurant.lat;
+    const lng: number = this.newRestaurant.lng;
     const restaurant: Irestaurant = { name, type, category, lat, lng };
 
     this.restaurantsCollection.add(restaurant);
