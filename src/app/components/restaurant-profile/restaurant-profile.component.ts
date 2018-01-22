@@ -18,7 +18,7 @@ export class RestaurantProfileComponent implements OnInit {
 
   private restaurantDoc: AngularFirestoreDocument<Irestaurant>;
 
-  constructor(private route: ActivatedRoute, private router: Router, private afs: AngularFirestore) { }
+  constructor(private afs: AngularFirestore, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

@@ -16,7 +16,7 @@ export class AuthenticationService {
 
   currentUser: any;
 
-  constructor(private router: Router, public firebaseAuth: AngularFireAuth, private messageService: MessageService) {
+  constructor(private messageService: MessageService, private firebaseAuth: AngularFireAuth, private router: Router) {
     this.showLoading = false;
     this.currentUser = {
       displayName: noDisplayName,
@@ -31,7 +31,7 @@ export class AuthenticationService {
     return this.firebaseAuth.authState;
   }
 
-  signUp(email, password, confirmPassword): void {
+  signUp(email: string, password: string, confirmPassword: string): void {
     this.showLoading = true;
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
@@ -89,13 +89,13 @@ export class AuthenticationService {
       });
   }
 
-  private logIn(user): void {
+  private logIn(user: any): void {
     this.showLoading = false;
     this.currentUser = user;
     this.router.navigate(['/home']);
   }
 
-  private handleError(errorMessage): void {
+  private handleError(errorMessage: string): void {
     this.showLoading = false;
     this.messageService.setMessage(errorMessage, 'has-error', 'fa fa-times-circle-o');
     console.log('Something went wrong:', errorMessage);

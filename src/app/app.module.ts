@@ -16,6 +16,8 @@ import { AuthenticationService } from './services/authentication/authentication.
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
 import { MapStyleService } from './services/maps/map-style.service';
 import { MessageService } from './services/message/message.service';
+import { RestaurantService } from './services/restaurant/restaurant.service';
+import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -54,7 +56,9 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     AuthenticationService,
     AuthenticationGuardService,
     MapStyleService,
-    MessageService
+    MessageService,
+    RestaurantService,
+    RestaurantCategoryService
   ],
   bootstrap: [AppComponent]
 })

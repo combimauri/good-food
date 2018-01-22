@@ -1,12 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
 
 import { MapStyleService } from '../../services/maps/map-style.service';
-import { Irestaurant } from '../../interfaces/irestaurant';
+import { RestaurantService } from '../../services/restaurant/restaurant.service';
+import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
-import { Icategory } from '../../interfaces/icategory';
-import { IcategoryId } from '../../interfaces/icategory-id';
 import { Restaurant } from '../../models/restaurant';
 
 declare const google: any;
@@ -30,46 +27,20 @@ export class RestaurantsMapComponent implements OnInit {
 
   isNewRestaurantInfoWindowOpen: boolean;
 
-  currentRestaurant: Irestaurant;
+  currentRestaurant: IrestaurantId;
 
-  newRestaurant: Irestaurant;
-
-  restaurants: Observable<IrestaurantId[]>;
-
-  categories: Observable<IcategoryId[]>;
+  newRestaurant: IrestaurantId;
 
   private map: any;
-
-  private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
-
-  private categoriesCollection: AngularFirestoreCollection<Icategory>;
 
   @ViewChild("locationElement")
   private locationControlElement: ElementRef;
 
-  constructor(private styleService: MapStyleService, private afs: AngularFirestore) {
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private styleService: MapStyleService) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
     this.newRestaurant = new Restaurant();
-
-    this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
-    this.restaurants = this.restaurantsCollection.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Irestaurant;
-        const id = a.payload.doc.id;
-        return { id, ...data };
-      });
-    });
-
-    this.categoriesCollection = this.afs.collection<Icategory>('restaurant-categories');
-    this.categories = this.categoriesCollection.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Irestaurant;
-        const id = a.payload.doc.id;
-        return { id, ...data };
-      });
-    });
   }
 
   ngOnInit(): void {
@@ -96,20 +67,13 @@ export class RestaurantsMapComponent implements OnInit {
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
-  showRestaurantInfoWindow(restaurant): void {
+  showRestaurantInfoWindow(restaurant: IrestaurantId): void {
     this.currentRestaurant = restaurant;
     this.isRestaurantInfoWindowOpen = true;
   }
 
   saveRestaurant(): void {
-    const name: string = this.newRestaurant.name;
-    const type: string = this.newRestaurant.type;
-    const category: string = this.newRestaurant.category;
-    const lat: number = this.newRestaurant.lat;
-    const lng: number = this.newRestaurant.lng;
-    const restaurant: Irestaurant = { name, type, category, lat, lng };
-
-    this.restaurantsCollection.add(restaurant);
+    this.restaurantService.saveRestaurant(this.newRestaurant);
     this.closeNewRestaurantInfoWindow();
   }
 
@@ -156,7 +120,7 @@ export class RestaurantsMapComponent implements OnInit {
     );
   }
 
-  private handleLocationError(browserHasGeolocation): void {
+  private handleLocationError(browserHasGeolocation: boolean): void {
     this.lat = cochaLat;
     this.lng = cochaLng;
     let errorMessage = browserHasGeolocation ?

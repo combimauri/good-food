@@ -2,7 +2,7 @@
 
   <agm-marker [latitude]="lat" [longitude]="lng" [iconUrl]="'./assets/img/current-human-location_64x64.png'" (markerClick)="showNewRestaurantInfoWindowHere()"></agm-marker>
 
-  <agm-marker *ngFor="let restaurant of restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng" [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'"
+  <agm-marker *ngFor="let restaurant of restaurantService.restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng" [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'"
     (markerClick)="showRestaurantInfoWindow(restaurant)"></agm-marker>
 
   <agm-info-window [latitude]="currentRestaurant.lat" [longitude]="currentRestaurant.lng" [isOpen]="isRestaurantInfoWindowOpen"
@@ -47,7 +47,7 @@
             <label for="restaurant-category">Categoría del restaurante</label>
             <select id="restaurant-category" class="form-control" name="category" [(ngModel)]="newRestaurant.category" required>
               <option [value]="undefined" disabled selected>Ingrese la categoría</option>
-              <option *ngFor="let category of categories | async" [value]="category.id">{{category.name}}</option>
+              <option *ngFor="let category of restaurantCategoryService.categories | async" [value]="category.id">{{category.name}}</option>
             </select>
           </div>
         </div>
