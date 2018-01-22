@@ -9,6 +9,7 @@ import { Restaurant } from '../../models/restaurant';
 declare const google: any;
 const cochaLat: number = -17.393695;
 const cochaLng: number = -66.157126;
+const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
   selector: 'food-restaurants-map',
@@ -33,14 +34,25 @@ export class RestaurantsMapComponent implements OnInit {
 
   private map: any;
 
+  private restaurantProfilePicture: File;
+
+  private pictureFileReader: FileReader;
+
   @ViewChild("locationElement")
   private locationControlElement: ElementRef;
+
+  @ViewChild("restaurantPictureElement")
+  private restaurantPictureElement: ElementRef;
 
   constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private styleService: MapStyleService) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
     this.newRestaurant = new Restaurant();
+    this.pictureFileReader = new FileReader();
+    this.pictureFileReader.onloadend = () => {
+      this.restaurantPictureElement.nativeElement.src = this.pictureFileReader.result;
+    }
   }
 
   ngOnInit(): void {
@@ -70,6 +82,16 @@ export class RestaurantsMapComponent implements OnInit {
   showRestaurantInfoWindow(restaurant: IrestaurantId): void {
     this.currentRestaurant = restaurant;
     this.isRestaurantInfoWindowOpen = true;
+  }
+
+  setRestaurantPicture(event: any): void {
+    this.restaurantProfilePicture = event.target.files[0];
+
+    if (this.restaurantProfilePicture) {
+      this.pictureFileReader.readAsDataURL(this.restaurantProfilePicture);
+    } else {
+      this.restaurantPictureElement.nativeElement.src = noPhotoURL;
+    }
   }
 
   saveRestaurant(): void {

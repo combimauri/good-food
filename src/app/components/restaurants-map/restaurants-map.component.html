@@ -2,8 +2,8 @@
 
   <agm-marker [latitude]="lat" [longitude]="lng" [iconUrl]="'./assets/img/current-human-location_64x64.png'" (markerClick)="showNewRestaurantInfoWindowHere()"></agm-marker>
 
-  <agm-marker *ngFor="let restaurant of restaurantService.restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng" [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'"
-    (markerClick)="showRestaurantInfoWindow(restaurant)"></agm-marker>
+  <agm-marker *ngFor="let restaurant of restaurantService.restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng"
+    [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'" (markerClick)="showRestaurantInfoWindow(restaurant)"></agm-marker>
 
   <agm-info-window [latitude]="currentRestaurant.lat" [longitude]="currentRestaurant.lng" [isOpen]="isRestaurantInfoWindowOpen"
     (infoWindowClose)="closeRestaurantInfoWindow()">
@@ -35,13 +35,21 @@
       </div>
       <form #restaurantForm="ngForm" role="form" novalidate>
         <div class="modal-body">
+          <div class="form-group text-center">
+            <label for="upload-file">
+              <img #restaurantPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png" alt="Restaurant profile picture">
+            </label>
+            <input type="file" id="upload-file" style="display:none" accept=".jpg, .jpeg, .png" (change)="setRestaurantPicture($event)">
+          </div>
           <div class="form-group">
             <label for="restaurant-name">Nombre del restaurant</label>
-            <input id="restaurant-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newRestaurant.name" required>
+            <input id="restaurant-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newRestaurant.name"
+              required>
           </div>
           <div class="form-group">
             <label for="restaurant-type">Tipo de restaurante</label>
-            <input id="restaurant-type" type="text" class="form-control" name="type" placeholder="Ingrese el tipo" name="type" [(ngModel)]="newRestaurant.type" required>
+            <input id="restaurant-type" type="text" class="form-control" name="type" placeholder="Ingrese el tipo" name="type" [(ngModel)]="newRestaurant.type"
+              required>
           </div>
           <div class="form-group">
             <label for="restaurant-category">Categoría del restaurante</label>
