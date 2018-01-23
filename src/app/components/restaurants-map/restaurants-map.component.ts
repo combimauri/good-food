@@ -52,7 +52,7 @@ export class RestaurantsMapComponent implements OnInit {
     this.pictureFileReader = new FileReader();
     this.pictureFileReader.onloadend = () => {
       this.restaurantPictureElement.nativeElement.src = this.pictureFileReader.result;
-    }
+    };
   }
 
   ngOnInit(): void {
@@ -95,7 +95,7 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   saveRestaurant(): void {
-    this.restaurantService.saveRestaurant(this.newRestaurant);
+    this.restaurantService.saveRestaurant(this.newRestaurant, this.restaurantProfilePicture);
     this.closeNewRestaurantInfoWindow();
   }
 
