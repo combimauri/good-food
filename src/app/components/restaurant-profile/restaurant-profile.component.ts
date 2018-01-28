@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs/Observable';
 
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { Restaurant } from '../../models/restaurant';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'food-restaurant-profile',
@@ -29,15 +28,19 @@ export class RestaurantProfileComponent implements OnInit {
       this.restaurant.subscribe(
         (restaurant) => {
           if (restaurant.hasProfilePic) {
-            this.restaurantService.getRestaurantProfilePic(id).subscribe(
-              (URL) => {
-                this.restaurantProfilePicURL = URL;
-              }
-            );
+            this.setProfilePic(id);
           }
         }
       );
     });
+  }
+
+  private setProfilePic(restaurantId: string): void {
+    this.restaurantService.getRestaurantProfilePic(restaurantId).subscribe(
+      (URL) => {
+        this.restaurantProfilePicURL = URL;
+      }
+    );
   }
 
 }

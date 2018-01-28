@@ -27,6 +27,7 @@ export class UserService {
     const name: string = user.displayName;
     const email: string = user.email;
     const newUser: Iuser = { name, email };
+
     this.usersCollection.doc(user.uid).set(newUser);
   }
 

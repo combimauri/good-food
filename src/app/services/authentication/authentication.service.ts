@@ -7,9 +7,6 @@ import * as firebase from 'firebase/app';
 import { UserService } from '../../services/user/user.service';
 import { MessageService } from '../message/message.service';
 
-const noDisplayName: string = 'Nuevo Usuario';
-const noPhotoURL: string = './assets/img/nophoto.png';
-
 @Injectable()
 export class AuthenticationService {
 

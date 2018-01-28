@@ -29,12 +29,14 @@ export class RestaurantService {
 
   getRestaurant(id: string): Observable<Irestaurant> {
     this.restaurantDoc = this.afs.doc<Irestaurant>(`restaurants/${id}`);
+
     return this.restaurantDoc.valueChanges();
   }
 
   getRestaurantProfilePic(id: string): Observable<any> {
     const storageRef = this.fa.storage().ref();
     const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${id}.jpg`);
+
     return Observable.fromPromise(restaurantProfilePicsRef.getDownloadURL());
   }
 
@@ -66,6 +68,7 @@ export class RestaurantService {
       name: `${id}`,
       contentType: 'image/jpeg',
     };
+
     return Observable.fromPromise(restaurantProfilePicsRef.put(profilePic));
   }
 
