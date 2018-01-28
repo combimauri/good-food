@@ -2,7 +2,7 @@
 
   <div class="box box-primary">
     <div class="box-body box-profile">
-      <img class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png" alt="Restaurant profile picture">
+      <img class="profile-user-img img-responsive img-circle" [src]="restaurantProfilePicURL" alt="Restaurant profile picture">
 
       <h3 class="profile-username text-center">{{ (restaurant | async)?.name }}</h3>
 

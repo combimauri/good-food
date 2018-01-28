@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FirebaseApp } from 'angularfire2';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import * as firebase from 'firebase/app';
 import 'firebase/storage';
 
 import { Irestaurant } from '../../interfaces/irestaurant';
@@ -12,6 +11,8 @@ import { IrestaurantId } from '../../interfaces/irestaurant-id';
 export class RestaurantService {
 
   restaurants: Observable<IrestaurantId[]>;
+
+  private restaurantDoc: AngularFirestoreDocument<Irestaurant>;
 
   private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
 
@@ -26,31 +27,46 @@ export class RestaurantService {
     });
   }
 
-  saveRestaurant(newRestaurant: IrestaurantId, restaurantProfilePic: File): void {
-    const name: string = newRestaurant.name;
-    const type: string = newRestaurant.type;
-    const category: string = newRestaurant.category;
-    const lat: number = newRestaurant.lat;
-    const lng: number = newRestaurant.lng;
-    const restaurant: Irestaurant = { name, type, category, lat, lng };
+  getRestaurant(id: string): Observable<Irestaurant> {
+    this.restaurantDoc = this.afs.doc<Irestaurant>(`restaurants/${id}`);
+    return this.restaurantDoc.valueChanges();
+  }
 
+  getRestaurantProfilePic(id: string): Observable<any> {
+    const storageRef = this.fa.storage().ref();
+    const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${id}.jpg`);
+    return Observable.fromPromise(restaurantProfilePicsRef.getDownloadURL());
+  }
 
-    this.restaurantsCollection.add(restaurant).then(
-      (data) => {
-        let restaurantId = data.id;
-        const storageRef = this.fa.storage().ref();
-        const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${restaurantId}.jpg`);
-        let metadata = {
-          name: `${restaurantId}`,
-          contentType: 'image/jpeg',
-        };
-        restaurantProfilePicsRef.put(restaurantProfilePic).then(
-          () => {
-            console.log('File uploaded successfully');
-          }
-        );
-      }
-    );
+  saveRestaurant(restaurant: IrestaurantId): Observable<any> {
+    const name: string = restaurant.name;
+    const type: string = restaurant.type;
+    const categoryId: string = restaurant.categoryId;
+    const lat: number = restaurant.lat;
+    const lng: number = restaurant.lng;
+    const hasProfilePic: boolean = restaurant.hasProfilePic;
+    const addUserId: string = restaurant.addUserId;
+    const newRestaurant: Irestaurant = {
+      name,
+      type,
+      categoryId,
+      lat,
+      lng,
+      hasProfilePic,
+      addUserId
+    };
+
+    return Observable.fromPromise(this.restaurantsCollection.add(newRestaurant));
+  }
+
+  saveRestaurantProfilePic(id: string, profilePic: File): Observable<any> {
+    const storageRef = this.fa.storage().ref();
+    const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${id}.jpg`);
+    let metadata = {
+      name: `${id}`,
+      contentType: 'image/jpeg',
+    };
+    return Observable.fromPromise(restaurantProfilePicsRef.put(profilePic));
   }
 
 }

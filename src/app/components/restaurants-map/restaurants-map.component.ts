@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
+import { UserService } from '../../services/user/user.service';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Restaurant } from '../../models/restaurant';
 
@@ -30,11 +31,9 @@ export class RestaurantsMapComponent implements OnInit {
 
   currentRestaurant: IrestaurantId;
 
-  newRestaurant: IrestaurantId;
+  newRestaurant: Restaurant;
 
   private map: any;
-
-  private restaurantProfilePicture: File;
 
   private pictureFileReader: FileReader;
 
@@ -44,12 +43,14 @@ export class RestaurantsMapComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private styleService: MapStyleService) {
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private userService: UserService, private styleService: MapStyleService) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
     this.newRestaurant = new Restaurant();
+    this.pictureFileReader = null;
     this.pictureFileReader = new FileReader();
+
     this.pictureFileReader.onloadend = () => {
       this.restaurantPictureElement.nativeElement.src = this.pictureFileReader.result;
     };
@@ -85,17 +86,30 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   setRestaurantPicture(event: any): void {
-    this.restaurantProfilePicture = event.target.files[0];
+    this.newRestaurant.profilePic = event.target.files[0];
 
-    if (this.restaurantProfilePicture) {
-      this.pictureFileReader.readAsDataURL(this.restaurantProfilePicture);
+    if (this.newRestaurant.profilePic) {
+      this.newRestaurant.hasProfilePic = true;
+      this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
     } else {
+      this.newRestaurant.hasProfilePic = false;
       this.restaurantPictureElement.nativeElement.src = noPhotoURL;
     }
   }
 
   saveRestaurant(): void {
-    this.restaurantService.saveRestaurant(this.newRestaurant, this.restaurantProfilePicture);
+    this.newRestaurant.addUserId = this.userService.currentUser.uid;
+    this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
+      (document) => {
+        if (this.newRestaurant.hasProfilePic) {
+          this.saveRestaurantProfilePic(document.id);
+        }
+        this.newRestaurant = new Restaurant();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
     this.closeNewRestaurantInfoWindow();
   }
 
@@ -122,6 +136,17 @@ export class RestaurantsMapComponent implements OnInit {
     } else {
       this.handleLocationError(false);
     }
+  }
+
+  private saveRestaurantProfilePic(restaurantId) {
+    this.restaurantService.saveRestaurantProfilePic(restaurantId, this.newRestaurant.profilePic).subscribe(
+      () => {
+        console.log('Picture saved.');
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   private setMapStyle(): void {

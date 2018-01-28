@@ -4,6 +4,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
+import { UserService } from '../../services/user/user.service';
 import { MessageService } from '../message/message.service';
 
 const noDisplayName: string = 'Nuevo Usuario';
@@ -14,16 +15,10 @@ export class AuthenticationService {
 
   showLoading: boolean;
 
-  currentUser: any;
-
-  constructor(private messageService: MessageService, private firebaseAuth: AngularFireAuth, private router: Router) {
+  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private router: Router) {
     this.showLoading = false;
-    this.currentUser = {
-      displayName: noDisplayName,
-      photoURL: noPhotoURL
-    }
     this.firebaseAuth.auth.onAuthStateChanged(user => {
-      this.currentUser = user;
+      this.userService.currentUser = user;
     });
   }
 
@@ -35,8 +30,8 @@ export class AuthenticationService {
     this.showLoading = true;
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
-        .then(user => {
-          this.logIn(user);
+        .then(userRef => {
+          this.logIn(userRef);
         })
         .catch(error => {
           this.handleError(error.message);
@@ -49,8 +44,8 @@ export class AuthenticationService {
   logInWithEmail(email: string, password: string): void {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
-      .then(user => {
-        this.logIn(user);
+      .then(userRef => {
+        this.logIn(userRef);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -60,8 +55,8 @@ export class AuthenticationService {
   logInWithFacebook(): void {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
-      .then(user => {
-        this.logIn(user);
+      .then(userRef => {
+        this.logIn(userRef);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -71,8 +66,8 @@ export class AuthenticationService {
   logInWithGmail(): void {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then(user => {
-        this.logIn(user);
+      .then(userRef => {
+        this.logIn(userRef);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -89,9 +84,10 @@ export class AuthenticationService {
       });
   }
 
-  private logIn(user: any): void {
+  private logIn(userRef: any): void {
     this.showLoading = false;
-    this.currentUser = user;
+    this.userService.currentUser = userRef.user;
+    this.userService.saveUser(userRef.user);
     this.router.navigate(['/home']);
   }
 
