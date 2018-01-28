@@ -1,13 +1,16 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
-import { Observable } from 'rxjs/Observable';
 
 import { MapStyleService } from '../../services/maps/map-style.service';
+import { RestaurantService } from '../../services/restaurant/restaurant.service';
+import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
+import { UserService } from '../../services/user/user.service';
+import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Restaurant } from '../../models/restaurant';
 
 declare const google: any;
 const cochaLat: number = -17.393695;
 const cochaLng: number = -66.157126;
+const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
   selector: 'food-restaurants-map',
@@ -26,28 +29,31 @@ export class RestaurantsMapComponent implements OnInit {
 
   isNewRestaurantInfoWindowOpen: boolean;
 
-  currentRestaurant: Restaurant;
+  currentRestaurant: IrestaurantId;
 
   newRestaurant: Restaurant;
 
-  restaurants: Observable<Restaurant[]>;
-
   private map: any;
 
-  private restaurantsRef: AngularFireList<Restaurant>;
+  private pictureFileReader: FileReader;
 
   @ViewChild("locationElement")
   private locationControlElement: ElementRef;
 
-  constructor(private styleService: MapStyleService, private db: AngularFireDatabase) {
+  @ViewChild("restaurantPictureElement")
+  private restaurantPictureElement: ElementRef;
+
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private userService: UserService, private styleService: MapStyleService) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
     this.newRestaurant = new Restaurant();
-    this.restaurantsRef = db.list<Restaurant>('restaurants');
-    this.restaurants = this.restaurantsRef.snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
-    });
+    this.pictureFileReader = null;
+    this.pictureFileReader = new FileReader();
+
+    this.pictureFileReader.onloadend = () => {
+      this.restaurantPictureElement.nativeElement.src = this.pictureFileReader.result;
+    };
   }
 
   ngOnInit(): void {
@@ -56,6 +62,7 @@ export class RestaurantsMapComponent implements OnInit {
 
   addLocationElement(event: any): void {
     this.map = event;
+
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM]
       .push(this.locationControlElement.nativeElement);
     this.centerMapOnUserLocation();
@@ -73,13 +80,36 @@ export class RestaurantsMapComponent implements OnInit {
     this.isNewRestaurantInfoWindowOpen = true;
   }
 
-  showRestaurantInfoWindow(restaurant): void {
+  showRestaurantInfoWindow(restaurant: IrestaurantId): void {
     this.currentRestaurant = restaurant;
     this.isRestaurantInfoWindowOpen = true;
   }
 
+  setRestaurantPicture(event: any): void {
+    this.newRestaurant.profilePic = event.target.files[0];
+
+    if (this.newRestaurant.profilePic) {
+      this.newRestaurant.hasProfilePic = true;
+      this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
+    } else {
+      this.newRestaurant.hasProfilePic = false;
+      this.restaurantPictureElement.nativeElement.src = noPhotoURL;
+    }
+  }
+
   saveRestaurant(): void {
-    this.restaurantsRef.push(this.newRestaurant);
+    this.newRestaurant.addUserId = this.userService.currentUser.uid;
+    this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
+      (document) => {
+        if (this.newRestaurant.hasProfilePic) {
+          this.saveRestaurantProfilePic(document.id);
+        }
+        this.newRestaurant = new Restaurant();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
     this.closeNewRestaurantInfoWindow();
   }
 
@@ -108,6 +138,17 @@ export class RestaurantsMapComponent implements OnInit {
     }
   }
 
+  private saveRestaurantProfilePic(restaurantId) {
+    this.restaurantService.saveRestaurantProfilePic(restaurantId, this.newRestaurant.profilePic).subscribe(
+      () => {
+        console.log('Picture saved.');
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   private setMapStyle(): void {
     this.styleService.getStyles().subscribe(
       response => {
@@ -126,14 +167,14 @@ export class RestaurantsMapComponent implements OnInit {
     );
   }
 
-  private handleLocationError(browserHasGeolocation): void {
+  private handleLocationError(browserHasGeolocation: boolean): void {
     this.lat = cochaLat;
     this.lng = cochaLng;
-    this.map.setCenter({ lat: this.lat, lng: this.lng });
-
     let errorMessage = browserHasGeolocation ?
       'Error: El servicio de Geolocalización falló.' :
-      'Error: Tu navegador no soporta Geolocalización.'
+      'Error: Tu navegador no soporta Geolocalización.';
+
+    this.map.setCenter({ lat: this.lat, lng: this.lng });
     console.error(errorMessage);
   }
 

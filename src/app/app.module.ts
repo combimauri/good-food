@@ -4,7 +4,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AgmCoreModule } from '@agm/core';
 
@@ -14,8 +14,11 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { UserService } from './services/user/user.service';
 import { MapStyleService } from './services/maps/map-style.service';
 import { MessageService } from './services/message/message.service';
+import { RestaurantService } from './services/restaurant/restaurant.service';
+import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -42,7 +45,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     FormsModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'good-food'),
-    AngularFireDatabaseModule,
+    AngularFirestoreModule,
     AngularFireAuthModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googlemaps
@@ -53,8 +56,11 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
   providers: [
     AuthenticationService,
     AuthenticationGuardService,
+    UserService,
     MapStyleService,
-    MessageService
+    MessageService,
+    RestaurantService,
+    RestaurantCategoryService
   ],
   bootstrap: [AppComponent]
 })

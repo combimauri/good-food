@@ -12,7 +12,7 @@ import { MessageService } from '../message/message.service';
 @Injectable()
 export class AuthenticationGuardService implements CanActivate {
 
-  constructor(private authService: AuthenticationService, private messageService: MessageService, private router: Router) { }
+  constructor(private messageService: MessageService, private authService: AuthenticationService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this.messageService.hideMessage();
@@ -27,7 +27,7 @@ export class AuthenticationGuardService implements CanActivate {
     });
   }
 
-  checkLogIn(condition, stateUrl): boolean {
+  checkLogIn(condition: boolean, stateUrl: string): boolean {
     if (condition) {
       this.router.navigate([stateUrl]);
       return false

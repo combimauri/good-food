@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { UserService } from '../../services/user/user.service';
 
 declare var $: any;
 const noDisplayName: string = 'Nuevo Usuario';
@@ -20,11 +21,11 @@ export class MenuComponent implements OnInit {
   @ViewChild("toggleButton")
   private toggleButtonElement: ElementRef;
 
-  constructor(public authService: AuthenticationService) {
-    this.userName = this.authService.currentUser.displayName === null ?
-      noDisplayName : this.authService.currentUser.displayName;
-    this.userPhotoURL = this.authService.currentUser.photoURL === null ?
-      noPhotoURL : this.authService.currentUser.photoURL;
+  constructor(public authService: AuthenticationService, private userService: UserService) {
+    this.userName = this.userService.currentUser.displayName === null ?
+      noDisplayName : this.userService.currentUser.displayName;
+    this.userPhotoURL = this.userService.currentUser.photoURL === null ?
+      noPhotoURL : this.userService.currentUser.photoURL;
   }
 
   ngOnInit(): void {

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class MessageService {
 
   message: string;
-  
+
   messageClass: string;
 
   messageIcon: string;
@@ -15,7 +15,7 @@ export class MessageService {
     this.hideMessage();
   }
 
-  setMessage(message, messageClass, messageIcon): void {
+  setMessage(message: string, messageClass: string, messageIcon: string): void {
     this.message = message;
     this.messageClass = messageClass;
     this.messageIcon = messageIcon;
