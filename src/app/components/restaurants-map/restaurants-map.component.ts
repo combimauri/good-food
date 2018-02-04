@@ -3,9 +3,9 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
-import { UserService } from '../../services/user/user.service';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Restaurant } from '../../models/restaurant';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 declare const google: any;
 const cochaLat: number = -17.393695;
@@ -43,7 +43,7 @@ export class RestaurantsMapComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private userService: UserService, private styleService: MapStyleService) {
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private styleService: MapStyleService) {
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
@@ -98,16 +98,20 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   saveRestaurant(): void {
-    this.newRestaurant.addUserId = this.userService.currentUser.uid;
-    this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
-      (document) => {
-        if (this.newRestaurant.hasProfilePic) {
-          this.saveRestaurantProfilePic(document.id);
-        }
-        this.newRestaurant = new Restaurant();
-      },
-      (error) => {
-        console.error(error);
+    this.authService.authUser.subscribe(
+      (user) => {
+        this.newRestaurant.addUserId = user.id;
+        this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
+          (document) => {
+            if (this.newRestaurant.hasProfilePic) {
+              this.saveRestaurantProfilePic(document.id);
+            }
+            this.newRestaurant = new Restaurant();
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
       }
     );
     this.closeNewRestaurantInfoWindow();

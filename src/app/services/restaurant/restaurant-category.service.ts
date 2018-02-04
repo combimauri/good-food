@@ -15,9 +15,9 @@ export class RestaurantCategoryService {
   constructor(private afs: AngularFirestore) {
     this.categoriesCollection = this.afs.collection<Icategory>('restaurant-categories');
     this.categories = this.categoriesCollection.snapshotChanges().map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Icategory;
-        const id = a.payload.doc.id;
+      return actions.map(action => {
+        const data = action.payload.doc.data() as Icategory;
+        const id = action.payload.doc.id;
         return { id, ...data };
       });
     });

@@ -27,8 +27,12 @@ export class RestaurantProfileComponent implements OnInit {
       this.restaurant = this.restaurantService.getRestaurant(id);
       this.restaurant.subscribe(
         (restaurant) => {
-          if (restaurant.hasProfilePic) {
-            this.setProfilePic(id);
+          if (restaurant) {
+            if (restaurant.hasProfilePic) {
+              this.setProfilePic(id);
+            }
+          } else {
+            this.router.navigate(['404']);
           }
         }
       );

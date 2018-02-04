@@ -1,4 +1,8 @@
+import { Iroles } from "./iroles";
+
 export interface Iuser {
-    name: string;
     email: string;
+    name: string;
+    photoURL: string;
+    roles: Iroles;
 }
