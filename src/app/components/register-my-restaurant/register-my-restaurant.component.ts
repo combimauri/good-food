@@ -32,7 +32,7 @@ export class RegisterMyRestaurantComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private restaurantService: RestaurantService, private styleService: MapStyleService) {
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private styleService: MapStyleService) {
     this.lat = cochaLat;
     this.lng = cochaLng;
     this.newRestaurant = new Restaurant();

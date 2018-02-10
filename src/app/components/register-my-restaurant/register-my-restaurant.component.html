@@ -35,7 +35,7 @@
           <agm-map id="restaurant-location" [latitude]="lat" [longitude]="lng" [zoom]="17" [styles]="styles" [streetViewControl]="false"
             (mapReady)="centerMapOnUserLocation($event)" (mapClick)="setRestaurantLocation($event)">
 
-            <agm-marker [latitude]="newRestaurant.lat" [longitude]="newRestaurant.lng" [iconUrl]="'./assets/img/ic_local_dining_black_24dp_2x.png'" (markerClick)="showNewRestaurantInfoWindowHere()"></agm-marker>
+            <agm-marker [latitude]="newRestaurant.lat" [longitude]="newRestaurant.lng" [iconUrl]="'./assets/img/ic_local_dining_black_24dp_2x.png'"></agm-marker>
 
             <agm-marker *ngFor="let restaurant of restaurantService.restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng"
               [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'"></agm-marker>
