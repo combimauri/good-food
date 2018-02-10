@@ -27,6 +27,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
+import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     HomeComponent,
     RestaurantProfileComponent,
     RestaurantsMapComponent,
+    RegisterMyRestaurantComponent,
     PageNotFoundComponent
   ],
   imports: [

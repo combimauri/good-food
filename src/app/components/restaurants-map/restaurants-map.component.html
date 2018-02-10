@@ -42,17 +42,17 @@
             <input type="file" id="upload-file" style="display:none" accept=".jpg, .jpeg, .png" (change)="setRestaurantPicture($event)">
           </div>
           <div class="form-group">
-            <label for="restaurant-name">Nombre del restaurant</label>
+            <label for="restaurant-name">Nombre del restaurante*</label>
             <input id="restaurant-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newRestaurant.name"
               required>
           </div>
           <div class="form-group">
-            <label for="restaurant-type">Tipo de restaurante</label>
+            <label for="restaurant-type">Tipo de restaurante*</label>
             <input id="restaurant-type" type="text" class="form-control" name="type" placeholder="Ingrese el tipo" name="type" [(ngModel)]="newRestaurant.type"
               required>
           </div>
           <div class="form-group">
-            <label for="restaurant-category">Categoría del restaurante</label>
+            <label for="restaurant-category">Categoría del restaurante*</label>
             <select id="restaurant-category" class="form-control" name="category" [(ngModel)]="newRestaurant.categoryId" required>
               <option [value]="undefined" disabled selected>Ingrese la categoría</option>
               <option *ngFor="let category of restaurantCategoryService.categories | async" [value]="category.id">{{category.name}}</option>

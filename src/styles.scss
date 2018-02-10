@@ -3,6 +3,12 @@
     src: url('./assets/fonts/montserrat/Montserrat-Regular.otf');
 }
 
+@media (min-height: 520px) {
+    .vertical-center-align {
+        margin-top: calc((100vh - 520px) / 2);
+    }
+}
+
 body {
     font-family: 'montserrat';
     background-color: #ecf0f5;
@@ -10,14 +16,4 @@ body {
 
 .fixed .content-wrapper {
     padding-top: 50px;
-}
-
-.main-sidebar {
-    padding-top: 50px;
-}
-
-@media (min-height: 520px) {
-    .vertical-center-align {
-        margin-top: calc((100vh - 520px) / 2);
-    }
 }
