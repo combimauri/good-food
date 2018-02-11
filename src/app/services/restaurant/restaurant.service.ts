@@ -41,22 +41,7 @@ export class RestaurantService {
   }
 
   saveRestaurant(restaurant: IrestaurantId): Observable<any> {
-    const name: string = restaurant.name;
-    const type: string = restaurant.type;
-    const categoryId: string = restaurant.categoryId;
-    const lat: number = restaurant.lat;
-    const lng: number = restaurant.lng;
-    const hasProfilePic: boolean = restaurant.hasProfilePic;
-    const addUserId: string = restaurant.addUserId;
-    const newRestaurant: Irestaurant = {
-      name,
-      type,
-      categoryId,
-      lat,
-      lng,
-      hasProfilePic,
-      addUserId
-    };
+    const newRestaurant: Irestaurant = this.buildRestaurantInterface(restaurant);
 
     return Observable.fromPromise(this.restaurantsCollection.add(newRestaurant));
   }
@@ -70,6 +55,30 @@ export class RestaurantService {
     };
 
     return Observable.fromPromise(restaurantProfilePicsRef.put(profilePic));
+  }
+
+  private buildRestaurantInterface(restaurant: IrestaurantId): Irestaurant {
+    if (restaurant.ownerId) {
+      return {
+        name: restaurant.name,
+        type: restaurant.type,
+        categoryId: restaurant.categoryId,
+        lat: restaurant.lat,
+        lng: restaurant.lng,
+        hasProfilePic: restaurant.hasProfilePic,
+        addUserId: restaurant.addUserId,
+        ownerId: restaurant.ownerId
+      } as Irestaurant;
+    }
+    return {
+      name: restaurant.name,
+      type: restaurant.type,
+      categoryId: restaurant.categoryId,
+      lat: restaurant.lat,
+      lng: restaurant.lng,
+      hasProfilePic: restaurant.hasProfilePic,
+      addUserId: restaurant.addUserId
+    } as Irestaurant;
   }
 
 }

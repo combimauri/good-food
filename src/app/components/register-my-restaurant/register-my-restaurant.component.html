@@ -11,7 +11,7 @@
           <label for="upload-file">
             <img #restaurantPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png" alt="Restaurant profile picture">
           </label>
-          <input type="file" id="upload-file" style="display:none" accept=".jpg, .jpeg, .png" (change)="setRestaurantPicture($event)">
+          <input type="file" id="upload-file" class="invisible" accept=".jpg, .jpeg, .png" (change)="setRestaurantPicture($event)">
         </div>
         <div class="form-group">
           <label for="restaurant-name">Nombre del restaurante*</label>
@@ -34,13 +34,12 @@
           <label for="restaurant-location">Dirección del restaurante*</label>
           <agm-map id="restaurant-location" [latitude]="lat" [longitude]="lng" [zoom]="17" [styles]="styles" [streetViewControl]="false"
             (mapReady)="centerMapOnUserLocation($event)" (mapClick)="setRestaurantLocation($event)">
-
             <agm-marker [latitude]="newRestaurant.lat" [longitude]="newRestaurant.lng" [iconUrl]="'./assets/img/ic_local_dining_black_24dp_2x.png'"></agm-marker>
-
             <agm-marker *ngFor="let restaurant of restaurantService.restaurants | async" [latitude]="restaurant.lat" [longitude]="restaurant.lng"
               [iconUrl]="'./assets/img/ic_restaurant_black_24dp_1x.png'"></agm-marker>
-
           </agm-map>
+          <input id="restaurant-location-lat" type="text" class="invisible" name="lat" [(ngModel)]="newRestaurant.lat" readonly required>
+          <input id="restaurant-location-lng" type="text" class="invisible" name="lng" [(ngModel)]="newRestaurant.lng" readonly required>
         </div>
       </div>
       <div class="box-footer">

@@ -9,6 +9,7 @@ export class Restaurant implements IrestaurantId {
     lng: number;
     hasProfilePic: boolean;
     addUserId: string;
+    ownerId?: string;
     profilePic: File;
 
     constructor() {

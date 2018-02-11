@@ -22,7 +22,7 @@ export class AuthenticationService {
     this.authUser = this.firebaseAuth.authState.switchMap(
       (user) => {
         if (user) {
-          return this.afs.doc<Iuser>(`users/${user.uid}`).snapshotChanges().map(
+          return this.afs.doc<IuserId>(`users/${user.uid}`).snapshotChanges().map(
             (action) => {
               const data = action.payload.data() as Iuser;
               const id = action.payload.id;

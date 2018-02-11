@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { UserService } from '../../services/user/user.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { Restaurant } from '../../models/restaurant';
@@ -32,10 +34,16 @@ export class RegisterMyRestaurantComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private styleService: MapStyleService) {
+  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private userService: UserService, private styleService: MapStyleService, private router: Router) {
     this.lat = cochaLat;
     this.lng = cochaLng;
     this.newRestaurant = new Restaurant();
+    this.pictureFileReader = null;
+    this.pictureFileReader = new FileReader();
+
+    this.pictureFileReader.onloadend = () => {
+      this.restaurantPictureElement.nativeElement.src = this.pictureFileReader.result;
+    };
   }
 
   ngOnInit() {
@@ -81,12 +89,15 @@ export class RegisterMyRestaurantComponent implements OnInit {
     this.authService.authUser.subscribe(
       (user) => {
         this.newRestaurant.addUserId = user.id;
+        this.newRestaurant.ownerId = user.id;
         this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
           (document) => {
             if (this.newRestaurant.hasProfilePic) {
               this.saveRestaurantProfilePic(document.id);
             }
             this.newRestaurant = new Restaurant();
+            this.userService.updateUserToFoodBusinessOwner(user);
+            this.router.navigate(['/restaurant-profile', document.id]);
           },
           (error) => {
             console.error(error);

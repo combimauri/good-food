@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Iuser } from '../../interfaces/iuser';
+import { IuserId } from '../../interfaces/iuser-id';
 
 const noDisplayName: string = 'Nuevo Usuario';
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -28,6 +29,19 @@ export class UserService {
     };
 
     this.usersCollection.doc(user.uid).set(newUser, { merge: true });
+  }
+
+  updateUserToFoodBusinessOwner(user: IuserId) {
+    const ownerUser: Iuser = {
+      email: user.email,
+      name: user.name,
+      photoURL: user.photoURL,
+      roles: {
+        businessOwner: true
+      }
+    }
+
+    this.usersCollection.doc(user.id).set(ownerUser, { merge: true });
   }
 
 }
