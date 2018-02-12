@@ -33,6 +33,8 @@ export class RestaurantsMapComponent implements OnInit {
 
   newRestaurant: Restaurant;
 
+  loaderPercent: number;
+
   private map: any;
 
   private pictureFileReader: FileReader;
@@ -48,7 +50,6 @@ export class RestaurantsMapComponent implements OnInit {
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
     this.newRestaurant = new Restaurant();
-    this.pictureFileReader = null;
     this.pictureFileReader = new FileReader();
 
     this.pictureFileReader.onloadend = () => {
@@ -98,6 +99,7 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   saveRestaurant(): void {
+    this.loaderPercent = 1;
     this.authService.authUser.subscribe(
       (user) => {
         this.newRestaurant.addUserId = user.id;
@@ -105,8 +107,11 @@ export class RestaurantsMapComponent implements OnInit {
           (document) => {
             if (this.newRestaurant.hasProfilePic) {
               this.saveRestaurantProfilePic(document.id);
+            } else {
+              this.loaderPercent = 100;
             }
             this.newRestaurant = new Restaurant();
+            this.restaurantPictureElement.nativeElement.src = noPhotoURL;
           },
           (error) => {
             console.error(error);
@@ -142,15 +147,33 @@ export class RestaurantsMapComponent implements OnInit {
     }
   }
 
-  private saveRestaurantProfilePic(restaurantId) {
-    this.restaurantService.saveRestaurantProfilePic(restaurantId, this.newRestaurant.profilePic).subscribe(
-      () => {
-        console.log('Picture saved.');
+  private saveRestaurantProfilePic(restaurantId: string): void {
+    let task: any = this.restaurantService.saveRestaurantProfilePic(restaurantId, this.newRestaurant.profilePic);
+    task.percentageChanges().subscribe(
+      (percent) => {
+        this.setLoaderPercent(percent, task);
       },
       (error) => {
+        this.loaderPercent = 100;
         console.error(error);
       }
     );
+  }
+
+  private setLoaderPercent(percent: number, task: any): void {
+    if (percent > 1) {
+      if (percent === 100) {
+        task.downloadURL().subscribe(
+          (url) => {
+            if (url) {
+              this.loaderPercent = percent;
+            }
+          }
+        );
+      } else {
+        this.loaderPercent = percent;
+      }
+    }
   }
 
   private setMapStyle(): void {

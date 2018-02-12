@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AgmCoreModule } from '@agm/core';
 
 import { environment } from '../environments/environment';
@@ -29,6 +30,7 @@ import { RestaurantProfileComponent } from './components/restaurant-profile/rest
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     RestaurantProfileComponent,
     RestaurantsMapComponent,
     RegisterMyRestaurantComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +52,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
     AngularFireModule.initializeApp(environment.firebase, 'good-food'),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googlemaps
     }),

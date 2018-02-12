@@ -25,7 +25,11 @@ export class RegisterMyRestaurantComponent implements OnInit {
 
   styles: Array<any>;
 
+  restaurantId: string;
+
   newRestaurant: Restaurant;
+
+  loaderPercent: number;
 
   private map: any;
 
@@ -38,7 +42,6 @@ export class RegisterMyRestaurantComponent implements OnInit {
     this.lat = cochaLat;
     this.lng = cochaLng;
     this.newRestaurant = new Restaurant();
-    this.pictureFileReader = null;
     this.pictureFileReader = new FileReader();
 
     this.pictureFileReader.onloadend = () => {
@@ -86,18 +89,20 @@ export class RegisterMyRestaurantComponent implements OnInit {
   }
 
   saveRestaurant(): void {
+    this.loaderPercent = 1;
     this.authService.authUser.subscribe(
       (user) => {
         this.newRestaurant.addUserId = user.id;
         this.newRestaurant.ownerId = user.id;
         this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
           (document) => {
-            if (this.newRestaurant.hasProfilePic) {
-              this.saveRestaurantProfilePic(document.id);
-            }
-            this.newRestaurant = new Restaurant();
+            this.restaurantId = document.id;
             this.userService.updateUserToFoodBusinessOwner(user);
-            this.router.navigate(['/restaurant-profile', document.id]);
+            if (this.newRestaurant.hasProfilePic) {
+              this.saveRestaurantProfilePic();
+            } else {
+              this.loaderPercent = 100;
+            }
           },
           (error) => {
             console.error(error);
@@ -107,15 +112,37 @@ export class RegisterMyRestaurantComponent implements OnInit {
     );
   }
 
-  private saveRestaurantProfilePic(restaurantId) {
-    this.restaurantService.saveRestaurantProfilePic(restaurantId, this.newRestaurant.profilePic).subscribe(
-      () => {
-        console.log('Picture saved.');
+  navigateToRestaurantProfile() {
+    this.router.navigate(['/restaurant-profile', this.restaurantId]);
+  }
+
+  private saveRestaurantProfilePic() {
+    let task: any = this.restaurantService.saveRestaurantProfilePic(this.restaurantId, this.newRestaurant.profilePic);
+    task.percentageChanges().subscribe(
+      (percent) => {
+        this.setLoaderPercent(percent, task);
       },
       (error) => {
+        this.loaderPercent = 100;
         console.error(error);
       }
     );
+  }
+
+  private setLoaderPercent(percent: number, task: any): void {
+    if (percent > 1) {
+      if (percent === 100) {
+        task.downloadURL().subscribe(
+          (url) => {
+            if (url) {
+              this.loaderPercent = percent;
+            }
+          }
+        );
+      } else {
+        this.loaderPercent = percent;
+      }
+    }
   }
 
   private setMapStyle(): void {

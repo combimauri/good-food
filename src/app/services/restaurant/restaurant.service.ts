@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { FirebaseApp } from 'angularfire2';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 import { Observable } from 'rxjs/Observable';
-import 'firebase/storage';
 
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
@@ -16,7 +15,7 @@ export class RestaurantService {
 
   private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
 
-  constructor(private fa: FirebaseApp, private afs: AngularFirestore) {
+  constructor(private afs: AngularFirestore, private storage: AngularFireStorage) {
     this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
     this.restaurants = this.restaurantsCollection.snapshotChanges().map(actions => {
       return actions.map(a => {
@@ -34,10 +33,9 @@ export class RestaurantService {
   }
 
   getRestaurantProfilePic(id: string): Observable<any> {
-    const storageRef = this.fa.storage().ref();
-    const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${id}.jpg`);
+    const restaurantProfilePicsRef = this.storage.ref(`images/restaurant-profile/${id}.jpg`);
 
-    return Observable.fromPromise(restaurantProfilePicsRef.getDownloadURL());
+    return restaurantProfilePicsRef.getDownloadURL();
   }
 
   saveRestaurant(restaurant: IrestaurantId): Observable<any> {
@@ -46,15 +44,10 @@ export class RestaurantService {
     return Observable.fromPromise(this.restaurantsCollection.add(newRestaurant));
   }
 
-  saveRestaurantProfilePic(id: string, profilePic: File): Observable<any> {
-    const storageRef = this.fa.storage().ref();
-    const restaurantProfilePicsRef = storageRef.child(`images/restaurant-profile/${id}.jpg`);
-    let metadata = {
-      name: `${id}`,
-      contentType: 'image/jpeg',
-    };
+  saveRestaurantProfilePic(id: string, profilePic: File): AngularFireUploadTask {
+    let filePath = `images/restaurant-profile/${id}.jpg`;
 
-    return Observable.fromPromise(restaurantProfilePicsRef.put(profilePic));
+    return this.storage.upload(filePath, profilePic);
   }
 
   private buildRestaurantInterface(restaurant: IrestaurantId): Irestaurant {
