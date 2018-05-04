@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Ng2ImgMaxService } from 'ng2-img-max';
 
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
@@ -45,7 +46,12 @@ export class RestaurantsMapComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private styleService: MapStyleService) {
+  constructor(public restaurantService: RestaurantService,
+    public restaurantCategoryService: RestaurantCategoryService,
+    private authService: AuthenticationService,
+    private styleService: MapStyleService,
+    private imgToolsService: Ng2ImgMaxService) {
+
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
     this.currentRestaurant = new Restaurant();
@@ -87,11 +93,21 @@ export class RestaurantsMapComponent implements OnInit {
   }
 
   setRestaurantPicture(event: any): void {
-    this.newRestaurant.profilePic = event.target.files[0];
+    let picture: File = event.target.files[0];
 
-    if (this.newRestaurant.profilePic) {
-      this.newRestaurant.hasProfilePic = true;
-      this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
+    if (picture) {
+      this.imgToolsService.compressImage(picture, 0.04).subscribe(
+        (resizedPicture) => {
+          this.newRestaurant.hasProfilePic = true;
+          this.newRestaurant.profilePic = resizedPicture;
+          this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
+        },
+        (error) => {
+          this.newRestaurant.hasProfilePic = false;
+          this.restaurantPictureElement.nativeElement.src = noPhotoURL;
+          console.log(error);
+        }
+      );
     } else {
       this.newRestaurant.hasProfilePic = false;
       this.restaurantPictureElement.nativeElement.src = noPhotoURL;

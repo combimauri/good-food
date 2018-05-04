@@ -8,11 +8,13 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AgmCoreModule } from '@agm/core';
+import { Ng2ImgMaxModule } from 'ng2-img-max';
 
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { SubscriptionsService } from './services/subscriptions/subscriptions.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
 import { UserService } from './services/user/user.service';
@@ -56,10 +58,12 @@ import { LoaderComponent } from './components/loader/loader.component';
     AgmCoreModule.forRoot({
       apiKey: environment.googlemaps
     }),
+    Ng2ImgMaxModule,
     AppRoutingModule
     // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
+    SubscriptionsService,
     AuthenticationService,
     AuthenticationGuardService,
     UserService,

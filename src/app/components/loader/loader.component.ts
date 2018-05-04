@@ -25,6 +25,7 @@ export class LoaderComponent implements OnInit, OnChanges {
     if (this.percent === 1) {
       $('#modal-loader').modal('show');
     }
+
     if (this.percent === 100) {
       $('#modal-loader').modal('hide');
       this.onLoadFinished.emit();
