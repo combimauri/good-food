@@ -4,7 +4,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/do';
 
 import { AuthenticationService } from './authentication.service';
 import { MessageService } from '../message/message.service';

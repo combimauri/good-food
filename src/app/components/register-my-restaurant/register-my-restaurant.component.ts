@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Ng2ImgMaxService } from 'ng2-img-max';
 
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
@@ -19,9 +20,9 @@ const noPhotoURL: string = './assets/img/nophoto.png';
 })
 export class RegisterMyRestaurantComponent implements OnInit {
 
-  lat: number = 51.678418;
+  lat: number;
 
-  lng: number = 7.809007;
+  lng: number;
 
   styles: Array<any>;
 
@@ -38,7 +39,14 @@ export class RegisterMyRestaurantComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService, public restaurantCategoryService: RestaurantCategoryService, private authService: AuthenticationService, private userService: UserService, private styleService: MapStyleService, private router: Router) {
+  constructor(public restaurantService: RestaurantService,
+    public restaurantCategoryService: RestaurantCategoryService,
+    private authService: AuthenticationService,
+    private userService: UserService,
+    private styleService: MapStyleService,
+    private router: Router,
+    private imgToolsService: Ng2ImgMaxService) {
+
     this.lat = cochaLat;
     this.lng = cochaLng;
     this.newRestaurant = new Restaurant();
@@ -49,7 +57,7 @@ export class RegisterMyRestaurantComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setMapStyle();
   }
 
@@ -72,11 +80,21 @@ export class RegisterMyRestaurantComponent implements OnInit {
   }
 
   setRestaurantPicture(event: any): void {
-    this.newRestaurant.profilePic = event.target.files[0];
+    let picture: File = event.target.files[0];
 
-    if (this.newRestaurant.profilePic) {
-      this.newRestaurant.hasProfilePic = true;
-      this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
+    if (picture) {
+      this.imgToolsService.compressImage(picture, 0.04).subscribe(
+        (resizedPicture) => {
+          this.newRestaurant.hasProfilePic = true;
+          this.newRestaurant.profilePic = resizedPicture;
+          this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
+        },
+        (error) => {
+          this.newRestaurant.hasProfilePic = false;
+          this.restaurantPictureElement.nativeElement.src = noPhotoURL;
+          console.log(error);
+        }
+      );
     } else {
       this.newRestaurant.hasProfilePic = false;
       this.restaurantPictureElement.nativeElement.src = noPhotoURL;
@@ -112,11 +130,11 @@ export class RegisterMyRestaurantComponent implements OnInit {
     );
   }
 
-  navigateToRestaurantProfile() {
+  navigateToRestaurantProfile(): void {
     this.router.navigate(['/restaurant-profile', this.restaurantId]);
   }
 
-  private saveRestaurantProfilePic() {
+  private saveRestaurantProfilePic(): void {
     let task: any = this.restaurantService.saveRestaurantProfilePic(this.restaurantId, this.newRestaurant.profilePic);
     task.percentageChanges().subscribe(
       (percent) => {

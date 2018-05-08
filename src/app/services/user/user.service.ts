@@ -18,7 +18,7 @@ export class UserService {
     this.usersCollection = this.afs.collection<any>('users');
   }
 
-  saveUser(user: any) {
+  saveUser(user: any): void {
     const newUser: Iuser = {
       email: user.email,
       name: user.displayName ? user.displayName : noDisplayName,
@@ -31,7 +31,7 @@ export class UserService {
     this.usersCollection.doc(user.uid).set(newUser, { merge: true });
   }
 
-  updateUserToFoodBusinessOwner(user: IuserId) {
+  updateUserToFoodBusinessOwner(user: IuserId): void {
     const ownerUser: Iuser = {
       email: user.email,
       name: user.name,

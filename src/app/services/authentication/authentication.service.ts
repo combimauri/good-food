@@ -5,6 +5,7 @@ import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firesto
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { UserService } from '../../services/user/user.service';
 import { MessageService } from '../message/message.service';
 import { Iuser } from '../../interfaces/iuser';
@@ -17,7 +18,7 @@ export class AuthenticationService {
 
   showLoading: boolean;
 
-  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
+  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router, private subscriptions: SubscriptionsService) {
     this.showLoading = false;
     this.authUser = this.firebaseAuth.authState.switchMap(
       (user) => {
@@ -85,6 +86,7 @@ export class AuthenticationService {
   }
 
   logOut(): void {
+    this.subscriptions.kill();
     this.firebaseAuth.auth.signOut()
       .then(() => {
         this.router.navigate(['/login']);
@@ -96,6 +98,7 @@ export class AuthenticationService {
 
   private logIn(user: any): void {
     this.showLoading = false;
+    this.subscriptions.revive();
     this.userService.saveUser(user);
     this.router.navigate(['/home']);
   }

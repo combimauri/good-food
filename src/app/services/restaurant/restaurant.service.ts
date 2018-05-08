@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 import { Observable } from 'rxjs/Observable';
+import "rxjs/add/operator/takeUntil";
 
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
 
@@ -15,33 +17,33 @@ export class RestaurantService {
 
   private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
 
-  constructor(private afs: AngularFirestore, private storage: AngularFireStorage) {
+  constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private subscriptions: SubscriptionsService) {
     this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
-    this.restaurants = this.restaurantsCollection.snapshotChanges().map(actions => {
+    this.restaurants = this.restaurantsCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Irestaurant;
         const id = a.payload.doc.id;
         return { id, ...data };
       });
     });
-  }
+  } 
 
   getRestaurant(id: string): Observable<Irestaurant> {
     this.restaurantDoc = this.afs.doc<Irestaurant>(`restaurants/${id}`);
 
-    return this.restaurantDoc.valueChanges();
+    return this.restaurantDoc.valueChanges().takeUntil(this.subscriptions.unsubscribe);
   }
 
   getRestaurantProfilePic(id: string): Observable<any> {
     const restaurantProfilePicsRef = this.storage.ref(`images/restaurant-profile/${id}.jpg`);
 
-    return restaurantProfilePicsRef.getDownloadURL();
+    return restaurantProfilePicsRef.getDownloadURL().takeUntil(this.subscriptions.unsubscribe);
   }
 
   saveRestaurant(restaurant: IrestaurantId): Observable<any> {
     const newRestaurant: Irestaurant = this.buildRestaurantInterface(restaurant);
 
-    return Observable.fromPromise(this.restaurantsCollection.add(newRestaurant));
+    return Observable.fromPromise(this.restaurantsCollection.add(newRestaurant)).takeUntil(this.subscriptions.unsubscribe);
   }
 
   saveRestaurantProfilePic(id: string, profilePic: File): AngularFireUploadTask {
