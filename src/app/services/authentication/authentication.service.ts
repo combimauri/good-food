@@ -1,26 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
 import { UserService } from '../../services/user/user.service';
 import { MessageService } from '../message/message.service';
+import { Iuser } from '../../interfaces/iuser';
+import { IuserId } from '../../interfaces/iuser-id';
 
 @Injectable()
 export class AuthenticationService {
 
+  authUser: Observable<IuserId>;
+
   showLoading: boolean;
 
-  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private router: Router) {
+  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
     this.showLoading = false;
-    this.firebaseAuth.auth.onAuthStateChanged(user => {
-      this.userService.currentUser = user;
-    });
-  }
-
-  getAuthState(): Observable<firebase.User> {
-    return this.firebaseAuth.authState;
+    this.authUser = this.firebaseAuth.authState.switchMap(
+      (user) => {
+        if (user) {
+          return this.afs.doc<IuserId>(`users/${user.uid}`).snapshotChanges().map(
+            (action) => {
+              const data = action.payload.data() as Iuser;
+              const id = action.payload.id;
+              return { id, ...data };
+            }
+          );
+        } else {
+          return Observable.of(null);
+        }
+      }
+    );
   }
 
   signUp(email: string, password: string, confirmPassword: string): void {
@@ -28,7 +41,7 @@ export class AuthenticationService {
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
         .then(user => {
-          this.logIn(user);
+          this.logIn(user.user);
         })
         .catch(error => {
           this.handleError(error.message);
@@ -83,7 +96,6 @@ export class AuthenticationService {
 
   private logIn(user: any): void {
     this.showLoading = false;
-    this.userService.currentUser = user;
     this.userService.saveUser(user);
     this.router.navigate(['/home']);
   }

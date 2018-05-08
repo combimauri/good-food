@@ -15,6 +15,11 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
+
+      <a class="sidebar-toggle-right" data-toggle="control-sidebar">
+        <i class="fa fa-gears"></i>
+      </a>
+
       <div class="navbar-header visible-xs">
         <a class="navbar-brand" routerLink="/home">
           <b>Good</b>Food</a>
@@ -26,10 +31,10 @@
     <section class="sidebar">
       <div class="user-panel">
         <div class="pull-left image">
-          <img [src]="userPhotoURL" class="img-circle" alt="User Image">
+          <img [src]="(authService.authUser | async)?.photoURL" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>{{userName}}</p>
+          <p>{{ (authService.authUser | async)?.name }}</p>
           <p>
             <i class="fa fa-circle text-success"></i> En línea</p>
         </div>
@@ -49,12 +54,6 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
         <li>
-          <a [routerLink]="['/restaurant-profile', 1]" data-toggle="push-menu">
-            <i class="fa fa-cutlery"></i>
-            <span>Perfil restaurante</span>
-          </a>
-        </li>
-        <li>
           <a routerLink="/restaurants-map" data-toggle="push-menu">
             <i class="fa fa-map-marker"></i>
             <span>Ubicación restaurante</span>
@@ -70,6 +69,41 @@
       </ul>
     </section>
   </aside>
+
+  <aside class="control-sidebar control-sidebar-dark">
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      <li>
+        <a href="#control-sidebar-home-tab" data-toggle="tab">
+          <i class="fa fa-home"></i>
+        </a>
+      </li>
+      <li class="active">
+        <a href="#control-sidebar-settings-tab" data-toggle="tab">
+          <i class="fa fa-gears"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane" id="control-sidebar-home-tab">
+        <h3 class="control-sidebar-heading">Actividad Reciente</h3>
+      </div>
+
+      <div class="tab-pane active" id="control-sidebar-settings-tab">
+        <h3 class="control-sidebar-heading">Configuraciones</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a routerLink='/register-my-restaurant' data-toggle="control-sidebar">
+              <i class="fa fa-cutlery"></i>
+              <span>Registrar mi restaurante</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <div class="control-sidebar-bg"></div>
 
   <div class="content-wrapper">
     <router-outlet></router-outlet>

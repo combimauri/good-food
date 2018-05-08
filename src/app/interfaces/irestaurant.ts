@@ -6,4 +6,5 @@ export interface Irestaurant {
     lng: number;
     hasProfilePic: boolean;
     addUserId: string;
+    ownerId?: string;
 }
