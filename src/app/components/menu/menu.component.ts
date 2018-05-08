@@ -22,10 +22,10 @@ export class MenuComponent implements OnInit {
   private toggleButtonElement: ElementRef;
 
   constructor(public authService: AuthenticationService, private userService: UserService) {
-    this.userName = this.userService.currentUser.displayName === null ?
-      noDisplayName : this.userService.currentUser.displayName;
-    this.userPhotoURL = this.userService.currentUser.photoURL === null ?
-      noPhotoURL : this.userService.currentUser.photoURL;
+    this.userName = this.userService.currentUser.displayName ?
+      this.userService.currentUser.displayName : noDisplayName;
+    this.userPhotoURL = this.userService.currentUser.photoURL ?
+      this.userService.currentUser.providerData[0].photoURL : noPhotoURL;
   }
 
   ngOnInit(): void {

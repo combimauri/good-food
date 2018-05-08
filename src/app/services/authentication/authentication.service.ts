@@ -27,8 +27,8 @@ export class AuthenticationService {
     this.showLoading = true;
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
-        .then(userRef => {
-          this.logIn(userRef);
+        .then(user => {
+          this.logIn(user);
         })
         .catch(error => {
           this.handleError(error.message);
@@ -41,8 +41,8 @@ export class AuthenticationService {
   logInWithEmail(email: string, password: string): void {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
-      .then(userRef => {
-        this.logIn(userRef);
+      .then(user => {
+        this.logIn(user);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -53,7 +53,7 @@ export class AuthenticationService {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(userRef => {
-        this.logIn(userRef);
+        this.logIn(userRef.user);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -64,7 +64,7 @@ export class AuthenticationService {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(userRef => {
-        this.logIn(userRef);
+        this.logIn(userRef.user);
       })
       .catch(error => {
         this.handleError(error.message);
@@ -81,10 +81,10 @@ export class AuthenticationService {
       });
   }
 
-  private logIn(userRef: any): void {
+  private logIn(user: any): void {
     this.showLoading = false;
-    this.userService.currentUser = userRef.user;
-    this.userService.saveUser(userRef.user);
+    this.userService.currentUser = user;
+    this.userService.saveUser(user);
     this.router.navigate(['/home']);
   }
 
