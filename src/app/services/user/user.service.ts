@@ -22,7 +22,7 @@ export class UserService {
     const newUser: Iuser = {
       email: user.email,
       name: user.displayName ? user.displayName : noDisplayName,
-      photoURL: user.photoURL ? user.photoURL : noPhotoURL,
+      photoURL: user.providerData[0].photoURL ? user.providerData[0].photoURL : noPhotoURL,
       roles: {
         normalUser: true
       }

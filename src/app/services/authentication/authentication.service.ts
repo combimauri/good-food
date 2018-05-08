@@ -41,8 +41,8 @@ export class AuthenticationService {
     this.showLoading = true;
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
-        .then(userRef => {
-          this.logIn(userRef.user);
+        .then(user => {
+          this.logIn(user.user);
         })
         .catch(error => {
           this.handleError(error.message);
@@ -55,8 +55,8 @@ export class AuthenticationService {
   logInWithEmail(email: string, password: string): void {
     this.showLoading = true;
     this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
-      .then(userRef => {
-        this.logIn(userRef.user);
+      .then(user => {
+        this.logIn(user);
       })
       .catch(error => {
         this.handleError(error.message);
