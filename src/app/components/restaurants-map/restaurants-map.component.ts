@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Ng2ImgMaxService } from 'ng2-img-max';
+import "rxjs/add/operator/takeUntil";
 
+import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
@@ -50,7 +52,8 @@ export class RestaurantsMapComponent implements OnInit {
     public restaurantCategoryService: RestaurantCategoryService,
     private authService: AuthenticationService,
     private styleService: MapStyleService,
-    private imgToolsService: Ng2ImgMaxService) {
+    private imgToolsService: Ng2ImgMaxService,
+    private subscriptions: SubscriptionsService) {
 
     this.isRestaurantInfoWindowOpen = false;
     this.isNewRestaurantInfoWindowOpen = false;
@@ -116,7 +119,7 @@ export class RestaurantsMapComponent implements OnInit {
 
   saveRestaurant(): void {
     this.loaderPercent = 1;
-    this.authService.authUser.subscribe(
+    this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
       (user) => {
         this.newRestaurant.addUserId = user.id;
         this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(

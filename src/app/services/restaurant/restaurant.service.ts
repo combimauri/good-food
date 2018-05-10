@@ -17,7 +17,10 @@ export class RestaurantService {
 
   private restaurantsCollection: AngularFirestoreCollection<Irestaurant>;
 
-  constructor(private afs: AngularFirestore, private storage: AngularFireStorage, private subscriptions: SubscriptionsService) {
+  constructor(private afs: AngularFirestore,
+    private storage: AngularFireStorage,
+    private subscriptions: SubscriptionsService) {
+
     this.restaurantsCollection = this.afs.collection<Irestaurant>('restaurants');
     this.restaurants = this.restaurantsCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
       return actions.map(a => {
@@ -26,7 +29,7 @@ export class RestaurantService {
         return { id, ...data };
       });
     });
-  } 
+  }
 
   getRestaurant(id: string): Observable<Irestaurant> {
     this.restaurantDoc = this.afs.doc<Irestaurant>(`restaurants/${id}`);
