@@ -18,7 +18,13 @@ export class AuthenticationService {
 
   showLoading: boolean;
 
-  constructor(private userService: UserService, private messageService: MessageService, private firebaseAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router, private subscriptions: SubscriptionsService) {
+  constructor(private userService: UserService,
+    private messageService: MessageService,
+    private firebaseAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private router: Router,
+    private subscriptions: SubscriptionsService) {
+
     this.showLoading = false;
     this.authUser = this.firebaseAuth.authState.switchMap(
       (user) => {
@@ -42,7 +48,7 @@ export class AuthenticationService {
     if (password === confirmPassword) {
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
         .then(user => {
-          this.logIn(user.user);
+          this.logIn(user);
         })
         .catch(error => {
           this.handleError(error.message);
