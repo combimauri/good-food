@@ -1,27 +1,26 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { Ng2ImgMaxService } from 'ng2-img-max';
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Router } from "@angular/router";
+import { Ng2ImgMaxService } from "ng2-img-max";
 import "rxjs/add/operator/takeUntil";
 
-import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
-import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
-import { AuthenticationService } from '../../services/authentication/authentication.service';
-import { UserService } from '../../services/user/user.service';
-import { RestaurantService } from '../../services/restaurant/restaurant.service';
-import { MapStyleService } from '../../services/maps/map-style.service';
-import { Restaurant } from '../../models/restaurant';
+import { SubscriptionsService } from "../../services/subscriptions/subscriptions.service";
+import { RestaurantCategoryService } from "../../services/restaurant/restaurant-category.service";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
+import { UserService } from "../../services/user/user.service";
+import { RestaurantService } from "../../services/restaurant/restaurant.service";
+import { MapStyleService } from "../../services/maps/map-style.service";
+import { Restaurant } from "../../models/restaurant";
 
 const cochaLat: number = -17.393695;
 const cochaLng: number = -66.157126;
-const noPhotoURL: string = './assets/img/nophoto.png';
+const noPhotoURL: string = "./assets/img/nophoto.png";
 
 @Component({
-  selector: 'food-register-my-restaurant',
-  templateUrl: './register-my-restaurant.component.html',
-  styleUrls: ['./register-my-restaurant.component.scss']
+  selector: "food-register-my-restaurant",
+  templateUrl: "./register-my-restaurant.component.html",
+  styleUrls: ["./register-my-restaurant.component.scss"]
 })
 export class RegisterMyRestaurantComponent implements OnInit {
-
   lat: number;
 
   lng: number;
@@ -41,15 +40,16 @@ export class RegisterMyRestaurantComponent implements OnInit {
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;
 
-  constructor(public restaurantService: RestaurantService,
+  constructor(
+    public restaurantService: RestaurantService,
     public restaurantCategoryService: RestaurantCategoryService,
     private authService: AuthenticationService,
     private userService: UserService,
     private styleService: MapStyleService,
     private router: Router,
     private imgToolsService: Ng2ImgMaxService,
-    private subscriptions: SubscriptionsService) {
-
+    private subscriptions: SubscriptionsService
+  ) {
     this.lat = cochaLat;
     this.lng = cochaLng;
     this.newRestaurant = new Restaurant();
@@ -76,7 +76,8 @@ export class RegisterMyRestaurantComponent implements OnInit {
         },
         () => {
           this.handleLocationError(true);
-        });
+        }
+      );
     } else {
       this.handleLocationError(false);
     }
@@ -86,18 +87,9 @@ export class RegisterMyRestaurantComponent implements OnInit {
     let picture: File = event.target.files[0];
 
     if (picture) {
-      this.imgToolsService.compressImage(picture, 0.04).subscribe(
-        (resizedPicture) => {
-          this.newRestaurant.hasProfilePic = true;
-          this.newRestaurant.profilePic = resizedPicture;
-          this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
-        },
-        (error) => {
-          this.newRestaurant.hasProfilePic = false;
-          this.restaurantPictureElement.nativeElement.src = noPhotoURL;
-          console.log(error);
-        }
-      );
+      this.newRestaurant.hasProfilePic = true;
+      this.newRestaurant.profilePic = picture;
+      this.pictureFileReader.readAsDataURL(this.newRestaurant.profilePic);
     } else {
       this.newRestaurant.hasProfilePic = false;
       this.restaurantPictureElement.nativeElement.src = noPhotoURL;
@@ -111,12 +103,13 @@ export class RegisterMyRestaurantComponent implements OnInit {
 
   saveRestaurant(): void {
     this.loaderPercent = 1;
-    this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
-      (user) => {
+    this.authService.authUser
+      .takeUntil(this.subscriptions.unsubscribe)
+      .subscribe(user => {
         this.newRestaurant.addUserId = user.id;
         this.newRestaurant.ownerId = user.id;
         this.restaurantService.saveRestaurant(this.newRestaurant).subscribe(
-          (document) => {
+          document => {
             this.restaurantId = document.id;
             this.userService.updateUserToFoodBusinessOwner(user);
             if (this.newRestaurant.hasProfilePic) {
@@ -125,45 +118,41 @@ export class RegisterMyRestaurantComponent implements OnInit {
               this.loaderPercent = 100;
             }
           },
-          (error) => {
+          error => {
             console.error(error);
           }
         );
-      }
-    );
+      });
   }
 
   navigateToRestaurantProfile(): void {
-    this.router.navigate(['/restaurant-profile', this.restaurantId]);
+    this.router.navigate(["/restaurant-profile", this.restaurantId]);
   }
 
   private saveRestaurantProfilePic(): void {
-    let task: any = this.restaurantService.saveRestaurantProfilePic(this.restaurantId, this.newRestaurant.profilePic);
+    const task: any = this.restaurantService.saveRestaurantProfilePic(
+      this.restaurantId,
+      this.newRestaurant.profilePic
+    );
     task.percentageChanges().subscribe(
-      (percent) => {
-        this.setLoaderPercent(percent, task);
+      percent => {
+        if (percent > 1 && percent < 100) {
+          this.loaderPercent = percent;
+        }
       },
-      (error) => {
+      error => {
         this.loaderPercent = 100;
         console.error(error);
       }
     );
-  }
-
-  private setLoaderPercent(percent: number, task: any): void {
-    if (percent > 1) {
-      if (percent === 100) {
-        task.downloadURL().subscribe(
-          (url) => {
-            if (url) {
-              this.loaderPercent = percent;
-            }
-          }
-        );
-      } else {
-        this.loaderPercent = percent;
+    task.downloadURL().subscribe(
+      url => {
+        if (!url) {
+          console.error('Error retrieving the URL.');
+        }
+        this.loaderPercent = 100;
       }
-    }
+    );
   }
 
   private setMapStyle(): void {
@@ -175,9 +164,7 @@ export class RegisterMyRestaurantComponent implements OnInit {
         this.styles = [
           {
             featureType: "poi",
-            stylers: [
-              { visibility: "off" }
-            ]
+            stylers: [{ visibility: "off" }]
           }
         ];
       }
@@ -187,12 +174,11 @@ export class RegisterMyRestaurantComponent implements OnInit {
   private handleLocationError(browserHasGeolocation: boolean): void {
     this.lat = cochaLat;
     this.lng = cochaLng;
-    let errorMessage = browserHasGeolocation ?
-      'Error: El servicio de Geolocalización falló.' :
-      'Error: Tu navegador no soporta Geolocalización.';
+    let errorMessage = browserHasGeolocation
+      ? "Error: El servicio de Geolocalización falló."
+      : "Error: Tu navegador no soporta Geolocalización.";
 
     this.map.setCenter({ lat: this.lat, lng: this.lng });
     console.error(errorMessage);
   }
-
 }

@@ -33,6 +33,7 @@ import { RestaurantsMapComponent } from './components/restaurants-map/restaurant
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { LoaderComponent } from './components/loader/loader.component';
     RestaurantsMapComponent,
     RegisterMyRestaurantComponent,
     PageNotFoundComponent,
-    LoaderComponent
+    LoaderComponent,
+    RestaurantMenuComponent
   ],
   imports: [
     BrowserModule,
