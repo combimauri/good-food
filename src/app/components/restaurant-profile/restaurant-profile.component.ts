@@ -17,6 +17,8 @@ const noPhotoURL: string = './assets/img/nophoto.png';
 })
 export class RestaurantProfileComponent implements OnInit {
 
+  restaurantId: string;
+
   restaurant: Observable<Irestaurant>;
 
   restaurantProfilePicURL: string;
@@ -32,13 +34,13 @@ export class RestaurantProfileComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
       (params) => {
-        let id: string = params['id'];
-        this.restaurant = this.restaurantService.getRestaurant(id);
+        this.restaurantId = params['id'];
+        this.restaurant = this.restaurantService.getRestaurant(this.restaurantId);
         this.restaurant.subscribe(
           (restaurant) => {
             if (restaurant) {
               if (restaurant.hasProfilePic) {
-                this.setProfilePic(id);
+                this.setProfilePic();
               }
             } else {
               this.router.navigate(['404']);
@@ -49,8 +51,8 @@ export class RestaurantProfileComponent implements OnInit {
     );
   }
 
-  private setProfilePic(restaurantId: string): void {
-    this.restaurantService.getRestaurantProfilePic(restaurantId).subscribe(
+  private setProfilePic(): void {
+    this.restaurantService.getRestaurantProfilePic(this.restaurantId).subscribe(
       (URL) => {
         this.restaurantProfilePicURL = URL;
       }

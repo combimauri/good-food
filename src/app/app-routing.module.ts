@@ -57,7 +57,7 @@ const routes: Routes = [
         component: RegisterMyRestaurantComponent
       },
       {
-        path: 'restaurant-menu',
+        path: 'restaurant-menu/:id',
         component: RestaurantMenuComponent
       }
     ]
