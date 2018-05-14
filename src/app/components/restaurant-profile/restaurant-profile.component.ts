@@ -21,12 +21,38 @@ export class RestaurantProfileComponent implements OnInit {
 
   restaurantProfilePicURL: string;
 
+  publications: Array<any>;
+
   constructor(private restaurantService: RestaurantService,
     private route: ActivatedRoute,
     private router: Router,
     private subscriptions: SubscriptionsService) {
 
     this.restaurantProfilePicURL = noPhotoURL;
+
+    this.publications = [
+      {
+        ownerName: 'Hamburgon',
+        image: './assets/img/nophoto.png',
+        paragraph: 'Lorem ipsum represents a long-held tradition for designers, typographers and the like. ' +
+        'Some people hate it and argue for' +
+        'its demise, but others ignore the hate as they create awesome tools to help create filler text for everyone from' +
+        'bacon lovers to Charlie Sheen fans.',
+        comments: [
+          {
+            ownerName: 'Maria Garcia',
+            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc semper ligula' +
+            ' consectetur, tristique est eget, facilisis nulla.' +
+            'In ut nulla finibus ipsum elementum interdum id sit amet velit. Mauris iaculis.',
+            image: './assets/img/nophoto.png'
+          }
+        ],
+        status: [
+          'LIKE',
+          'LIKE'
+        ]
+      }
+    ];
   }
 
   ngOnInit(): void {
