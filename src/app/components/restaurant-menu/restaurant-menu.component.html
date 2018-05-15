@@ -10,7 +10,7 @@
 
         <div class="col-md-3 col-xs-6 col-sm-4" *ngFor="let menuItem of menuItems | async">
           <div class="card">
-            <img src="./assets/img/pizza.jpeg" alt="Avatar" style="width: 100%; height: 120px;">
+            <img [src]="menuItem.pictureURL" alt="Avatar" style="width: 100%; height: 120px;">
             <div class="card-container">
               <h4>
                 <b>{{menuItem.name}}</b>

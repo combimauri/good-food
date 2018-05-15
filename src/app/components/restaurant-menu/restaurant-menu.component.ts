@@ -84,9 +84,13 @@ export class RestaurantMenuComponent implements OnInit {
     this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
       user => {
         this.newMenuItem.addUserId = user.id;
-        this.menuItemService.saveRestaurant(this.newMenuItem).subscribe(
+        this.newMenuItem.pictureURL = noPhotoURL;
+        this.menuItemService.saveMenuItem(this.newMenuItem).subscribe(
           menuItem => {
-            console.log('Menu Item saved');
+            if (this.newMenuItem.hasPicture) {
+              this.newMenuItem.id = menuItem.id;
+              this.saveMenuItemPicture();
+            }
           },
           error => {
             console.error(error);
@@ -98,6 +102,30 @@ export class RestaurantMenuComponent implements OnInit {
 
   private setMenuItems(): void {
     this.menuItems = this.menuItemService.getMenuItemsByRestaurantId(this.restaurantId);
+  }
+
+  private saveMenuItemPicture(): void {
+    const task: any = this.menuItemService.saveMenuItemPicture(
+      this.newMenuItem.id,
+      this.restaurantId,
+      this.newMenuItem.picture
+    );
+
+    task.percentageChanges().subscribe(
+      percent => {
+        console.log(percent);
+      }
+    );
+    task.downloadURL().subscribe(
+      url => {
+        if (url) {
+          this.newMenuItem.pictureURL = url;
+          this.menuItemService.updateMenuItem(this.newMenuItem);
+        } else {
+          console.error('Error getting imageURL');
+        }
+      }
+    );
   }
 
 }

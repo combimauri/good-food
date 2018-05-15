@@ -134,6 +134,7 @@ export class RegisterMyRestaurantComponent implements OnInit {
       this.restaurantId,
       this.newRestaurant.profilePic
     );
+
     task.percentageChanges().subscribe(
       percent => {
         if (percent > 1 && percent < 100) {
