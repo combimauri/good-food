@@ -13,6 +13,8 @@ import { ImenuItemId } from '../../interfaces/imenu-item-id';
 
 const noPhotoURL: string = './assets/img/nophoto.png';
 
+declare const $: any;
+
 @Component({
   selector: 'food-restaurant-menu',
   templateUrl: './restaurant-menu.component.html',
@@ -49,6 +51,8 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    $('.select2').select2();
+
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
       params => {
         this.restaurantId = params['id'];

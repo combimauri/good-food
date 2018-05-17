@@ -23,6 +23,7 @@
         "../node_modules/font-awesome/css/font-awesome.min.css",
         "../node_modules/admin-lte/dist/css/AdminLTE.min.css",
         "../node_modules/admin-lte/dist/css/skins/skin-purple-light.min.css",
+        "../node_modules/select2/dist/css/select2.min.css",
         "styles.scss"
       ],
       "scripts": [
@@ -30,7 +31,8 @@
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/jquery-slimscroll/jquery.slimscroll.min.js",
         "../node_modules/admin-lte/dist/js/adminlte.min.js",
-        "../node_modules/blueimp-canvas-to-blob/js/canvas-to-blob.min.js"
+        "../node_modules/blueimp-canvas-to-blob/js/canvas-to-blob.min.js",
+        "../node_modules/select2/dist/js/select2.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
