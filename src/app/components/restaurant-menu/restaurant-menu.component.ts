@@ -30,6 +30,8 @@ export class RestaurantMenuComponent implements OnInit {
 
   menuItems: Observable<ImenuItemId[]>;
 
+  menuCategories: Observable<any[]>;
+
   private pictureFileReader: FileReader;
 
   @ViewChild("menuItemPictureElement")
@@ -50,8 +52,18 @@ export class RestaurantMenuComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
-    $('.select2').select2();
+  ngOnInit(): void {
+    $('.select2').select2({
+      tags: true,
+      language: {
+        noResults: () => {
+          return 'Ingresa una nueva categoría';
+        },
+        searching: () => {
+          return 'Buscando...';
+        }
+      }
+    });
 
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
       params => {
