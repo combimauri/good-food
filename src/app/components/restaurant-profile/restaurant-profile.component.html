@@ -1,108 +1,111 @@
 <section class="content">
-<div class="col-md-6">
-  <div class="box box-info">
-    <div class="box-body box-profile">
-      <img class="profile-user-img img-responsive img-circle" [src]="restaurantProfilePicURL" alt="Restaurant profile picture">
+  <div class="col-md-6">
+    <div class="box box-info">
+      <div class="box-body box-profile">
+        <img class="profile-user-img img-responsive img-circle" [src]="restaurantProfilePicURL" alt="Restaurant profile picture">
 
-      <h3 class="profile-username text-center">{{ (restaurant | async)?.name }}</h3>
+        <h3 class="profile-username text-center">{{ (restaurant | async)?.name }}</h3>
 
-      <p class="text-muted text-center">{{ (restaurant | async)?.type }}</p>
+        <p class="text-muted text-center">{{ (restaurant | async)?.type }}</p>
 
-      <ul class="list-group list-group-unbordered">
-        <li class="list-group-item">
-          <b>Seguidores</b>
-          <a class="pull-right">0</a>
-        </li>
-        <li class="list-group-item">
-          <b>Siguiendo</b>
-          <a class="pull-right">0</a>
-        </li>
-      </ul>
+        <ul class="list-group list-group-unbordered">
+          <li class="list-group-item">
+            <b>Seguidores</b>
+            <a class="pull-right">0</a>
+          </li>
+          <li class="list-group-item">
+            <b>Siguiendo</b>
+            <a class="pull-right">0</a>
+          </li>
+        </ul>
 
-      <a href class="btn btn-info btn-block">
-        <b>Seguir</b>
-      </a>
+        <a href class="btn btn-info btn-block">
+          <b>Seguir</b>
+        </a>
+      </div>
+    </div>
+
+    <div class="box box-info">
+      <div class="box-header with-border">
+        <h3 class="box-title">Acerca de</h3>
+      </div>
+      <div class="box-body">
+        <strong>
+          <i class="fa fa-map-marker margin-r-5"></i>
+          Ubicación
+        </strong>
+      </div>
     </div>
   </div>
-
-  <div class="box box-info">
-    <div class="box-header with-border">
-      <h3 class="box-title">Acerca de</h3>
-    </div>
-    <div class="box-body">
-      <strong>
-        <i class="fa fa-map-marker margin-r-5"></i>
-        Ubicación
-      </strong>
-    </div>
-  </div>
-</div>
   <div class="col-md-6">
     <div class="box box-info">
       <div class="box-header with-border">
-        <h3 class="box-title">Publicaciones</h3>
+        <h3 class="box-body">Publicaciones</h3>
       </div>
-      <div class="box-body" *ngFor="let publication of publications">
-        <div class="post">
-          <div class="user-block">
-            <img class="img-circle img-bordered-sm" src="./assets/img/nophoto.png" alt="Publisher photo">
-            <span class="username">
-              <a href="#">{{publication.ownerName}}</a>
-              <a href="#" class="pull-right btn-box-tool">
-                <i class="fa fa-times"></i>
-              </a>
-            </span>
-            <span class="description">Shared publicly - 7:30 PM today</span>
+      <div class="box-body">
+        <form (keydown.enter)="savePublication()" method="post">
+          <img class="img-responsive img-circle img-sm" src="./assets/img/nophoto.png" alt="restaurant publication">
+          <div class="img-push">
+            <textarea [(ngModel)]="newPublication.paragraph" name="paragraph" type="text" class="form-control input-sm" placeholder="Añade tu publicación"> </textarea>
           </div>
+        </form>
+      </div>
+    </div>
+    <div class="box box-widget" *ngFor="let publication of publications; let i = index">
+      <div class="box-header with-border">
+        <div class="user-block">
+          <img class="img-circle" src="{{publication.image}}" alt="User Image">
+          <span class="username">
+            <a>{{publication.ownerName}}</a>
+          </span>
+          <span class="description">{{publication.date}}</span>
+        </div>
+        <div class="box-tools">
+          <button type="button" class="btn btn-box-tool" data-widget="collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-box-tool" data-widget="remove">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="post">
           <p>
-            Lorem ipsum represents a long-held tradition for designers, typographers and the like. Some people hate it and argue for
-            its demise, but others ignore the hate as they create awesome tools to help create filler text for everyone from
-            bacon lovers to Charlie Sheen fans.
+            {{publication.paragraph}}
           </p>
           <ul class="list-inline">
             <li>
-              <a href="" class="link-black text-sm">
-                <i class="fa fa-thumbs-o-up margin-r-5"></i> Me gusta</a>
+              <a (click)="changePublicationStatus(publication)" class="link-black text-sm" [ngStyle]="{'color': liked? '#00c0ef' : '#666', 'cursor': 'pointer'}">
+                <i class="fa fa-thumbs-o-up margin-r-5"></i>( {{publication.status.length}} ) Me gusta
+              </a>
             </li>
             <li>
-              <a href="#" class="link-black text-sm">
-                <i class="fa fa-comments-o margin-r-5"></i> Comentarios (5)
+              <a href="" class="link-black text-sm">
+                <i class="fa fa-comments-o margin-r-5"></i>( {{publication.comments.length}} ) Comentarios
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <div class="box-footer box-comments">
+      <div class="box-footer box-comments" *ngFor="let comment of publication.comments">
         <div class="box-comment">
-          <img class="img-circle img-sm" src="./assets/img/nophoto.png" alt="Commenter user photo">
+          <img class="img-circle img-sm" src="{{comment.image}}" alt="Commenter user photo">
 
           <div class="comment-text">
             <span class="username">
               Maria Garcia
-              <span class="text-muted pull-right">8:03 PM Today</span>
+              <span class="text-muted pull-right">{{comment.date}}</span>
             </span>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc semper ligula consectetur, tristique est eget, facilisis nulla.
-            In ut nulla finibus ipsum elementum interdum id sit amet velit. Mauris iaculis.
-          </div>
-        </div>
-        <div class="box-comment">
-          <img class="img-circle img-sm" src="./assets/img/nophoto.png" alt="Commenter user photo">
-
-          <div class="comment-text">
-            <span class="username">
-              Nora Havisham
-              <span class="text-muted pull-right">8:03 PM Today</span>
-            </span>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc semper ligula consectetur, tristique est eget, facilisis nulla.
-            In ut nulla finibus ipsum elementum interdum id sit amet velit. Mauris iaculis.
+            {{comment.comment}}
           </div>
         </div>
       </div>
       <div class="box-footer">
-        <form action="#" method="post">
+        <form (keydown.enter)="addComment(publication)" method="post">
           <img class="img-responsive img-circle img-sm" src="./assets/img/nophoto.png" alt="New commenter photo">
           <div class="img-push">
-            <input type="text" class="form-control input-sm" placeholder="Comentar">
+            <input id="newComment{{i}}" type="text" class="form-control input-sm" placeholder="Comentar">
           </div>
         </form>
       </div>

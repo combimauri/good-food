@@ -22,6 +22,7 @@ import { MapStyleService } from './services/maps/map-style.service';
 import { MessageService } from './services/message/message.service';
 import { RestaurantService } from './services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
+import { PublicationService } from './services/publication/publication.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -70,7 +71,8 @@ import { LoaderComponent } from './components/loader/loader.component';
     MapStyleService,
     MessageService,
     RestaurantService,
-    RestaurantCategoryService
+    RestaurantCategoryService,
+    PublicationService
   ],
   bootstrap: [AppComponent]
 })
