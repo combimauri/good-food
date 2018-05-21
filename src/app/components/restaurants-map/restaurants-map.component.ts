@@ -41,7 +41,8 @@ export class RestaurantsMapComponent implements OnInit {
 
   private pictureFileReader: FileReader;
 
-  @ViewChild("locationElement") private locationControlElement: ElementRef;
+  @ViewChild("locationElement")
+  private locationControlElement: ElementRef;
 
   @ViewChild("restaurantPictureElement")
   private restaurantPictureElement: ElementRef;

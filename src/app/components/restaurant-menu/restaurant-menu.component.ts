@@ -37,6 +37,9 @@ export class RestaurantMenuComponent implements OnInit {
   @ViewChild("menuItemPictureElement")
   private menuItemPictureElement: ElementRef;
 
+  @ViewChild('menuItemCategoriesElement')
+  private menuItemCategoriesElement: ElementRef;
+
   constructor(private menuItemService: MenuItemService,
     private restaurantService: RestaurantService,
     private authService: AuthenticationService,
@@ -54,15 +57,7 @@ export class RestaurantMenuComponent implements OnInit {
 
   ngOnInit(): void {
     $('.select2').select2({
-      tags: true,
-      language: {
-        noResults: () => {
-          return 'Ingresa una nueva categoría';
-        },
-        searching: () => {
-          return 'Buscando...';
-        }
-      }
+      tags: true
     });
 
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
@@ -97,6 +92,7 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   saveMenuItem(): void {
+    var category = this.menuItemCategoriesElement.nativeElement.value;
     this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
       user => {
         this.newMenuItem.addUserId = user.id;
