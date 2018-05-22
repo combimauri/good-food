@@ -29,6 +29,8 @@ export class RestaurantProfileComponent implements OnInit {
 
   publications: Array<any>;
 
+  publicationsTest: Observable<any>;
+
   newPublication: Publication;
 
   publicationId: string;
@@ -40,51 +42,22 @@ export class RestaurantProfileComponent implements OnInit {
   restaurantName: string;
 
   constructor(private restaurantService: RestaurantService,
-    private publicationService: PublicationService,
+    public publicationService: PublicationService,
     private route: ActivatedRoute,
     private router: Router,
     private subscriptions: SubscriptionsService,
-  private authService: AuthenticationService) {
+    private authService: AuthenticationService) {
 
     this.restaurantProfilePicURL = noPhotoURL;
 
     this.liked = false;
 
     this.newPublication = new Publication();
-
-    this.publications = [
-      {
-        ownerName: 'Hamburgon',
-        image: './assets/img/nophoto.png',
-        paragraph: 'Lorem ipsum represents a long-held tradition for designers, typographers and the like. ' +
-          'Some people hate it and argue for' +
-          'its demise, but others ignore the hate as they create awesome tools to help create filler text for everyone from' +
-          'bacon lovers to Charlie Sheen fans.',
-        date: '10 Mayo 8:00',
-        comments: [
-          {
-            ownerName: 'Maria Garcia',
-            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc semper ligula' +
-              ' consectetur, tristique est eget, facilisis nulla.' +
-              'In ut nulla finibus ipsum elementum interdum id sit amet velit. Mauris iaculis.',
-            image: './assets/img/nophoto.png',
-            date: '15 Mayo 8:00'
-          },
-          {
-            ownerName: 'Maria Garcia',
-            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc semper ligula' +
-              ' consectetur, tristique est eget, facilisis nulla.' +
-              'In ut nulla finibus ipsum elementum interdum id sit amet velit. Mauris iaculis.',
-            image: './assets/img/nophoto.png',
-            date: '15 Mayo 8:00'
-          }
-        ],
-        status: [
-          'LIKE',
-          'LIKE'
-        ]
-      }
-    ];
+    this.publicationsTest = publicationService.publications;
+    this.publicationsTest.subscribe(response => {
+      this.publications = response;
+      $('body').layout('fix');
+    });
   }
 
   ngOnInit(): void {
@@ -131,18 +104,14 @@ export class RestaurantProfileComponent implements OnInit {
   savePublication(): void {
     this.newPublication.ownerName = this.restaurantName;
     this.newPublication.status = '';
-    this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
-      (user) => {
-        this.newPublication.restaurantId = this.resturantId;
-        this.publicationService.savePublication(this.newPublication).subscribe(
-          (document) => {
-            this.publicationId = document.id;
-            console.log(document);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+    this.newPublication.restaurantId = this.resturantId;
+    this.publicationService.savePublication(this.newPublication).subscribe(
+      (document) => {
+        this.publicationId = document.id;
+        console.log(document);
+      },
+      (error) => {
+        console.error(error);
       }
     );
   }

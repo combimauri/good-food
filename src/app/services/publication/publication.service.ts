@@ -10,7 +10,7 @@ import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 export class PublicationService {
 
   private publicationCollection: AngularFirestoreCollection<Ipublication>;
-  private publications: Observable<IpublicationId[]>;
+  publications: Observable<IpublicationId[]>;
 
   constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) {
     this.publicationCollection = this.afs.collection<Ipublication>('publications');
@@ -18,7 +18,7 @@ export class PublicationService {
       return actions.map(a => {
         const data = a.payload.doc.data() as Ipublication;
         const id = a.payload.doc.id;
-        return {id, ...data};
+        return { id, ...data };
       });
     });
   }
