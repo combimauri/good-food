@@ -32,7 +32,7 @@ export class RestaurantMenuComponent implements OnInit {
 
   menuItems: Observable<ImenuItemId[]>;
 
-  menuItemCategories: Observable<ImenuItemCategoryId[]>;
+  menuItemCategories: ImenuItemCategoryId[];
 
   private pictureFileReader: FileReader;
 
@@ -51,6 +51,7 @@ export class RestaurantMenuComponent implements OnInit {
     private subscriptions: SubscriptionsService) {
 
     this.newMenuItem = new RestaurantMenuItem();
+    this.menuItemCategories = new Array();
     this.pictureFileReader = new FileReader();
 
     this.pictureFileReader.onloadend = () => {
@@ -98,33 +99,29 @@ export class RestaurantMenuComponent implements OnInit {
     let categoryName = this.menuItemCategoriesElement.nativeElement.value;
 
     if (categoryName) {
-      this.menuItemCategories.subscribe(categories => {
-        let categoryId = this.getCategoryIdFromCategories(categoryName, categories);
-        
-        if (categoryId) {
-          this.newMenuItem.categoryId = categoryId;
-          this.saveNewMenuItem();
-        } else {
-          this.menuItemCategoriesService.saveMenuItemCategory(categoryName, this.restaurantId).subscribe(
-            category => {
-              this.newMenuItem.categoryId = category.id;
-              this.saveNewMenuItem();
-            },
-            error => {
-              console.error(error);
-            }
-          );
-        }
-      }, error => {
-        console.error(error);
-      });
+      let categoryId = this.getCategoryIdFromCategories(categoryName);
+
+      if (categoryId) {
+        this.newMenuItem.categoryId = categoryId;
+        this.saveNewMenuItem();
+      } else {
+        this.menuItemCategoriesService.saveMenuItemCategory(categoryName, this.restaurantId).subscribe(
+          category => {
+            this.newMenuItem.categoryId = category.id;
+            this.saveNewMenuItem();
+          },
+          error => {
+            console.error(error);
+          }
+        );
+      }
     } else {
       this.saveNewMenuItem();
     }
   }
 
-  private getCategoryIdFromCategories(categoryName: string, categories: ImenuItemCategoryId[]): string {
-    for (const category of categories) {
+  private getCategoryIdFromCategories(categoryName: string): string {
+    for (const category of this.menuItemCategories) {
       if (category.name === categoryName) {
         return category.id;
       }
@@ -154,7 +151,11 @@ export class RestaurantMenuComponent implements OnInit {
 
   private setMenuItems(): void {
     this.menuItems = this.menuItemService.getMenuItemsByRestaurantId(this.restaurantId);
-    this.menuItemCategories = this.menuItemCategoriesService.getMenuItemCategoriesByRestaurantId(this.restaurantId);
+    this.menuItemCategoriesService.getMenuItemCategoriesByRestaurantId(this.restaurantId).subscribe(
+      categories => {
+        this.menuItemCategories = categories;
+      }
+    );
   }
 
   private saveMenuItemPicture(): void {
