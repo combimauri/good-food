@@ -7,4 +7,5 @@ export interface ImenuItem {
     hasPicture: boolean;
     addUserId: string;
     pictureURL?: string;
+    categoryId?: string;
 }

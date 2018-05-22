@@ -10,6 +10,8 @@ import { MenuItemService } from '../../services/restaurant/menu-item.service';
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { RestaurantMenuItem } from '../../models/restaurant-menu-item';
 import { ImenuItemId } from '../../interfaces/imenu-item-id';
+import { MenuItemCategoryService } from '../../services/restaurant/menu-item-category.service';
+import { ImenuItemCategoryId } from '../../interfaces/imenu-item-category-id';
 
 const noPhotoURL: string = './assets/img/nophoto.png';
 
@@ -30,7 +32,7 @@ export class RestaurantMenuComponent implements OnInit {
 
   menuItems: Observable<ImenuItemId[]>;
 
-  menuCategories: Observable<any[]>;
+  menuItemCategories: Observable<ImenuItemCategoryId[]>;
 
   private pictureFileReader: FileReader;
 
@@ -41,6 +43,7 @@ export class RestaurantMenuComponent implements OnInit {
   private menuItemCategoriesElement: ElementRef;
 
   constructor(private menuItemService: MenuItemService,
+    private menuItemCategoriesService: MenuItemCategoryService,
     private restaurantService: RestaurantService,
     private authService: AuthenticationService,
     private route: ActivatedRoute,
@@ -92,7 +95,44 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   saveMenuItem(): void {
-    var category = this.menuItemCategoriesElement.nativeElement.value;
+    let categoryName = this.menuItemCategoriesElement.nativeElement.value;
+
+    if (categoryName) {
+      this.menuItemCategories.subscribe(categories => {
+        let categoryId = this.getCategoryIdFromCategories(categoryName, categories);
+        
+        if (categoryId) {
+          this.newMenuItem.categoryId = categoryId;
+          this.saveNewMenuItem();
+        } else {
+          this.menuItemCategoriesService.saveMenuItemCategory(categoryName, this.restaurantId).subscribe(
+            category => {
+              this.newMenuItem.categoryId = category.id;
+              this.saveNewMenuItem();
+            },
+            error => {
+              console.error(error);
+            }
+          );
+        }
+      }, error => {
+        console.error(error);
+      });
+    } else {
+      this.saveNewMenuItem();
+    }
+  }
+
+  private getCategoryIdFromCategories(categoryName: string, categories: ImenuItemCategoryId[]): string {
+    for (const category of categories) {
+      if (category.name === categoryName) {
+        return category.id;
+      }
+    }
+    return '';
+  }
+
+  private saveNewMenuItem(): void {
     this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
       user => {
         this.newMenuItem.addUserId = user.id;
@@ -114,6 +154,7 @@ export class RestaurantMenuComponent implements OnInit {
 
   private setMenuItems(): void {
     this.menuItems = this.menuItemService.getMenuItemsByRestaurantId(this.restaurantId);
+    this.menuItemCategories = this.menuItemCategoriesService.getMenuItemCategoriesByRestaurantId(this.restaurantId);
   }
 
   private saveMenuItemPicture(): void {

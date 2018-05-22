@@ -64,7 +64,7 @@
             <label>Categoría</label>
             <select #menuItemCategoriesElement class="form-control select2" style="width: 100%">
               <option [value]="undefined" disabled selected>Ingrese la categoría</option>
-              <option *ngFor="let category of menuCategories | async" [value]="category.name">{{category.name}}</option>
+              <option *ngFor="let category of menuItemCategorie | async" [value]="category.name">{{category.name}}</option>
             </select>
           </div>
         </div>

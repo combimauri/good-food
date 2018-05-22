@@ -8,6 +8,7 @@ export class RestaurantMenuItem implements ImenuItemId {
     hasPicture: boolean;
     addUserId: string;
     pictureURL?: string;
+    categoryId?: string;
     picture: File;
 
     constructor() {
