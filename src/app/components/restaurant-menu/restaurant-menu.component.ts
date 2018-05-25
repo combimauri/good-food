@@ -61,7 +61,8 @@ export class RestaurantMenuComponent implements OnInit {
 
   ngOnInit(): void {
     $('.select2').select2({
-      tags: true
+      tags: true,
+      placeholder: 'Ingrese una categoría'
     });
 
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(

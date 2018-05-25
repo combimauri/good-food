@@ -67,8 +67,9 @@
           </div>
           <div class="form-group">
             <label>Categoría</label>
-            <select #menuItemCategoriesElement class="form-control select2" style="width: 100%">
-              <option [value]="undefined" disabled selected>Ingrese la categoría</option>
+            <select #menuItemCategoriesElement class="form-control select2" style="width: 100%" required>
+              <!-- <option [value]="undefined" disabled selected>Ingrese la categoría</option> -->
+              <option></option>
               <option *ngFor="let category of menuItemCategories" [value]="category.name">{{category.name}}</option>
             </select>
           </div>
