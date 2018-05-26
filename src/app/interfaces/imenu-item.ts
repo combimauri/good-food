@@ -6,6 +6,6 @@ export interface ImenuItem {
     restaurantId: string;
     hasPicture: boolean;
     addUserId: string;
-    pictureURL?: string;
-    categoryId?: string;
+    categoryId: string;
+    pictureURL: string;
 }

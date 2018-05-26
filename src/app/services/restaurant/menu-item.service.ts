@@ -36,7 +36,15 @@ export class MenuItemService {
   }
 
   saveMenuItem(menuItem: ImenuItemId): Observable<any> {
-    const newMenuItem: ImenuItem = this.buildNewMenuItem(menuItem);
+    const newMenuItem: ImenuItem = {
+      name: menuItem.name,
+      price: menuItem.price,
+      addUserId: menuItem.addUserId,
+      restaurantId: menuItem.restaurantId,
+      hasPicture: menuItem.hasPicture,
+      pictureURL: menuItem.pictureURL,
+      categoryId: menuItem.categoryId
+    };
 
     return Observable.fromPromise(this.menuItemsCollection.add(newMenuItem)).takeUntil(this.subscriptions.unsubscribe);
   }
@@ -48,31 +56,17 @@ export class MenuItemService {
   }
 
   updateMenuItem(menuItem: ImenuItemId) {
-    const newMenuItem: ImenuItem = this.buildNewMenuItem(menuItem);
-
-    this.menuItemsCollection.doc(menuItem.id).set(newMenuItem, { merge: true });
-  }
-
-  private buildNewMenuItem(menuItem: ImenuItemId): ImenuItem {
-    if (menuItem.categoryId) {
-      return {
-        name: menuItem.name,
-        price: menuItem.price,
-        addUserId: menuItem.addUserId,
-        restaurantId: menuItem.restaurantId,
-        hasPicture: menuItem.hasPicture,
-        pictureURL: menuItem.pictureURL,
-        categoryId: menuItem.categoryId
-      } as ImenuItem
-    }
-    return {
+    const newMenuItem: ImenuItem = {
       name: menuItem.name,
       price: menuItem.price,
       addUserId: menuItem.addUserId,
       restaurantId: menuItem.restaurantId,
       hasPicture: menuItem.hasPicture,
-      pictureURL: menuItem.pictureURL
-    } as ImenuItem
+      pictureURL: menuItem.pictureURL,
+      categoryId: menuItem.categoryId
+    };
+
+    this.menuItemsCollection.doc(menuItem.id).set(newMenuItem, { merge: true });
   }
 
 }

@@ -34,6 +34,8 @@ export class RestaurantMenuComponent implements OnInit {
 
   menuItemCategories: ImenuItemCategoryId[];
 
+  categoryName: string;
+
   private pictureFileReader: FileReader;
 
   @ViewChild("menuItemPictureElement")
@@ -63,6 +65,10 @@ export class RestaurantMenuComponent implements OnInit {
     $('.select2').select2({
       tags: true,
       placeholder: 'Ingrese una categoría'
+    });
+
+    $('.select2').on('change', (event) => {
+      this.categoryName = event.target.value;
     });
 
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
@@ -97,33 +103,27 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   saveMenuItem(): void {
-    let categoryName = this.menuItemCategoriesElement.nativeElement.value;
+    let categoryId = this.getCategoryIdFromCategories();
 
-    if (categoryName) {
-      let categoryId = this.getCategoryIdFromCategories(categoryName);
-
-      if (categoryId) {
-        this.newMenuItem.categoryId = categoryId;
-        this.saveNewMenuItem();
-      } else {
-        this.menuItemCategoriesService.saveMenuItemCategory(categoryName, this.restaurantId).subscribe(
-          category => {
-            this.newMenuItem.categoryId = category.id;
-            this.saveNewMenuItem();
-          },
-          error => {
-            console.error(error);
-          }
-        );
-      }
-    } else {
+    if (categoryId) {
+      this.newMenuItem.categoryId = categoryId;
       this.saveNewMenuItem();
+    } else {
+      this.menuItemCategoriesService.saveMenuItemCategory(this.categoryName, this.restaurantId).subscribe(
+        category => {
+          this.newMenuItem.categoryId = category.id;
+          this.saveNewMenuItem();
+        },
+        error => {
+          console.error(error);
+        }
+      );
     }
   }
 
-  private getCategoryIdFromCategories(categoryName: string): string {
+  private getCategoryIdFromCategories(): string {
     for (const category of this.menuItemCategories) {
-      if (category.name === categoryName) {
+      if (category.name === this.categoryName) {
         return category.id;
       }
     }
