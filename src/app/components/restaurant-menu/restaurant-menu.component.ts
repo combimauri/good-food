@@ -64,7 +64,12 @@ export class RestaurantMenuComponent implements OnInit {
   ngOnInit(): void {
     $('.select2').select2({
       tags: true,
-      placeholder: 'Ingrese una categoría'
+      placeholder: 'Ingrese una categoría',
+      language: {
+        noResults: (params) => {
+          return 'Ingrese una nueva categoría';
+        }
+      }
     });
 
     $('.select2').on('change', (event) => {
