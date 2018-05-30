@@ -38,7 +38,7 @@ export class RestaurantService {
   }
 
   getRestaurantProfilePic(id: string): Observable<any> {
-    const restaurantProfilePicsRef = this.storage.ref(`images/restaurant-profile/${id}.jpg`);
+    const restaurantProfilePicsRef = this.storage.ref(`images/restaurants/restaurant-${id}/${id}.jpg`);
 
     return restaurantProfilePicsRef.getDownloadURL().takeUntil(this.subscriptions.unsubscribe);
   }
@@ -50,7 +50,7 @@ export class RestaurantService {
   }
 
   saveRestaurantProfilePic(id: string, profilePic: File): AngularFireUploadTask {
-    let filePath = `images/restaurant-profile/${id}.jpg`;
+    let filePath = `images/restaurants/restaurant-${id}/${id}.jpg`;
 
     return this.storage.upload(filePath, profilePic);
   }

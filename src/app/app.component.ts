@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @Component({
   selector: 'food-root',
@@ -7,6 +8,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  constructor() { }
+  constructor(private afs: AngularFirestore) {
+    afs.firestore.settings({timestampsInSnapshots: true});
+  }
 
 }

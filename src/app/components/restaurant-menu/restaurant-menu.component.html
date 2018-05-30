@@ -1,0 +1,109 @@
+<section class="content">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{'active': i === 0}">
+            <a href="#{{category.id}}" data-toggle="tab">{{category.name}}</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <strong *ngIf="isMenuItemsEmpty">Aún no existen productos en el menú.</strong>
+          <div *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{'active': i === 0, 'tab-pane': true, 'box-body': true}"
+            [attr.id]="category.id">
+            <div *ngFor="let menuItem of menuItems | async">
+
+              <div class="col-md-3 col-xs-6 col-sm-4" *ngIf="menuItem.categoryId === category.id">
+                <div class="card" data-toggle="modal" data-target="#modal-menu-item-info" (click)="showCurrentMenuItemInfo(menuItem)">
+                  <img [src]="menuItem.pictureURL" alt="Avatar" style="width: 100%; height: 120px;">
+                  <div class="card-container">
+                    <h4>
+                      <b>{{menuItem.name}}</b>
+                    </h4>
+                    <p>{{menuItem.price | currency}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<a class="float">
+  <img src="./assets/img/baseline_add_white_18dp_2.png" class="my-float" data-toggle="modal" data-target="#modal-add-menu-item">
+</a>
+
+<div id="modal-add-menu-item" class="modal modal-info fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Añadir producto al menú</h4>
+      </div>
+      <form #menuItemForm="ngForm" role="form" novalidate>
+        <div class="modal-body">
+          <div class="form-group text-center">
+            <label for="upload-file">
+              <img #menuItemPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png">
+            </label>
+            <input type="file" id="upload-file" class="invisible" accept=".jpg, .jpeg, .png" (change)="setMenuItemPicture($event)">
+          </div>
+          <div class="form-group">
+            <label for="menu-item-name">Nombre*</label>
+            <input id="menu-item-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newMenuItem.name"
+              required>
+          </div>
+          <div class="form-group">
+              <label for="menu-item-description">Descripción</label>
+              <input id="menu-item-description" type="text" class="form-control" placeholder="Ingrese una descripción" name="description" [(ngModel)]="newMenuItem.description">
+            </div>
+          <div class="form-group">
+            <label for="menu-item-price">Costo*</label>
+            <input id="menu-item-price" type="number" step="0.01" min="0" class="form-control" placeholder="Ingrese el costo" name="price"
+              [(ngModel)]="newMenuItem.price" required>
+          </div>
+          <div class="form-group">
+            <label for="menu-item-category">Categoría*</label>
+            <select id="menu-item-category" #menuItemCategoriesElement class="form-control select2" style="width: 100%" name="category" [(ngModel)]="categoryName"
+              required>
+              <option [value]="undefined"></option>
+              <option *ngFor="let category of menuItemCategories" [value]="category.name">{{category.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-outline" (click)="saveMenuItem()" data-dismiss="modal" [disabled]="menuItemForm.invalid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modal-menu-item-info" class="modal modal-info fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">{{currentMenuItem.name}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{currentMenuItem.description}}</p>
+        <strong>Precio: {{currentMenuItem.price | currency}}</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

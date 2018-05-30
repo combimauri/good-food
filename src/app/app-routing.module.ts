@@ -10,6 +10,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
+import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 
 const routes: Routes = [
@@ -54,6 +55,10 @@ const routes: Routes = [
       {
         path: 'register-my-restaurant',
         component: RegisterMyRestaurantComponent
+      },
+      {
+        path: 'restaurant-menu/:id',
+        component: RestaurantMenuComponent
       }
     ]
   },
