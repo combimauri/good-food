@@ -38,6 +38,7 @@ export class MenuItemService {
   saveMenuItem(menuItem: ImenuItemId): Observable<any> {
     const newMenuItem: ImenuItem = {
       name: menuItem.name,
+      description: menuItem.description,
       price: menuItem.price,
       addUserId: menuItem.addUserId,
       restaurantId: menuItem.restaurantId,
@@ -58,6 +59,7 @@ export class MenuItemService {
   updateMenuItem(menuItem: ImenuItemId) {
     const newMenuItem: ImenuItem = {
       name: menuItem.name,
+      description: menuItem.description,
       price: menuItem.price,
       addUserId: menuItem.addUserId,
       restaurantId: menuItem.restaurantId,

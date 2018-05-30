@@ -28,6 +28,8 @@ export class RestaurantMenuComponent implements OnInit {
 
   restaurant: Observable<Irestaurant>;
 
+  currentMenuItem: ImenuItemId;
+
   newMenuItem: RestaurantMenuItem;
 
   menuItems: Observable<ImenuItemId[]>;
@@ -35,6 +37,8 @@ export class RestaurantMenuComponent implements OnInit {
   menuItemCategories: ImenuItemCategoryId[];
 
   categoryName: string;
+
+  isMenuItemsEmpty: boolean;
 
   private pictureFileReader: FileReader;
 
@@ -52,6 +56,7 @@ export class RestaurantMenuComponent implements OnInit {
     private router: Router,
     private subscriptions: SubscriptionsService) {
 
+    this.currentMenuItem = new RestaurantMenuItem();
     this.newMenuItem = new RestaurantMenuItem();
     this.menuItemCategories = new Array();
     this.pictureFileReader = new FileReader();
@@ -92,6 +97,10 @@ export class RestaurantMenuComponent implements OnInit {
         );
       }
     );
+  }
+
+  showCurrentMenuItemInfo(menuItem: ImenuItemId) {
+    this.currentMenuItem = menuItem;
   }
 
   setMenuItemPicture(event: any): void {
@@ -160,6 +169,7 @@ export class RestaurantMenuComponent implements OnInit {
     this.menuItemCategoriesService.getMenuItemCategoriesByRestaurantId(this.restaurantId).subscribe(
       categories => {
         this.menuItemCategories = categories;
+        this.isMenuItemsEmpty = this.menuItemCategories.length === 0;
       }
     );
   }
