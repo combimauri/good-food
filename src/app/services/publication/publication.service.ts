@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import { IpublicationId } from '../../interfaces/ipublication-id';
-import { Observable } from 'rxjs/Observable';
-import { Ipublication } from '../../interfaces/ipublication';
 import { AngularFirestoreCollection, AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
+import { Observable } from 'rxjs/Observable';
+
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { IpublicationId } from '../../interfaces/ipublication-id';
+import { Ipublication } from '../../interfaces/ipublication';
 
 @Injectable()
 export class PublicationService {
 
-  private publicationCollection: AngularFirestoreCollection<Ipublication>;
-  publications: Observable<IpublicationId[]>;
+  private publicationsCollection: AngularFirestoreCollection<Ipublication>;
 
-  constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) {
-    this.publicationCollection = this.afs.collection<Ipublication>('publications');
-    this.publications = this.publicationCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
+  constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) { }
+
+  getPublicationsByRestaurantId(restaurantId: string): Observable<IpublicationId[]> {
+    this.publicationsCollection = this.afs.collection<Ipublication>('publications', ref => ref.where('restaurantId', '==', restaurantId));
+
+    return this.publicationsCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Ipublication;
         const id = a.payload.doc.id;
@@ -26,7 +29,7 @@ export class PublicationService {
   savePublication(publication: IpublicationId): Observable<any> {
     const newPublication: Ipublication = this.buildPublicationInterface(publication);
 
-    return Observable.fromPromise(this.publicationCollection.add(newPublication)).takeUntil(this.subscriptions.unsubscribe);
+    return Observable.fromPromise(this.publicationsCollection.add(newPublication)).takeUntil(this.subscriptions.unsubscribe);
   }
 
   private buildPublicationInterface(publication: IpublicationId): Ipublication {

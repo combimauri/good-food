@@ -23,18 +23,9 @@
           <a href class="btn btn-info btn-block">
             <b>Seguir</b>
           </a>
-        </div>
-      </div>
-
-      <div class="box box-info">
-        <div class="box-header with-border">
-          <h3 class="box-title">Acerca de</h3>
-        </div>
-        <div class="box-body">
-          <strong>
-            <i class="fa fa-map-marker margin-r-5"></i>
-            Ubicación
-          </strong>
+          <a [routerLink]="['/restaurant-menu', restaurantId]" class="btn btn-info btn-block">
+            <b>Menú</b>
+          </a>
         </div>
       </div>
     </div>
@@ -58,14 +49,14 @@
           </div>
         </div>
       </div>
-      <div class="box box-widget" *ngFor="let publication of publications; let i = index">
+      <div class="box box-widget" *ngFor="let publication of publications | async">
         <div class="box-header with-border">
           <div class="user-block">
             <img class="img-circle" src="./assets/img/nophoto.png" alt="User Image">
             <span class="username">
               <a>{{publication.ownerName}}</a>
             </span>
-            <span class="description">{{publication.date}}</span>
+            <span class="description">{{publication.date.seconds * 1000 | date}}</span>
           </div>
           <div class="box-tools">
             <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -112,7 +103,7 @@
           <form (keydown.enter)="addComment(publication)" method="post">
             <img class="img-responsive img-circle img-sm" src="./assets/img/nophoto.png" alt="New commenter photo">
             <div class="img-push">
-              <input id="newComment{{i}}" type="text" class="form-control input-sm" placeholder="Comentar">
+              <input type="text" class="form-control input-sm" placeholder="Comentar">
             </div>
           </form>
         </div>

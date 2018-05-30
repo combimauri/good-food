@@ -23,6 +23,7 @@ import { MessageService } from './services/message/message.service';
 import { RestaurantService } from './services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
 import { PublicationService } from './services/publication/publication.service';
+import { MenuItemService } from './services/restaurant/menu-item.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -34,6 +35,8 @@ import { RestaurantsMapComponent } from './components/restaurants-map/restaurant
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
+import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,8 @@ import { LoaderComponent } from './components/loader/loader.component';
     RestaurantsMapComponent,
     RegisterMyRestaurantComponent,
     PageNotFoundComponent,
-    LoaderComponent
+    LoaderComponent,
+    RestaurantMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +76,9 @@ import { LoaderComponent } from './components/loader/loader.component';
     MessageService,
     RestaurantService,
     RestaurantCategoryService,
-    PublicationService
+    PublicationService,
+    MenuItemService,
+    MenuItemCategoryService
   ],
   bootstrap: [AppComponent]
 })

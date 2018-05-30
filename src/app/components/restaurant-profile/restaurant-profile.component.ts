@@ -23,21 +23,19 @@ const noPhotoURL: string = './assets/img/nophoto.png';
 })
 export class RestaurantProfileComponent implements OnInit {
 
+  restaurantId: string;
+
   restaurant: Observable<Irestaurant>;
 
   restaurantProfilePicURL: string;
 
-  publications: Array<any>;
-
-  publicationsTest: Observable<any>;
+  publications: Observable<IpublicationId[]>;
 
   newPublication: Publication;
 
   publicationId: string;
 
   liked: boolean;
-
-  resturantId: string;
 
   restaurantName: string;
 
@@ -48,46 +46,29 @@ export class RestaurantProfileComponent implements OnInit {
     private subscriptions: SubscriptionsService,
     private authService: AuthenticationService) {
 
-    this.restaurantProfilePicURL = noPhotoURL;
-
     this.liked = false;
-
+    this.restaurantProfilePicURL = noPhotoURL;
     this.newPublication = new Publication();
-    this.publicationsTest = publicationService.publications;
-    this.publicationsTest.subscribe(response => {
-      this.publications = response;
-      $('body').layout('fix');
-    });
   }
 
   ngOnInit(): void {
-    $('body').layout('fix');
-
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
       (params) => {
-        let id: string = params['id'];
-        this.resturantId = id;
-        this.restaurant = this.restaurantService.getRestaurant(id);
+        this.restaurantId = params['id'];
+        this.restaurant = this.restaurantService.getRestaurant(this.restaurantId);
         this.restaurant.subscribe(
           (restaurant) => {
             if (restaurant) {
               this.restaurantName = restaurant.name;
+              this.setRestaurantPublications();
               if (restaurant.hasProfilePic) {
-                this.setProfilePic(id);
+                this.setProfilePic();
               }
             } else {
               this.router.navigate(['404']);
             }
           }
         );
-      }
-    );
-  }
-
-  private setProfilePic(restaurantId: string): void {
-    this.restaurantService.getRestaurantProfilePic(restaurantId).subscribe(
-      (URL) => {
-        this.restaurantProfilePicURL = URL;
       }
     );
   }
@@ -104,14 +85,25 @@ export class RestaurantProfileComponent implements OnInit {
   savePublication(): void {
     this.newPublication.ownerName = this.restaurantName;
     this.newPublication.status = '';
-    this.newPublication.restaurantId = this.resturantId;
+    this.newPublication.restaurantId = this.restaurantId;
     this.publicationService.savePublication(this.newPublication).subscribe(
-      (document) => {
-        this.publicationId = document.id;
-        console.log(document);
+      (publication) => {
+        this.publicationId = publication.id;
+        console.log(publication);
       },
       (error) => {
         console.error(error);
+      }
+    );
+  }
+  
+  private setRestaurantPublications(): void {
+    this.publications = this.publicationService.getPublicationsByRestaurantId(this.restaurantId);
+  }
+  private setProfilePic(): void {
+    this.restaurantService.getRestaurantProfilePic(this.restaurantId).subscribe(
+      (URL) => {
+        this.restaurantProfilePicURL = URL;
       }
     );
   }
