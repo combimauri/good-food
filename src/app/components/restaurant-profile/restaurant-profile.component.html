@@ -1,4 +1,4 @@
-<section class="content">
+<!-- <section class="content">
   <div class="row col-md-offset-3">
     <div class="col-md-8">
       <div class="box box-info">
@@ -86,7 +86,9 @@
             </ul>
           </div>
         </div>
-        <!-- <div class="box-footer box-comments" *ngFor="let comment of publication.comments">
+        
+        
+        <div class="box-footer box-comments" *ngFor="let comment of publication.comments">
         <div class="box-comment">
           <img class="img-circle img-sm" src="{{comment.image}}" alt="Commenter user photo">
 
@@ -98,8 +100,10 @@
             {{comment.comment}}
           </div>
         </div>
-      </div> -->
-        <div class="box-footer">
+      </div>
+      
+      
+      <div class="box-footer">
           <form (keydown.enter)="addComment(publication)" method="post">
             <img class="img-responsive img-circle img-sm" src="./assets/img/nophoto.png" alt="New commenter photo">
             <div class="img-push">
@@ -110,4 +114,179 @@
       </div>
     </div>
   </div>
+</section> -->
+
+<section class="content">
+
+  <div class="row">
+    <div class="col-md-3">
+
+      <!-- Profile Image -->
+      <div class="box box-primary">
+        <div class="box-body box-profile">
+          <img class="profile-user-img img-responsive img-circle" [src]="restaurantProfilePicURL" alt="Restaurant profile picture">
+
+          <h3 class="profile-username text-center">{{ (restaurant | async)?.name }}</h3>
+
+          <p class="text-muted text-center">{{ (restaurant | async)?.type }}</p>
+
+          <ul class="list-group list-group-unbordered">
+            <li class="list-group-item">
+              <b>Seguidores</b>
+              <a class="pull-right">0</a>
+            </li>
+            <li class="list-group-item">
+              <b>Siguiendo</b>
+              <a class="pull-right">0</a>
+            </li>
+          </ul>
+
+          <a href class="btn btn-info btn-block">
+            <b>Seguir</b>
+          </a>
+          <a [routerLink]="['/restaurant-menu', restaurantId]" class="btn btn-info btn-block">
+            <b>Ver Menú</b>
+          </a>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+      <!-- About Me Box -->
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Más Información</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <strong>
+            <i class="fa fa-map-marker margin-r-5"></i> Ubicación</strong>
+
+          <p class="text-muted">Cochabamba, Bolivia</p>
+
+          <hr>
+
+          <strong>
+            <i class="fa fa-mobile margin-r-5"></i> Telefónos</strong>
+
+          <p class="text-muted">44444444</p>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+      <div class="box box-primary">
+        <!-- /.box-header -->
+        <div class="box-body">
+          <strong>
+            <i class="fa fa-plus margin-r-5"></i> Nueva Publicación</strong>
+          <hr>
+          <!-- <form method="post">
+            <img class="img-circle img-bordered-sm" [src]="restaurantProfilePicURL" alt="Restaurant Profile Picture">
+            <div class="img-push">
+              <textarea [(ngModel)]="newPublication.paragraph" name="paragraph" type="text" class="form-control input-sm" placeholder="Añade tu publicación"> </textarea>
+            </div>
+          </form><br>
+          <div class="pull-right">
+            <a (click)="savePublication()" class="btn btn-info btn-block">
+              <b>Publicar</b>
+            </a>
+          </div><br>
+          <hr> -->
+          <div>
+            <img class="img-responsive img-circle img-sm" [src]="restaurantProfilePicURL" alt="Restaurant Profile Picture">
+            <div class="img-push">
+              <input type="text" class="form-control input-sm" data-toggle="modal" data-target="#modal-add-post" placeholder="Añade tu publicación">
+            </div>
+          </div>
+          <hr>
+
+          <strong>
+            <i class="fa fa-book margin-r-5"></i> Publicaciones</strong>
+          <hr>
+
+          <div id="activity">
+            <!-- Post -->
+            <div class="post" *ngFor="let post of publications | async">
+              <div class="user-block">
+                <img class="img-circle img-bordered-sm" [src]="restaurantProfilePicURL" alt="Restaurant Profile Picture">
+                <span class="username">
+                  <a href="#">{{ post.ownerName }}</a>
+                  <a href="#" class="pull-right btn-box-tool">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </a>
+                </span>
+                <span class="description">{{post.date.seconds * 1000 | date}}</span>
+              </div>
+              <!-- /.user-block -->
+              <p>
+                {{ post.paragraph }}
+              </p>
+              <ul class="list-inline">
+                <li>
+                  <a href="#" class="link-black text-sm">
+                    <i class="fa fa-thumbs-o-up margin-r-5"></i> Me Gusta</a>
+                </li>
+                <li class="pull-right">
+                  <a href="#" class="link-black text-sm">
+                    <i class="fa fa-comments-o margin-r-5"></i> Comentarios (5)
+                  </a>
+                </li>
+              </ul>
+
+              <input class="form-control input-sm" type="text" placeholder="Deja un comentario">
+            </div>
+            <!-- /.post -->
+
+
+          </div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+
+
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+
 </section>
+
+<div class="modal modal-info fade" id="modal-add-post">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Añadir restaurante</h4>
+      </div>
+      <form #restaurantForm="ngForm" role="form" novalidate>
+        <div class="modal-body">
+          <div class="form-group text-center">
+            <label for="upload-file">
+              <img #restaurantPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png" alt="Restaurant profile picture">
+            </label>
+            <input type="file" id="upload-file" class="invisible" accept=".jpg, .jpeg, .png" (change)="setRestaurantPicture($event)">
+          </div>
+          <div class="form-group">
+            <label for="restaurant-name">Nombre del restaurante*</label>
+            <input id="restaurant-name" type="text" class="form-control" placeholder="Ingrese el nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="restaurant-type">Tipo de restaurante*</label>
+            <input id="restaurant-type" type="text" class="form-control" placeholder="Ingrese el tipo" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-outline" data-dismiss="modal" [disabled]="restaurantForm.invalid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
