@@ -37,6 +37,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
 import { LoaderComponent } from './components/loader/loader.component';
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
+import { CommentService } from './services/publication/comment.service';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { MenuItemCategoryService } from './services/restaurant/menu-item-categor
     RestaurantCategoryService,
     PublicationService,
     MenuItemService,
-    MenuItemCategoryService
+    MenuItemCategoryService,
+    CommentService
   ],
   bootstrap: [AppComponent]
 })

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 
-import { AuthenticationService } from '../authentication/authentication.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Iuser } from '../../interfaces/iuser';
 import { IuserId } from '../../interfaces/iuser-id';
 
@@ -14,8 +14,16 @@ export class UserService {
 
   private usersCollection: AngularFirestoreCollection<any>;
 
-  constructor(private afs: AngularFirestore) {
+  constructor(private afs: AngularFirestore,
+    private subscriptions: SubscriptionsService) {
+      
     this.usersCollection = this.afs.collection<any>('users');
+  }
+
+  getUser(id: string): Observable<Iuser> {
+    let userDoc: AngularFirestoreDocument<Iuser> = this.afs.doc<Iuser>(`users/${id}`);
+
+    return userDoc.valueChanges().takeUntil(this.subscriptions.unsubscribe);
   }
 
   saveUser(user: any): void {
