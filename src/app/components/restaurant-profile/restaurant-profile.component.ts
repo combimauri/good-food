@@ -98,10 +98,9 @@ export class RestaurantProfileComponent implements OnInit {
     newComment.ownerId = this.currentUser.id;
     newComment.postId = publication.id;
 
+    publication.newComment = '';
     this.commentService.saveComment(newComment).subscribe(
-      comment => {
-        publication.newComment = '';
-      },
+      comment => { },
       error => {
         console.log(error);
       }
