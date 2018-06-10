@@ -15,7 +15,7 @@ export class PublicationService {
   constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) { }
 
   getPublicationsByRestaurantId(restaurantId: string): Observable<IpublicationId[]> {
-    this.publicationsCollection = this.afs.collection<Ipublication>('publications', ref => ref.where('restaurantId', '==', restaurantId));
+    this.publicationsCollection = this.afs.collection<Ipublication>('publications', ref => ref.where('restaurantId', '==', restaurantId).orderBy('date', 'desc'));
 
     return this.publicationsCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
       return actions.map(a => {

@@ -7,4 +7,5 @@ export interface Irestaurant {
     hasProfilePic: boolean;
     addUserId: string;
     ownerId?: string;
+    followersCount: number;
 }

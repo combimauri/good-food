@@ -55,6 +55,40 @@ export class RestaurantService {
     return this.storage.upload(filePath, profilePic);
   }
 
+  updateRestaurant(restaurant: IrestaurantId): void {
+    const newRestaurant: Irestaurant = this.buildRestaurantInterface(restaurant);
+
+    this.restaurantsCollection.doc(restaurant.id).set(newRestaurant, { merge: true });
+  }
+
+  buildRestaurantIdInterface(restaurantId: string, restaurant: Irestaurant): IrestaurantId {
+    if (restaurant.ownerId) {
+      return {
+        id: restaurantId,
+        name: restaurant.name,
+        type: restaurant.type,
+        categoryId: restaurant.categoryId,
+        lat: restaurant.lat,
+        lng: restaurant.lng,
+        hasProfilePic: restaurant.hasProfilePic,
+        addUserId: restaurant.addUserId,
+        ownerId: restaurant.ownerId,
+        followersCount: restaurant.followersCount
+      } as IrestaurantId;
+    }
+    return {
+      id: restaurantId,
+      name: restaurant.name,
+      type: restaurant.type,
+      categoryId: restaurant.categoryId,
+      lat: restaurant.lat,
+      lng: restaurant.lng,
+      hasProfilePic: restaurant.hasProfilePic,
+      addUserId: restaurant.addUserId,
+      followersCount: restaurant.followersCount
+    } as IrestaurantId;
+  }
+
   private buildRestaurantInterface(restaurant: IrestaurantId): Irestaurant {
     if (restaurant.ownerId) {
       return {
@@ -65,7 +99,8 @@ export class RestaurantService {
         lng: restaurant.lng,
         hasProfilePic: restaurant.hasProfilePic,
         addUserId: restaurant.addUserId,
-        ownerId: restaurant.ownerId
+        ownerId: restaurant.ownerId,
+        followersCount: restaurant.followersCount
       } as Irestaurant;
     }
     return {
@@ -75,7 +110,8 @@ export class RestaurantService {
       lat: restaurant.lat,
       lng: restaurant.lng,
       hasProfilePic: restaurant.hasProfilePic,
-      addUserId: restaurant.addUserId
+      addUserId: restaurant.addUserId,
+      followersCount: restaurant.followersCount
     } as Irestaurant;
   }
 

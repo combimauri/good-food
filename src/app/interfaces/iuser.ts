@@ -5,4 +5,5 @@ export interface Iuser {
     name: string;
     photoURL: string;
     roles: Iroles;
+    following?: string[];
 }

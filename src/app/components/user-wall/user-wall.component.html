@@ -1,0 +1,56 @@
+<section class="content">
+  <p>Wall</p>
+</section>
+<!-- <div class="box box-primary" *ngFor="let post of publications">
+  <div class="box-body">
+    <div id="activity">
+
+      <div class="post">
+        <div class="user-block">
+          <img class="img-circle img-bordered-sm" [src]="restaurantProfilePicURL" alt="Restaurant Profile Picture">
+          <span class="username">
+            <a>{{ post.ownerName }}</a>
+            <a class="pull-right btn-box-tool">
+              <i class="fa fa-ellipsis-v"></i>
+            </a>
+          </span>
+          <span class="description">{{ post.date.seconds * 1000 | date }}</span>
+        </div>
+        <p>
+          {{ post.paragraph }}
+        </p>
+        <ul class="list-inline">
+          <li>
+            <div class="text-sm">
+              <i class="fa fa-comments-o margin-r-5"></i> Comentarios ({{ post.comments.length }})
+            </div>
+          </li>
+        </ul>
+
+        <img class="img-responsive img-circle img-sm" [src]="currentUserProfilePicURL" alt="Restaurant Profile Picture">
+        <div class="img-push">
+          <input (keyup.enter)="addComment(post)" type="text" class="form-control input-sm" placeholder="Deja un comentario" name="comment"
+            [(ngModel)]="post.newComment">
+        </div>
+        <br>
+
+        <div class="chat" id="chat-box" style="width: auto; max-height: 250px; overflow-y: auto">
+
+          <div *ngFor="let comment of post.comments" class="item">
+            <img [src]="comment.user.photoURL" alt="user image" class="online">
+            <p class="message">
+              <a class="name">
+                <small class="text-muted pull-right">
+                  <i class="fa fa-clock-o"></i> {{ comment.date.seconds * 1000 | date }}</small>
+                {{ comment.user.name }}
+              </a>
+              {{ comment.comment }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div> -->

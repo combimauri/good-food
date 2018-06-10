@@ -11,8 +11,10 @@ export class Restaurant implements IrestaurantId {
     addUserId: string;
     ownerId?: string;
     profilePic: File;
+    followersCount: number;
 
     constructor() {
         this.hasProfilePic = false;
+        this.followersCount = 0;
     }
 }

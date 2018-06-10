@@ -38,6 +38,8 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
 import { CommentService } from './services/publication/comment.service';
+import { UserWallComponent } from './components/user-wall/user-wall.component';
+import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { CommentService } from './services/publication/comment.service';
     RegisterMyRestaurantComponent,
     PageNotFoundComponent,
     LoaderComponent,
-    RestaurantMenuComponent
+    RestaurantMenuComponent,
+    UserWallComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +83,8 @@ import { CommentService } from './services/publication/comment.service';
     PublicationService,
     MenuItemService,
     MenuItemCategoryService,
-    CommentService
+    CommentService,
+    FollowRelationshipService
   ],
   bootstrap: [AppComponent]
 })

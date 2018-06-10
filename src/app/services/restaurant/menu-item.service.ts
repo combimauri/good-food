@@ -56,7 +56,7 @@ export class MenuItemService {
     return this.storage.upload(filePath, picture);
   }
 
-  updateMenuItem(menuItem: ImenuItemId) {
+  updateMenuItem(menuItem: ImenuItemId): void {
     const newMenuItem: ImenuItem = {
       name: menuItem.name,
       description: menuItem.description,
