@@ -22,6 +22,7 @@ import { MapStyleService } from './services/maps/map-style.service';
 import { MessageService } from './services/message/message.service';
 import { RestaurantService } from './services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
+import { PublicationService } from './services/publication/publication.service';
 import { MenuItemService } from './services/restaurant/menu-item.service';
 
 import { AppComponent } from './app.component';
@@ -36,6 +37,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
 import { LoaderComponent } from './components/loader/loader.component';
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
+import { CommentService } from './services/publication/comment.service';
 
 @NgModule({
   declarations: [
@@ -75,8 +77,10 @@ import { MenuItemCategoryService } from './services/restaurant/menu-item-categor
     MessageService,
     RestaurantService,
     RestaurantCategoryService,
+    PublicationService,
     MenuItemService,
-    MenuItemCategoryService
+    MenuItemCategoryService,
+    CommentService
   ],
   bootstrap: [AppComponent]
 })
