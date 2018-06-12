@@ -14,5 +14,6 @@ export class RestaurantMenuItem implements ImenuItemId {
 
     constructor() {
         this.hasPicture = false;
+        this.description = '';
     }
 }

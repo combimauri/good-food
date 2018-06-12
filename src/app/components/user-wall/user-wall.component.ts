@@ -39,9 +39,9 @@ export class UserWallComponent implements OnInit {
               this.publicationService.getPublicationsByRestaurantId(relationship.restaurantId).subscribe(
                 posts => {
                   this.publications = this.publications.concat(posts);
-                  this.publications.sort(
-                    (a, b) => a.date.seconds - b.date.seconds
-                  );
+                  // this.publications.sort(
+                  //   (a, b) => a.date.seconds - b.date.seconds
+                  // );
                   console.log(this.publications);
                 }
               );
