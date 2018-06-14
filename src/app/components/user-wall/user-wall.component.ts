@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { PublicationService } from '../../services/publication/publication.service';
 import { CommentService } from '../../services/publication/comment.service';
@@ -8,6 +11,10 @@ import { IuserId } from '../../interfaces/iuser-id';
 import { FollowRelationshipService } from '../../services/relationship/follow-relationship.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { Publication } from '../../models/publication';
+import { IfollowRelationshipId } from '../../interfaces/ifollow-relationship-id';
+import { IpublicationId } from '../../interfaces/ipublication-id';
+
+const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
   selector: 'food-user-wall',
@@ -20,6 +27,10 @@ export class UserWallComponent implements OnInit {
 
   publications: Publication[];
 
+  postSubscriptions: Observable<IpublicationId[]>[];
+
+  noPhotoURL: string;
+
   constructor(private restaurantService: RestaurantService,
     private publicationService: PublicationService,
     private commentService: CommentService,
@@ -28,24 +39,19 @@ export class UserWallComponent implements OnInit {
     private subscriptions: SubscriptionsService) {
 
     this.publications = [];
+    this.postSubscriptions = [];
+    this.noPhotoURL = noPhotoURL;
 
     this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
       user => {
         this.currentUser = user;
         this.relationshipService.getRelationshipsByUserId(this.currentUser.id).subscribe(
           relationships => {
-            console.log(relationships);
-            relationships.forEach(relationship => {
-              this.publicationService.getPublicationsByRestaurantId(relationship.restaurantId).subscribe(
-                posts => {
-                  this.publications = this.publications.concat(posts);
-                  // this.publications.sort(
-                  //   (a, b) => a.date.seconds - b.date.seconds
-                  // );
-                  console.log(this.publications);
-                }
-              );
-            });
+            for (let relationship of relationships) {
+              this.addPostSubscription(relationship);
+            }
+
+            this.setPublications();
           }
         );
       }
@@ -53,6 +59,30 @@ export class UserWallComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  addPostSubscription(relationship: IfollowRelationshipId): void {
+    let postSubscription = this.publicationService.getPublicationsByRestaurantId(relationship.restaurantId);
+
+    this.postSubscriptions.push(postSubscription);
+  }
+
+  setPublications(): void {
+    combineLatest(...this.postSubscriptions).map(setOfPosts => {
+      let allPosts = [];
+
+      setOfPosts.forEach(posts => {
+        allPosts = allPosts.concat(posts);
+      });
+
+      allPosts.sort((a, b) => {
+        return b.date.getDate() - a.date.getDate();
+      });
+
+      return allPosts;
+    }).subscribe(posts => {
+      this.publications = posts;
+    });
   }
 
 }

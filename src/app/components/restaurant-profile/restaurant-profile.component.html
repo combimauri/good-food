@@ -83,7 +83,7 @@
                     <i class="fa fa-ellipsis-v"></i>
                   </a>
                 </span>
-                <span class="description">{{ post.date.seconds * 1000 | date }}</span>
+                <span class="description">{{ post.date.getTime() | date }}</span>
               </div>
               <p>
                 {{ post.paragraph }}

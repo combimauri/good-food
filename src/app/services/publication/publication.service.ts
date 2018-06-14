@@ -21,6 +21,8 @@ export class PublicationService {
       return actions.map(a => {
         const data = a.payload.doc.data() as Ipublication;
         const id = a.payload.doc.id;
+        const postDate: any = data.date;
+        data.date = new Date(postDate.seconds * 1000);
         return { id, ...data };
       });
     });
