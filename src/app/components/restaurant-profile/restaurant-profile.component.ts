@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -8,9 +7,7 @@ import { RestaurantService } from '../../services/restaurant/restaurant.service'
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { Restaurant } from '../../models/restaurant';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
-import { Ipublication } from '../../interfaces/ipublication';
 import { PublicationService } from '../../services/publication/publication.service';
-import { IpublicationId } from '../../interfaces/ipublication-id';
 import { Publication } from '../../models/publication';
 import { Comment } from '../../models/comment';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';

@@ -7,7 +7,7 @@
           <div id="activity">
             <div class="post">
               <div class="user-block">
-                <img class="img-circle img-bordered-sm" [src]="noPhotoURL" alt="Restaurant Profile Picture">
+                <img class="img-circle img-bordered-sm" [src]="post.restaurantPictureURL" alt="Restaurant Profile Picture">
                 <span class="username">
                   <a>{{ post.ownerName }}</a>
                   <a class="pull-right btn-box-tool">
@@ -27,7 +27,7 @@
                 </li>
               </ul>
 
-              <!-- <img class="img-responsive img-circle img-sm" [src]="currentUserProfilePicURL" alt="Restaurant Profile Picture">
+              <img class="img-responsive img-circle img-sm" [src]="currentUserProfilePicURL" alt="Restaurant Profile Picture">
               <div class="img-push">
                 <input (keyup.enter)="addComment(post)" type="text" class="form-control input-sm" placeholder="Deja un comentario" name="comment"
                   [(ngModel)]="post.newComment">
@@ -45,7 +45,7 @@
                     {{ comment.comment }}
                   </p>
                 </div>
-              </div> -->
+              </div>
             </div>
           </div>
         </div>
