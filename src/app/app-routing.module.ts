@@ -38,7 +38,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/home',
+        redirectTo: '/home-feed',
         pathMatch: 'full'
       },
       {
@@ -62,7 +62,7 @@ const routes: Routes = [
         component: RestaurantMenuComponent
       },
       {
-        path: 'wall',
+        path: 'home-feed',
         component: UserWallComponent
       }
     ]
