@@ -106,7 +106,7 @@ export class AuthenticationService {
     this.showLoading = false;
     this.subscriptions.revive();
     this.userService.saveUser(user);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home-feed']);
   }
 
   private handleError(errorMessage: string): void {
