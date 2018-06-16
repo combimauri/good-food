@@ -6,4 +6,5 @@ export class User implements Iuser {
     name: string;
     photoURL: string;
     roles: Iroles;
+    following?: string[];
 }

@@ -14,17 +14,15 @@
           <ul class="list-group list-group-unbordered">
             <li class="list-group-item">
               <b>Seguidores</b>
-              <a class="pull-right">0</a>
-            </li>
-            <li class="list-group-item">
-              <b>Siguiendo</b>
-              <a class="pull-right">0</a>
+              <a class="pull-right">{{ restaurant.followersCount }}</a>
             </li>
           </ul>
 
-          <a href class="btn btn-info btn-block">
-            <b>Seguir</b>
-          </a>
+          <button class="btn btn-info btn-block" [disabled]="!isFollowButtonReady" (click)="(isFollow && follow()) || (isUnfollow && unfollow())">
+            <b *ngIf="!isFollowButtonReady">...</b>
+            <b *ngIf="isFollow">Seguir</b>
+            <b *ngIf="isUnfollow">Dejar de Seguir</b>
+          </button>
           <a [routerLink]="['/restaurant-menu', restaurantId]" class="btn btn-info btn-block">
             <b>Ver Menú</b>
           </a>
@@ -85,7 +83,7 @@
                     <i class="fa fa-ellipsis-v"></i>
                   </a>
                 </span>
-                <span class="description">{{ post.date.seconds * 1000 | date }}</span>
+                <span class="description">{{ post.date.getTime() | date }}</span>
               </div>
               <p>
                 {{ post.paragraph }}

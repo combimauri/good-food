@@ -12,6 +12,7 @@ import { RestaurantsMapComponent } from './components/restaurants-map/restaurant
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
+import { UserWallComponent } from './components/user-wall/user-wall.component';
 
 const routes: Routes = [
   {
@@ -37,7 +38,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/home',
+        redirectTo: '/home-feed',
         pathMatch: 'full'
       },
       {
@@ -59,6 +60,10 @@ const routes: Routes = [
       {
         path: 'restaurant-menu/:id',
         component: RestaurantMenuComponent
+      },
+      {
+        path: 'home-feed',
+        component: UserWallComponent
       }
     ]
   },

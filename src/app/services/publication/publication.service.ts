@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore } from 'angularfire2/firestore';
-import { AngularFireStorage } from 'angularfire2/storage';
 import { Observable } from 'rxjs/Observable';
 
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
@@ -15,12 +14,14 @@ export class PublicationService {
   constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) { }
 
   getPublicationsByRestaurantId(restaurantId: string): Observable<IpublicationId[]> {
-    this.publicationsCollection = this.afs.collection<Ipublication>('publications', ref => ref.where('restaurantId', '==', restaurantId));
+    this.publicationsCollection = this.afs.collection<Ipublication>('publications', ref => ref.where('restaurantId', '==', restaurantId).orderBy('date', 'desc'));
 
     return this.publicationsCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as Ipublication;
         const id = a.payload.doc.id;
+        const postDate: any = data.date;
+        data.date = new Date(postDate.seconds * 1000);
         return { id, ...data };
       });
     });
