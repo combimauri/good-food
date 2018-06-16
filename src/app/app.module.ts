@@ -40,6 +40,7 @@ import { MenuItemCategoryService } from './services/restaurant/menu-item-categor
 import { CommentService } from './services/publication/comment.service';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
+import { ChatComponent } from './components/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { FollowRelationshipService } from './services/relationship/follow-relati
     PageNotFoundComponent,
     LoaderComponent,
     RestaurantMenuComponent,
-    UserWallComponent
+    UserWallComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

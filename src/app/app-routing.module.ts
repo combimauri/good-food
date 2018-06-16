@@ -13,6 +13,7 @@ import { RegisterMyRestaurantComponent } from './components/register-my-restaura
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 const routes: Routes = [
   {
@@ -64,6 +65,10 @@ const routes: Routes = [
       {
         path: 'home-feed',
         component: UserWallComponent
+      },
+      {
+        path: 'chat',
+        component: ChatComponent
       }
     ]
   },
