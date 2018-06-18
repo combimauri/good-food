@@ -67,7 +67,7 @@ const routes: Routes = [
         component: UserWallComponent
       },
       {
-        path: 'chat',
+        path: 'chat-room/:id',
         component: ChatComponent
       }
     ]

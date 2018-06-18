@@ -49,6 +49,8 @@ export class RestaurantProfileComponent implements OnInit {
 
   isUnfollow: boolean;
 
+  isMessageButtonReady: boolean;
+
   constructor(private restaurantService: RestaurantService,
     private publicationService: PublicationService,
     private commentService: CommentService,
@@ -66,6 +68,7 @@ export class RestaurantProfileComponent implements OnInit {
     this.isFollowButtonReady = false;
     this.isFollow = false;
     this.isUnfollow = false;
+    this.isMessageButtonReady = false;
   }
 
   ngOnInit(): void {
@@ -147,6 +150,7 @@ export class RestaurantProfileComponent implements OnInit {
       user => {
         this.currentUser = user;
         this.currentUserProfilePicURL = this.currentUser.photoURL;
+        this.isMessageButtonReady = true;
         this.getFollowRelationships();
         this.publicationService.getPublicationsByRestaurantId(this.restaurantId).subscribe(
           posts => {

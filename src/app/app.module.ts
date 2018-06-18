@@ -41,6 +41,8 @@ import { CommentService } from './services/publication/comment.service';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
 import { ChatComponent } from './components/chat/chat.component';
+import { ChatService } from './services/chat/chat.service';
+import { ChatRoomService } from './services/chat/chat-room.service';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { ChatComponent } from './components/chat/chat.component';
     MenuItemService,
     MenuItemCategoryService,
     CommentService,
-    FollowRelationshipService
+    FollowRelationshipService,
+    ChatService,
+    ChatRoomService
   ],
   bootstrap: [AppComponent]
 })
