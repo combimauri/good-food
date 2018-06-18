@@ -30,6 +30,7 @@ export class ChatComponent implements OnInit {
     this.route.params.takeUntil(this.subscriptions.unsubscribe).subscribe(
       (params) => {
         let chatRoomId: string = params['id'];
+        // chatRoomId.
       }
     );
   }
