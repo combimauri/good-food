@@ -5,6 +5,7 @@ import 'rxjs/add/operator/takeUntil';
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
 import { ChatService } from '../../services/chat/chat.service';
 import { Ichat } from '../../interfaces/ichat';
+import { ChatMessage } from '../../models/chat-message';
 
 const noPhotoURL: string = './assets/img/nophoto.png';
 
@@ -25,6 +26,8 @@ export class ChatComponent implements OnInit {
 
   messages: Ichat[];
 
+  newMessage: Ichat;
+
   constructor(private chatService: ChatService,
     private route: ActivatedRoute,
     private router: Router,
@@ -32,6 +35,7 @@ export class ChatComponent implements OnInit {
 
     this.noPhotoURL = noPhotoURL;
     this.messages = [];
+    this.newMessage = new ChatMessage();
   }
 
   ngOnInit() {
@@ -43,8 +47,7 @@ export class ChatComponent implements OnInit {
         this.restaurantId = this.chatRoomId.substring(0, backSlashIndex);
         this.userId = this.chatRoomId.substring(backSlashIndex + 1, this.chatRoomId.length);
 
-        console.log(this.restaurantId);
-        console.log(this.userId);
+        this.setChatRoomMessages();
       }
     );
   }
