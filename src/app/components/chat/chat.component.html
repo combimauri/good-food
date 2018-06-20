@@ -1,8 +1,7 @@
 <section class="content">
   <div class="row">
 
-    <div class="col-md-offset-3 col-md-6">
-      <!-- DIRECT CHAT SUCCESS -->
+    <div class="col-md-offset-2 col-md-8">
       <div class="box box-success direct-chat direct-chat-success">
         <div class="box-header with-border">
           <h3 class="box-title">Direct Chat</h3>
@@ -20,10 +19,9 @@
             </button>
           </div>
         </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <!-- Conversations are loaded here -->
-          <div class="direct-chat-messages">
+        <div class="box-body" style="height: calc(100vh - 199px);">
+          <div #chatContainerElement class="direct-chat-messages" style="height: 100%;">
+
             <!-- Message. Default to the left -->
             <div class="direct-chat-msg">
               <div class="direct-chat-info clearfix">
@@ -37,16 +35,17 @@
             </div>
 
             <!-- Message to the right -->
-            <div class="direct-chat-msg right">
+            <div class="direct-chat-msg right" *ngFor="let message of messages">
               <div class="direct-chat-info clearfix">
                 <span class="direct-chat-name pull-right">Sarah Bullock</span>
                 <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
               </div>
               <img class="direct-chat-img" [src]="noPhotoURL" alt="Message User Image">
               <div class="direct-chat-text">
-                You better believe it!
+                {{ message.message }}
               </div>
             </div>
+
           </div>
 
           <!-- Contacts are loaded here -->
@@ -72,9 +71,9 @@
         <div class="box-footer">
           <form action="#" method="post">
             <div class="input-group">
-              <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+              <input type="text" name="message" placeholder="Escribe un mensaje..." class="form-control" [(ngModel)]="newMessage.message">
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-success btn-flat">Send</button>
+                <button type="submit" class="btn btn-success btn-flat" (click)="sendMessage()">Enviar</button>
               </span>
             </div>
           </form>

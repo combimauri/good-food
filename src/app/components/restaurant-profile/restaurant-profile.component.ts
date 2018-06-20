@@ -92,6 +92,12 @@ export class RestaurantProfileComponent implements OnInit {
     );
   }
 
+  goToChatRoom(): void {
+    if (this.isMessageButtonReady) {
+      this.router.navigate(['/chat-room', this.restaurantId + '_' + this.currentUser.id]);
+    }
+  }
+
   savePublication(): void {
     this.newPublication.ownerName = this.restaurant.name;
     this.newPublication.status = '';
@@ -113,12 +119,7 @@ export class RestaurantProfileComponent implements OnInit {
     newComment.postId = publication.id;
 
     publication.newComment = '';
-    this.commentService.saveComment(newComment).subscribe(
-      comment => { },
-      error => {
-        console.log(error);
-      }
-    );
+    this.commentService.saveComment(newComment);
   }
 
   follow(): void {
@@ -128,21 +129,11 @@ export class RestaurantProfileComponent implements OnInit {
       createdAt: new Date()
     };
 
-    this.relationshipService.saveRelationship(relationship).subscribe(
-      newRelationship => { },
-      error => {
-        console.error(error);
-      }
-    );
+    this.relationshipService.saveRelationship(relationship);
   }
 
   unfollow(): void {
-    this.relationshipService.deleteRelationship(this.restaurantId, this.currentUser.id).subscribe(
-      () => { },
-      error => {
-        console.error(error);
-      }
-    );
+    this.relationshipService.deleteRelationship(this.restaurantId, this.currentUser.id);
   }
 
   private setRestaurantPublications(): void {

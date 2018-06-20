@@ -13,13 +13,19 @@ export class ChatService {
   constructor(private afs: AngularFirestore, private subscriptions: SubscriptionsService) { }
 
   getChatsByChatRoomId(chatRoomId: string): Observable<Ichat[]> {
-    this.chatsCollection = this.afs.collection<Ichat>('chats', ref => ref.where('chatRoomId', '==', chatRoomId));
+    this.chatsCollection = this.afs.collection<Ichat>('chats', ref => ref.where('chatRoomId', '==', chatRoomId).orderBy('date', 'asc'));
 
     return this.chatsCollection.valueChanges().takeUntil(this.subscriptions.unsubscribe);
   }
 
   saveChat(chat: Ichat) {
-    return Observable.fromPromise(this.chatsCollection.add(chat)).takeUntil(this.subscriptions.unsubscribe);
+    const chatMessage: Ichat = {
+      message: chat.message,
+      chatRoomId: chat.chatRoomId,
+      date: new Date()
+    };
+    
+    return Observable.fromPromise(this.chatsCollection.add(chatMessage)).takeUntil(this.subscriptions.unsubscribe);
   }
 
 }

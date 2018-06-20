@@ -26,7 +26,7 @@
           <a [routerLink]="['/restaurant-menu', restaurantId]" class="btn btn-info btn-block">
             <b>Ver Menú</b>
           </a>
-          <button [disabled]="!isMessageButtonReady" [routerLink]="['/chat-room', restaurantId + '_' + currentUser.id]" class="btn btn-info btn-block">
+          <button [disabled]="!isMessageButtonReady" (click)="isMessageButtonReady && goToChatRoom()" class="btn btn-info btn-block">
             <b>Mensajes</b>
           </button>
         </div>

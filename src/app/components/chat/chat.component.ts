@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
 
@@ -28,6 +28,9 @@ export class ChatComponent implements OnInit {
 
   newMessage: Ichat;
 
+  @ViewChild("chatContainerElement")
+  private chatContainerElement: ElementRef;
+
   constructor(private chatService: ChatService,
     private route: ActivatedRoute,
     private router: Router,
@@ -52,15 +55,31 @@ export class ChatComponent implements OnInit {
     );
   }
 
+  sendMessage(): void {
+    if (this.newMessage.message) {
+      this.newMessage.chatRoomId = this.chatRoomId;
+      this.chatService.saveChat(this.newMessage);
+      this.newMessage = new ChatMessage();
+    }
+  }
+
   private setChatRoomMessages(): void {
     this.chatService.getChatsByChatRoomId(this.chatRoomId).subscribe(
       messages => {
         this.messages = messages;
+        this.scrollToBottom();
       },
       error => {
         console.error(error);
       }
     );
+  }
+
+  private scrollToBottom(): void {
+    let isScrolledToBottom = this.chatContainerElement.nativeElement.scrollHeight - this.chatContainerElement.nativeElement.clientHeight <= this.chatContainerElement.nativeElement.scrollTop + 1;
+    if(isScrolledToBottom) {
+      this.chatContainerElement.nativeElement.scrollTop = this.chatContainerElement.nativeElement.scrollHeight - this.chatContainerElement.nativeElement.clientHeight;
+    }
   }
 
 }
