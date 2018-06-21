@@ -43,6 +43,7 @@ import { FollowRelationshipService } from './services/relationship/follow-relati
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatService } from './services/chat/chat.service';
 import { ChatRoomService } from './services/chat/chat-room.service';
+import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ChatRoomService } from './services/chat/chat-room.service';
     LoaderComponent,
     RestaurantMenuComponent,
     UserWallComponent,
-    ChatComponent
+    ChatComponent,
+    ChatRoomsComponent
   ],
   imports: [
     BrowserModule,

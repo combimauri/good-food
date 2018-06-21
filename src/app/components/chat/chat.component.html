@@ -1,8 +1,12 @@
 <section class="content">
   <div class="row">
 
-    <div class="col-md-offset-2 col-md-8">
-      <div class="box box-success direct-chat direct-chat-success">
+    <div class="col-md-3">
+      <food-chat-rooms></food-chat-rooms>
+    </div>
+
+    <div class="col-md-6">
+      <div class="box box-primary direct-chat direct-chat-success">
         <div class="box-header with-border">
           <h3 class="box-title">Direct Chat</h3>
 
@@ -23,7 +27,7 @@
           <div #chatContainerElement class="direct-chat-messages" style="height: 100%;">
 
             <!-- Message. Default to the left -->
-            <div class="direct-chat-msg">
+            <!-- <div class="direct-chat-msg">
               <div class="direct-chat-info clearfix">
                 <span class="direct-chat-name pull-left">Alexander Pierce</span>
                 <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
@@ -32,7 +36,7 @@
               <div class="direct-chat-text">
                 Is this template really for free? That's unbelievable!
               </div>
-            </div>
+            </div> -->
 
             <!-- Message to the right -->
             <div class="direct-chat-msg right" *ngFor="let message of messages">
@@ -49,7 +53,7 @@
           </div>
 
           <!-- Contacts are loaded here -->
-          <div class="direct-chat-contacts" *ngIf="false">
+          <div class="direct-chat-contacts" *ngIf="true">
             <ul class="contacts-list">
               <li>
                 <a href="#">
@@ -73,7 +77,7 @@
             <div class="input-group">
               <input type="text" name="message" placeholder="Escribe un mensaje..." class="form-control" [(ngModel)]="newMessage.message">
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-success btn-flat" (click)="sendMessage()">Enviar</button>
+                <button type="submit" class="btn btn-primary btn-flat" (click)="sendMessage()">Enviar</button>
               </span>
             </div>
           </form>
