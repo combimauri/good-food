@@ -1,71 +1,59 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IuserId } from '../../interfaces/iuser-id';
-import { Observable } from 'rxjs/Observable';
-import { IchatRoomId } from '../../interfaces/ichat-room-id';
-import { FollowRelationshipService } from '../../services/relationship/follow-relationship.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
-import { IrestaurantId } from '../../interfaces/irestaurant-id';
+import { ChatRoom } from '../../models/chat-room';
+import { Restaurant } from '../../models/restaurant';
 
 @Component({
-  selector: 'food-chat-rooms',
-  templateUrl: './chat-rooms.component.html',
-  styleUrls: ['./chat-rooms.component.scss']
+    selector: 'food-chat-rooms',
+    templateUrl: './chat-rooms.component.html',
+    styleUrls: ['./chat-rooms.component.scss']
 })
-export class ChatRoomsComponent implements OnInit {
-  currentUser: IuserId;
+export class ChatRoomsComponent {
+    currentUser: IuserId;
 
-  chatRooms: Observable<IchatRoomId[]>;
+    chatRooms: ChatRoom[];
 
-  followedRestaurants: IrestaurantId[];
+    chatUsers: IuserId[];
 
-  constructor(
-    private authService: AuthenticationService,
-    private restaurantService: RestaurantService,
-    private chatRoomService: ChatRoomService,
-    private relationshipService: FollowRelationshipService,
-    private subscriptions: SubscriptionsService
-  ) {
-    this.authService.authUser
-      .takeUntil(this.subscriptions.unsubscribe)
-      .subscribe(user => {
-        this.currentUser = user;
-        this.getUserChatRooms();
-        this.getUserFollowedRestaurants();
-      });
-
-    this.followedRestaurants = [];
-  }
-
-  ngOnInit() {}
-
-  private getUserChatRooms(): void {
-    this.chatRooms = this.chatRoomService.getChatRoomByUserId(
-      this.currentUser.id
-    );
-    this.chatRooms.subscribe(rooms => {
-      console.log('chat rooms', rooms);
-    });
-  }
-
-  private getUserFollowedRestaurants(): void {
-    this.relationshipService
-      .getRelationshipsByUserId(this.currentUser.id)
-      .subscribe(relationships => {
-        relationships.forEach(relationship => {
-          this.restaurantService
-            .getRestaurant(relationship.restaurantId)
-            .map(restaurant => {
-              const id = relationship.restaurantId;
-              return { id, ...restaurant };
-            })
-            .subscribe(restaurant => {
-              this.followedRestaurants.push(restaurant);
+    constructor(
+        private authService: AuthenticationService,
+        private restaurantService: RestaurantService,
+        private chatRoomService: ChatRoomService,
+        private subscriptions: SubscriptionsService
+    ) {
+        this.authService.authUser
+            .takeUntil(this.subscriptions.unsubscribe)
+            .subscribe(user => {
+                this.currentUser = user;
+                this.getUserChatRooms();
             });
+
+        this.chatRooms = [];
+    }
+
+    private getUserChatRooms(): void {
+        this.chatRoomService
+            .getChatRoomByUserId(this.currentUser.id)
+            .subscribe(chatRooms => {
+                this.chatRooms = chatRooms;
+                this.getRoomRestaurants();
+            });
+    }
+
+    private getRoomRestaurants(): void {
+        this.chatRooms.forEach(chatRoom => {
+            chatRoom.restaurant = new Restaurant();
+            chatRoom.user = this.currentUser;
+            this.restaurantService
+                .getRestaurant(chatRoom.restaurantId)
+                .subscribe(restaurant => {
+                    chatRoom.restaurant = restaurant;
+                });
         });
-      });
-  }
+    }
 }

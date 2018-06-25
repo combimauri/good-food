@@ -5,6 +5,7 @@ export interface Irestaurant {
     lat: number;
     lng: number;
     hasProfilePic: boolean;
+    photoURL: string;
     addUserId: string;
     ownerId?: string;
     followersCount: number;

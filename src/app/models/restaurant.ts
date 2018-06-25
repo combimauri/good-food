@@ -8,6 +8,7 @@ export class Restaurant implements IrestaurantId {
     lat: number;
     lng: number;
     hasProfilePic: boolean;
+    photoURL: string;
     addUserId: string;
     ownerId?: string;
     profilePic: File;
@@ -15,6 +16,7 @@ export class Restaurant implements IrestaurantId {
 
     constructor() {
         this.hasProfilePic = false;
+        this.photoURL = './assets/img/nophoto.png';
         this.followersCount = 0;
     }
 }

@@ -1,5 +1,5 @@
-import { Iuser } from "./iuser";
+import { Iuser } from './iuser';
 
 export interface IuserId extends Iuser {
-    id: string;
+  id: string;
 }
