@@ -112,13 +112,13 @@ export class RegisterMyRestaurantComponent implements OnInit {
                 this.restaurantService
                     .saveRestaurant(this.newRestaurant)
                     .subscribe(
-                        restaurant => {
-                            this.restaurantId = restaurant.id;
+                        restaurantDoc => {
+                            this.restaurantId = restaurantDoc.id;
                             this.userService.updateUserToFoodBusinessOwner(
                                 user
                             );
                             if (this.newRestaurant.hasProfilePic) {
-                                this.saveRestaurantProfilePic(restaurant);
+                                this.saveRestaurantProfilePic(restaurantDoc.id);
                             } else {
                                 this.loaderPercent = 100;
                             }
@@ -134,9 +134,9 @@ export class RegisterMyRestaurantComponent implements OnInit {
         this.router.navigate(['/restaurant-profile', this.restaurantId]);
     }
 
-    private saveRestaurantProfilePic(restaurant: IrestaurantId): void {
+    private saveRestaurantProfilePic(restaurantId: string): void {
         const task: any = this.restaurantService.saveRestaurantProfilePic(
-            restaurant.id,
+            restaurantId,
             this.newRestaurant.profilePic
         );
 
@@ -154,10 +154,6 @@ export class RegisterMyRestaurantComponent implements OnInit {
         task.downloadURL().subscribe(url => {
             if (!url) {
                 console.error('Error retrieving the URL.');
-            } else {
-                console.log(url);
-                restaurant.photoURL = url;
-                this.restaurantService.updateRestaurant(restaurant);
             }
             this.loaderPercent = 100;
         });

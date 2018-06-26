@@ -20,6 +20,8 @@ export class ChatRoomsComponent {
 
     chatUsers: IuserId[];
 
+    currentChatRoom: ChatRoom;
+
     constructor(
         private authService: AuthenticationService,
         private restaurantService: RestaurantService,
@@ -34,6 +36,11 @@ export class ChatRoomsComponent {
             });
 
         this.chatRooms = [];
+        this.currentChatRoom = new ChatRoom();
+    }
+
+    setCurrentChatRoom(chatRoom: ChatRoom): void {
+        this.currentChatRoom = chatRoom;
     }
 
     private getUserChatRooms(): void {

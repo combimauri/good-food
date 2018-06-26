@@ -80,46 +80,25 @@ export class RestaurantService {
         return this.storage.upload(filePath, profilePic);
     }
 
-    updateRestaurant(restaurant: IrestaurantId): void {
+    updateRestaurant(restaurant: IrestaurantId): Observable<any> {
         const newRestaurant: Irestaurant = this.buildRestaurantInterface(
             restaurant
         );
 
-        this.restaurantsCollection
-            .doc(restaurant.id)
-            .set(newRestaurant, { merge: true });
+        return Observable.fromPromise(
+            this.restaurantsCollection
+                .doc(restaurant.id)
+                .set(newRestaurant, { merge: true })
+        ).takeUntil(this.subscriptions.unsubscribe);
     }
 
     buildRestaurantIdInterface(
         restaurantId: string,
         restaurant: Irestaurant
     ): IrestaurantId {
-        console.log(restaurant);
-        if (restaurant.ownerId) {
-            return {
-                id: restaurantId,
-                name: restaurant.name,
-                type: restaurant.type,
-                categoryId: restaurant.categoryId,
-                lat: restaurant.lat,
-                lng: restaurant.lng,
-                hasProfilePic: restaurant.hasProfilePic,
-                photoURL: restaurant.photoURL,
-                addUserId: restaurant.addUserId,
-                ownerId: restaurant.ownerId,
-                followersCount: restaurant.followersCount
-            } as IrestaurantId;
-        }
         return {
             id: restaurantId,
-            name: restaurant.name,
-            type: restaurant.type,
-            categoryId: restaurant.categoryId,
-            lat: restaurant.lat,
-            lng: restaurant.lng,
-            hasProfilePic: restaurant.hasProfilePic,
-            addUserId: restaurant.addUserId,
-            followersCount: restaurant.followersCount
+            ...restaurant
         } as IrestaurantId;
     }
 
@@ -132,7 +111,6 @@ export class RestaurantService {
                 lat: restaurant.lat,
                 lng: restaurant.lng,
                 hasProfilePic: restaurant.hasProfilePic,
-                photoURL: restaurant.photoURL,
                 addUserId: restaurant.addUserId,
                 ownerId: restaurant.ownerId,
                 followersCount: restaurant.followersCount
@@ -145,7 +123,6 @@ export class RestaurantService {
             lat: restaurant.lat,
             lng: restaurant.lng,
             hasProfilePic: restaurant.hasProfilePic,
-            photoURL: restaurant.photoURL,
             addUserId: restaurant.addUserId,
             followersCount: restaurant.followersCount
         } as Irestaurant;

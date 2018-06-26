@@ -4,20 +4,24 @@
       <div class="black-contacts-container">
         <ul class="contacts-list">
           <li *ngFor="let room of chatRooms; let i = index">
-            <a href="#">
+            <a (click)="setCurrentChatRoom(room)">
               <img class="contacts-list-img" src="./assets/img/nophoto.png" alt="User Image">
 
               <div class="contacts-list-info">
                 <span class="contacts-list-name">
                   {{room.restaurant.name}}
-                  <small class="pull-right">2/28/2015</small>
+                  <small class="pull-right">{{room.date.getTime() | date}}</small>
                 </span>
-                <span>How have you been? I was...</span>
+                <span>{{room.lastMessage}}</span>
               </div>
             </a>
           </li>
         </ul>
       </div>
+    </div>
+
+    <div class="col-md-6">
+      <food-chat [chatRoom]="currentChatRoom"></food-chat>
     </div>
   </div>
 </section>
