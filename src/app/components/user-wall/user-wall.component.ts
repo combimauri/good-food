@@ -25,7 +25,6 @@ const noPhotoURL: string = './assets/img/nophoto.png';
   styleUrls: ['./user-wall.component.scss']
 })
 export class UserWallComponent {
-
   currentUser: IuserId;
 
   publications: Publication[];
@@ -36,33 +35,34 @@ export class UserWallComponent {
 
   currentUserProfilePicURL: string;
 
-  constructor(private userService: UserService,
+  constructor(
+    private userService: UserService,
     private restaurantService: RestaurantService,
     private publicationService: PublicationService,
     private commentService: CommentService,
     private relationshipService: FollowRelationshipService,
     private authService: AuthenticationService,
-    private subscriptions: SubscriptionsService) {
-
+    private subscriptions: SubscriptionsService
+  ) {
     this.publications = [];
     this.postSubscriptions = [];
     this.noPhotoURL = noPhotoURL;
     this.currentUserProfilePicURL = noPhotoURL;
 
-    this.authService.authUser.takeUntil(this.subscriptions.unsubscribe).subscribe(
-      user => {
+    this.authService.authUser
+      .takeUntil(this.subscriptions.unsubscribe)
+      .subscribe(user => {
         this.currentUser = user;
-        this.relationshipService.getRelationshipsByUserId(this.currentUser.id).subscribe(
-          relationships => {
+        this.relationshipService
+          .getRelationshipsByUserId(this.currentUser.id)
+          .subscribe(relationships => {
             for (let relationship of relationships) {
               this.addPostSubscription(relationship);
             }
 
             this.setPublications();
-          }
-        );
-      }
-    );
+          });
+      });
   }
 
   addComment(publication: Publication): void {
@@ -72,54 +72,53 @@ export class UserWallComponent {
     newComment.postId = publication.id;
 
     publication.newComment = '';
-    this.commentService.saveComment(newComment).subscribe(
-      comment => { },
-      error => {
-        console.log(error);
-      }
-    );
+    this.commentService.saveComment(newComment);
   }
 
   private addPostSubscription(relationship: IfollowRelationshipId): void {
-    let postSubscription = this.publicationService.getPublicationsByRestaurantId(relationship.restaurantId).map(
-      posts => {
+    let postSubscription = this.publicationService
+      .getPublicationsByRestaurantId(relationship.restaurantId)
+      .map(posts => {
         posts.forEach(post => {
-          post.restaurantPicture = this.restaurantService.getRestaurant(relationship.restaurantId).map(
-            restaurant => {
+          post.restaurantPicture = this.restaurantService
+            .getRestaurant(relationship.restaurantId)
+            .map(restaurant => {
               if (restaurant.hasProfilePic) {
-                return this.restaurantService.getRestaurantProfilePic(relationship.restaurantId);
+                return this.restaurantService.getRestaurantProfilePic(
+                  relationship.restaurantId
+                );
               }
               return Observable.of(noPhotoURL);
-            }
-          );
+            });
 
           post.restaurantPictureURL = noPhotoURL;
         });
 
         return posts;
-      }
-    );
+      });
 
     this.postSubscriptions.push(postSubscription);
   }
 
   private setPublications(): void {
-    combineLatest(...this.postSubscriptions).map(setOfPosts => {
-      let allPosts = [];
+    combineLatest(...this.postSubscriptions)
+      .map(setOfPosts => {
+        let allPosts = [];
 
-      setOfPosts.forEach(posts => {
-        allPosts = allPosts.concat(posts);
+        setOfPosts.forEach(posts => {
+          allPosts = allPosts.concat(posts);
+        });
+
+        allPosts.sort((a, b) => {
+          return b.date.getDate() - a.date.getDate();
+        });
+
+        return allPosts;
+      })
+      .subscribe(posts => {
+        this.publications = posts;
+        this.setPostsComments();
       });
-
-      allPosts.sort((a, b) => {
-        return b.date.getDate() - a.date.getDate();
-      });
-
-      return allPosts;
-    }).subscribe(posts => {
-      this.publications = posts;
-      this.setPostsComments();
-    });
   }
 
   private setPostsComments(): void {
@@ -144,7 +143,7 @@ export class UserWallComponent {
         URLObservable.subscribe(URL => {
           post.restaurantPictureURL = URL;
         });
-      })
+      });
     }
   }
 
@@ -162,5 +161,4 @@ export class UserWallComponent {
       );
     });
   }
-
 }

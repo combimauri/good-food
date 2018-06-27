@@ -8,6 +8,7 @@ export class Restaurant implements IrestaurantId {
     lat: number;
     lng: number;
     hasProfilePic: boolean;
+    photoURL?: string;
     addUserId: string;
     ownerId?: string;
     profilePic: File;
