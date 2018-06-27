@@ -44,6 +44,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { ChatService } from './services/chat/chat.service';
 import { ChatRoomService } from './services/chat/chat-room.service';
 import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
+import { AppUserService } from './services/user/app-user.service';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component
     CommentService,
     FollowRelationshipService,
     ChatService,
-    ChatRoomService
+    ChatRoomService,
+    AppUserService
   ],
   bootstrap: [AppComponent]
 })

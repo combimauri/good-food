@@ -5,6 +5,8 @@ import { SubscriptionsService } from '../../services/subscriptions/subscriptions
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { IappUser } from '../../interfaces/iapp-user';
+import { AppUserService } from '../../services/user/app-user.service';
+import { IuserId } from '../../interfaces/iuser-id';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -17,7 +19,7 @@ const noPhotoURL: string = './assets/img/nophoto.png';
 export class MenuComponent implements OnInit {
     currentUser: IappUser;
 
-    userPhotoURL: string;
+    loggedUser: IappUser;
 
     userRestaurants: IappUser[];
 
@@ -25,10 +27,11 @@ export class MenuComponent implements OnInit {
 
     constructor(
         public authService: AuthenticationService,
+        private appUserService: AppUserService,
         private restaurantService: RestaurantService,
         private subscriptions: SubscriptionsService
     ) {
-        this.userPhotoURL = noPhotoURL;
+        this.loggedUser = this.appUserService.buildAppUser('', '', '', false);
         this.userRestaurants = [];
         this.getCurrentUser();
     }
@@ -37,24 +40,30 @@ export class MenuComponent implements OnInit {
         $(this.toggleButtonElement.nativeElement).pushMenu('toggle');
     }
 
+    changeCurrentAppUser(user: IappUser): void {
+        this.appUserService.changeCurrentAppUser(user);
+        this.currentUser = user;
+    }
+
     private getCurrentUser(): void {
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
-            .subscribe(
-                user => {
-                    this.currentUser = user;
-                    this.userPhotoURL = user.photoURL;
-                    this.getUserRestaurants();
-                },
-                error => {
-                    console.error(error);
-                }
-            );
+            .subscribe(user => {
+                this.loggedUser = this.appUserService.buildAppUser(
+                    user.id,
+                    user.name,
+                    user.photoURL,
+                    false
+                );
+                this.getUserRestaurants();
+            });
+
+        this.currentUser = this.appUserService.getCurrentAppUser();
     }
 
     private getUserRestaurants(): void {
         this.restaurantService
-            .getBusinessOwnerRestaurants(this.currentUser.id)
+            .getBusinessOwnerRestaurants(this.loggedUser.id)
             .subscribe(restaurants => {
                 this.userRestaurants = [];
                 restaurants.forEach(restaurant => {
@@ -63,14 +72,14 @@ export class MenuComponent implements OnInit {
                             .getRestaurantProfilePic(restaurant.id)
                             .subscribe(
                                 url => {
-                                    this.buildAppUser(
+                                    this.buildRestaurantAppUser(
                                         restaurant.id,
                                         restaurant.name,
                                         url
                                     );
                                 },
                                 () => {
-                                    this.buildAppUser(
+                                    this.buildRestaurantAppUser(
                                         restaurant.id,
                                         restaurant.name,
                                         noPhotoURL
@@ -78,7 +87,7 @@ export class MenuComponent implements OnInit {
                                 }
                             );
                     } else {
-                        this.buildAppUser(
+                        this.buildRestaurantAppUser(
                             restaurant.id,
                             restaurant.name,
                             noPhotoURL
@@ -88,16 +97,17 @@ export class MenuComponent implements OnInit {
             });
     }
 
-    private buildAppUser(
+    private buildRestaurantAppUser(
         userId: string,
         userName: string,
         userPhotoURL: string
     ): void {
-        const appUser: IappUser = {
-            id: userId,
-            name: userName,
-            photoURL: userPhotoURL
-        };
+        const appUser: IappUser = this.appUserService.buildAppUser(
+            userId,
+            userName,
+            userPhotoURL,
+            true
+        );
 
         this.addRestaurantToUserRestaurants(appUser);
     }
