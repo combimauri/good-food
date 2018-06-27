@@ -1,9 +1,9 @@
 <section class="content">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-sm-4 col-md-3">
       <div class="black-contacts-container">
         <ul class="contacts-list">
-          <li *ngFor="let room of chatRooms; let i = index">
+          <li *ngFor="let room of userChatRooms; let i = index">
             <a (click)="setCurrentChatRoom(room)">
               <img class="contacts-list-img" src="./assets/img/nophoto.png" alt="User Image">
 
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-sm-6">
       <food-chat [chatRoom]="currentChatRoom"></food-chat>
     </div>
   </div>

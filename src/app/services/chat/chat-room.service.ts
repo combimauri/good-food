@@ -18,7 +18,7 @@ export class ChatRoomService {
         private subscriptions: SubscriptionsService
     ) {}
 
-    getChatRoomByRestaurantId(restaurantId: string): Observable<IchatRoomId[]> {
+    getChatRoomsByRestaurantId(restaurantId: string): Observable<IchatRoomId[]> {
         this.chatRoomsCollection = this.afs.collection<IchatRoom>(
             'chat-rooms',
             ref => ref.where('restaurantId', '==', restaurantId)
@@ -39,7 +39,7 @@ export class ChatRoomService {
             });
     }
 
-    getChatRoomByUserId(userId: string): Observable<IchatRoomId[]> {
+    getChatRoomsByUserId(userId: string): Observable<IchatRoomId[]> {
         this.chatRoomsCollection = this.afs.collection<IchatRoom>(
             'chat-rooms',
             ref => ref.where('userId', '==', userId).orderBy('date', 'desc')

@@ -7,6 +7,9 @@ import { IuserId } from '../../interfaces/iuser-id';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { ChatRoom } from '../../models/chat-room';
 import { Restaurant } from '../../models/restaurant';
+import { BusinessOwnerChatRoom } from '../../models/business-owner-chat-room';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'food-chat-rooms',
@@ -16,27 +19,32 @@ import { Restaurant } from '../../models/restaurant';
 export class ChatRoomsComponent {
     currentUser: IuserId;
 
-    chatRooms: ChatRoom[];
+    businessOwnerRestaurants: BusinessOwnerChatRoom[];
 
-    chatUsers: IuserId[];
+    restaurantChatRooms: ChatRoom[];
+
+    userChatRooms: ChatRoom[];
 
     currentChatRoom: ChatRoom;
 
     constructor(
         private authService: AuthenticationService,
         private restaurantService: RestaurantService,
+        private userService: UserService,
         private chatRoomService: ChatRoomService,
         private subscriptions: SubscriptionsService
     ) {
+        this.businessOwnerRestaurants = [];
+        this.userChatRooms = [];
+        this.restaurantChatRooms = [];
+        this.currentChatRoom = new ChatRoom();
+
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
                 this.currentUser = user;
                 this.getUserChatRooms();
             });
-
-        this.chatRooms = [];
-        this.currentChatRoom = new ChatRoom();
     }
 
     setCurrentChatRoom(chatRoom: ChatRoom): void {
@@ -45,15 +53,35 @@ export class ChatRoomsComponent {
 
     private getUserChatRooms(): void {
         this.chatRoomService
-            .getChatRoomByUserId(this.currentUser.id)
+            .getChatRoomsByUserId(this.currentUser.id)
             .subscribe(chatRooms => {
-                this.chatRooms = chatRooms;
+                this.userChatRooms = chatRooms;
                 this.getRoomRestaurants();
             });
+
+        if (this.currentUser.roles['businessOwner']) {
+            this.restaurantService
+                .getBusinessOwnerRestaurants(this.currentUser.id)
+                .subscribe(restaurants => {
+                    restaurants.forEach(restaurant => {
+                        this.chatRoomService
+                            .getChatRoomsByRestaurantId(restaurant.id)
+                            .subscribe(chatRooms => {
+                                let userChat: BusinessOwnerChatRoom = new BusinessOwnerChatRoom(
+                                    restaurant,
+                                    chatRooms
+                                );
+
+                                this.getRoomUsers(userChat);
+                                this.businessOwnerRestaurants.push(userChat);
+                            });
+                    });
+                });
+        }
     }
 
     private getRoomRestaurants(): void {
-        this.chatRooms.forEach(chatRoom => {
+        this.userChatRooms.forEach(chatRoom => {
             chatRoom.restaurant = new Restaurant();
             chatRoom.user = this.currentUser;
             this.restaurantService
@@ -61,6 +89,16 @@ export class ChatRoomsComponent {
                 .subscribe(restaurant => {
                     chatRoom.restaurant = restaurant;
                 });
+        });
+    }
+
+    private getRoomUsers(userChat: BusinessOwnerChatRoom): void {
+        userChat.chatRooms.forEach(chatRoom => {
+            chatRoom.restaurant = userChat.restaurant;
+            chatRoom.user = new User();
+            this.userService.getUser(chatRoom.userId).subscribe(user => {
+                chatRoom.user = user;
+            });
         });
     }
 }
