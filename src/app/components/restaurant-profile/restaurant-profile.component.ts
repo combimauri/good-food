@@ -20,240 +20,242 @@ import { IfollowRelationship } from '../../interfaces/ifollow-relationship';
 import { FollowRelationshipService } from '../../services/relationship/follow-relationship.service';
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
+import { AppUserService } from '../../services/user/app-user.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
-  selector: 'food-restaurant-profile',
-  templateUrl: './restaurant-profile.component.html',
-  styleUrls: ['./restaurant-profile.component.scss']
+    selector: 'food-restaurant-profile',
+    templateUrl: './restaurant-profile.component.html',
+    styleUrls: ['./restaurant-profile.component.scss']
 })
 export class RestaurantProfileComponent implements OnInit {
-  restaurant: Irestaurant;
+    restaurant: Irestaurant;
 
-  restaurantId: string;
+    restaurantId: string;
 
-  restaurantProfilePicURL: string;
+    restaurantProfilePicURL: string;
 
-  currentUserProfilePicURL: string;
+    currentUserProfilePicURL: string;
 
-  publications: Publication[];
+    publications: Publication[];
 
-  newPublication: Publication;
+    newPublication: Publication;
 
-  currentUser: IuserId;
+    currentUser: IuserId;
 
-  isFollowButtonReady: boolean;
+    isFollowButtonReady: boolean;
 
-  isFollow: boolean;
+    isFollow: boolean;
 
-  isUnfollow: boolean;
+    isUnfollow: boolean;
 
-  isMessageButtonReady: boolean;
+    isMessageButtonReady: boolean;
 
-  constructor(
-    private restaurantService: RestaurantService,
-    private publicationService: PublicationService,
-    private commentService: CommentService,
-    private userService: UserService,
-    private relationshipService: FollowRelationshipService,
-    private chatRoomService: ChatRoomService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private subscriptions: SubscriptionsService,
-    private authService: AuthenticationService
-  ) {
-    this.restaurant = new Restaurant();
-    this.newPublication = new Publication();
-    this.restaurantProfilePicURL = noPhotoURL;
-    this.currentUserProfilePicURL = noPhotoURL;
-    this.isFollowButtonReady = false;
-    this.isFollow = false;
-    this.isUnfollow = false;
-    this.isMessageButtonReady = false;
-  }
-
-  ngOnInit(): void {
-    this.route.params
-      .takeUntil(this.subscriptions.unsubscribe)
-      .subscribe(params => {
-        this.restaurantId = params['id'];
-        this.restaurantService
-          .getRestaurant(this.restaurantId)
-          .subscribe(restaurant => {
-            if (restaurant) {
-              this.restaurant = restaurant;
-              this.setRestaurantPublications();
-              if (restaurant.hasProfilePic) {
-                this.setProfilePic();
-              }
-            } else {
-              this.router.navigate(['404']);
-            }
-          });
-      });
-  }
-
-  goToChatRoom(): void {
-    if (this.isMessageButtonReady) {
-      this.router.navigate([
-        '/chat-room',
-        this.restaurantId + '_' + this.currentUser.id
-      ]);
-    }
-  }
-
-  savePublication(): void {
-    this.newPublication.ownerName = this.restaurant.name;
-    this.newPublication.status = '';
-    this.newPublication.restaurantId = this.restaurantId;
-    this.publicationService.savePublication(this.newPublication).subscribe(
-      publication => {
+    constructor(
+        private appUserService: AppUserService,
+        private restaurantService: RestaurantService,
+        private publicationService: PublicationService,
+        private commentService: CommentService,
+        private userService: UserService,
+        private relationshipService: FollowRelationshipService,
+        private chatRoomService: ChatRoomService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private subscriptions: SubscriptionsService,
+        private authService: AuthenticationService
+    ) {
+        this.restaurant = new Restaurant();
         this.newPublication = new Publication();
-      },
-      error => {
-        console.error(error);
-      }
-    );
-  }
+        this.restaurantProfilePicURL = noPhotoURL;
+        this.currentUserProfilePicURL = noPhotoURL;
+        this.isFollowButtonReady = false;
+        this.isFollow = false;
+        this.isUnfollow = false;
+        this.isMessageButtonReady = false;
+    }
 
-  addComment(publication: Publication): void {
-    let newComment: Icomment = new Comment();
-    newComment.comment = publication.newComment;
-    newComment.ownerId = this.currentUser.id;
-    newComment.postId = publication.id;
+    ngOnInit(): void {
+        this.route.params
+            .takeUntil(this.subscriptions.unsubscribe)
+            .subscribe(params => {
+                this.restaurantId = params['id'];
+                this.restaurantService
+                    .getRestaurant(this.restaurantId)
+                    .subscribe(restaurant => {
+                        if (restaurant) {
+                            this.restaurant = restaurant;
+                            this.setRestaurantPublications();
+                            if (restaurant.hasProfilePic) {
+                                this.setProfilePic();
+                            }
+                        } else {
+                            this.router.navigate(['404']);
+                        }
+                    });
+            });
+    }
 
-    publication.newComment = '';
-    this.commentService.saveComment(newComment);
-  }
+    goToChatRoom(): void {
+        if (this.isMessageButtonReady) {
+            this.router.navigate([
+                '/chat-room',
+                this.restaurantId + '_' + this.currentUser.id
+            ]);
+        }
+    }
 
-  follow(): void {
-    let relationship: IfollowRelationship = {
-      restaurantId: this.restaurantId,
-      userId: this.currentUser.id,
-      createdAt: new Date()
-    };
-
-    let chatRoom: IchatRoom = {
-      restaurantId: this.restaurantId,
-      userId: this.currentUser.id,
-      lastMessage: '...',
-      date: new Date()
-    };
-
-    this.relationshipService.saveRelationship(relationship);
-    this.chatRoomService.saveChatRoom(chatRoom);
-  }
-
-  unfollow(): void {
-    this.relationshipService.deleteRelationship(
-      this.restaurantId,
-      this.currentUser.id
-    );
-  }
-
-  private setRestaurantPublications(): void {
-    this.authService.authUser
-      .takeUntil(this.subscriptions.unsubscribe)
-      .subscribe(
-        user => {
-          this.currentUser = user;
-          this.currentUserProfilePicURL = this.currentUser.photoURL;
-          this.isMessageButtonReady = true;
-          this.getFollowRelationships();
-          this.publicationService
-            .getPublicationsByRestaurantId(this.restaurantId)
-            .subscribe(
-              posts => {
-                this.publications = posts;
-                this.setPostsComments();
-              },
-              error => {
+    savePublication(): void {
+        this.newPublication.ownerName = this.restaurant.name;
+        this.newPublication.status = '';
+        this.newPublication.restaurantId = this.restaurantId;
+        this.publicationService.savePublication(this.newPublication).subscribe(
+            publication => {
+                this.newPublication = new Publication();
+            },
+            error => {
                 console.error(error);
-              }
-            );
-        },
-        error => {
-          console.error(error);
-        }
-      );
-  }
+            }
+        );
+    }
 
-  private setPostsComments(): void {
-    this.publications.forEach(post => {
-      post.comments = [];
-      this.commentService.getCommentsByPostId(post.id).subscribe(
-        comments => {
-          post.comments = comments as Comment[];
-          this.setCommentsUsers(post.comments);
-        },
-        error => {
-          console.error(error);
-        }
-      );
-    });
-  }
+    addComment(publication: Publication): void {
+        let newComment: Icomment = new Comment();
+        newComment.comment = publication.newComment;
+        newComment.ownerId = this.currentUser.id;
+        newComment.postId = publication.id;
 
-  private setCommentsUsers(comments: Comment[]): void {
-    comments.forEach(comment => {
-      comment.user = new User();
-      comment.user.photoURL = noPhotoURL;
-      this.userService.getUser(comment.ownerId).subscribe(
-        user => {
-          comment.user = user;
-        },
-        error => {
-          console.error(error);
-        }
-      );
-    });
-  }
+        publication.newComment = '';
+        this.commentService.saveComment(newComment);
+    }
 
-  private setProfilePic(): void {
-    this.restaurantService
-      .getRestaurantProfilePic(this.restaurantId)
-      .subscribe(URL => {
-        this.restaurantProfilePicURL = URL;
-      });
-  }
+    follow(): void {
+        let relationship: IfollowRelationship = {
+            restaurantId: this.restaurantId,
+            userId: this.currentUser.id,
+            createdAt: new Date()
+        };
 
-  private getFollowRelationships(): void {
-    this.relationshipService
-      .getRelationshipsByRestaurantAndUserId(
-        this.restaurantId,
-        this.currentUser.id
-      )
-      .subscribe(
-        relationship => {
-          this.updateFollowersCount();
-          this.isFollowButtonReady = true;
-          if (relationship[0]) {
-            this.isFollow = false;
-            this.isUnfollow = true;
-          } else {
-            this.isFollow = true;
-            this.isUnfollow = false;
-          }
-        },
-        error => {
-          console.error(error);
-        }
-      );
-  }
+        let chatRoom: IchatRoom = {
+            restaurantId: this.restaurantId,
+            userId: this.currentUser.id,
+            lastMessage: '...',
+            date: new Date()
+        };
 
-  private updateFollowersCount(): void {
-    this.relationshipService
-      .getRestaurantFollowersCount(this.restaurantId)
-      .subscribe(count => {
-        if (this.restaurant.followersCount !== count) {
-          let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
+        this.relationshipService.saveRelationship(relationship);
+        this.chatRoomService.saveChatRoom(chatRoom);
+    }
+
+    unfollow(): void {
+        this.relationshipService.deleteRelationship(
             this.restaurantId,
-            this.restaurant
-          );
-          restaurant.followersCount = count;
-          this.restaurantService.updateRestaurant(restaurant);
-        }
-      });
-  }
+            this.currentUser.id
+        );
+    }
+
+    private setRestaurantPublications(): void {
+        this.authService.authUser
+            .takeUntil(this.subscriptions.unsubscribe)
+            .subscribe(
+                user => {
+                    this.currentUser = user;
+                    this.currentUserProfilePicURL = this.currentUser.photoURL;
+                    this.isMessageButtonReady = true;
+                    this.getFollowRelationships();
+                    this.publicationService
+                        .getPublicationsByRestaurantId(this.restaurantId)
+                        .subscribe(
+                            posts => {
+                                this.publications = posts;
+                                this.setPostsComments();
+                            },
+                            error => {
+                                console.error(error);
+                            }
+                        );
+                },
+                error => {
+                    console.error(error);
+                }
+            );
+    }
+
+    private setPostsComments(): void {
+        this.publications.forEach(post => {
+            post.comments = [];
+            this.commentService.getCommentsByPostId(post.id).subscribe(
+                comments => {
+                    post.comments = comments as Comment[];
+                    this.setCommentsUsers(post.comments);
+                },
+                error => {
+                    console.error(error);
+                }
+            );
+        });
+    }
+
+    private setCommentsUsers(comments: Comment[]): void {
+        comments.forEach(comment => {
+            comment.user = new User();
+            comment.user.photoURL = noPhotoURL;
+            this.userService.getUser(comment.ownerId).subscribe(
+                user => {
+                    comment.user = user;
+                },
+                error => {
+                    console.error(error);
+                }
+            );
+        });
+    }
+
+    private setProfilePic(): void {
+        this.restaurantService
+            .getRestaurantProfilePic(this.restaurantId)
+            .subscribe(URL => {
+                this.restaurantProfilePicURL = URL;
+            });
+    }
+
+    private getFollowRelationships(): void {
+        this.relationshipService
+            .getRelationshipsByRestaurantAndUserId(
+                this.restaurantId,
+                this.currentUser.id
+            )
+            .subscribe(
+                relationship => {
+                    this.updateFollowersCount();
+                    this.isFollowButtonReady = true;
+                    if (relationship[0]) {
+                        this.isFollow = false;
+                        this.isUnfollow = true;
+                    } else {
+                        this.isFollow = true;
+                        this.isUnfollow = false;
+                    }
+                },
+                error => {
+                    console.error(error);
+                }
+            );
+    }
+
+    private updateFollowersCount(): void {
+        this.relationshipService
+            .getRestaurantFollowersCount(this.restaurantId)
+            .subscribe(count => {
+                if (this.restaurant.followersCount !== count) {
+                    let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
+                        this.restaurantId,
+                        this.restaurant
+                    );
+                    restaurant.followersCount = count;
+                    this.restaurantService.updateRestaurant(restaurant);
+                }
+            });
+    }
 }

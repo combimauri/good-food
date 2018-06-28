@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Ng2ImgMaxService } from 'ng2-img-max';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -9,7 +8,6 @@ import { RestaurantCategoryService } from '../../services/restaurant/restaurant-
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Restaurant } from '../../models/restaurant';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
-import { Irestaurant } from '../../interfaces/irestaurant';
 
 declare const google: any;
 const cochaLat: number = -17.393695;
@@ -52,7 +50,6 @@ export class RestaurantsMapComponent implements OnInit {
         public restaurantCategoryService: RestaurantCategoryService,
         private authService: AuthenticationService,
         private styleService: MapStyleService,
-        private imgToolsService: Ng2ImgMaxService,
         private subscriptions: SubscriptionsService
     ) {
         this.isRestaurantInfoWindowOpen = false;

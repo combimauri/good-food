@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ServiceWorkerModule } from '@angular/service-worker';
+// import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
@@ -45,57 +45,61 @@ import { ChatService } from './services/chat/chat.service';
 import { ChatRoomService } from './services/chat/chat-room.service';
 import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { AppUserService } from './services/user/app-user.service';
+import { InternalGuard } from './services/authentication/internal.guard';
+import { HomeService } from './services/home/home.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    MenuComponent,
-    HomeComponent,
-    RestaurantProfileComponent,
-    RestaurantsMapComponent,
-    RegisterMyRestaurantComponent,
-    PageNotFoundComponent,
-    LoaderComponent,
-    RestaurantMenuComponent,
-    UserWallComponent,
-    ChatComponent,
-    ChatRoomsComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebase, 'good-food'),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
-    AngularFireStorageModule,
-    AgmCoreModule.forRoot({
-      apiKey: environment.googlemaps
-    }),
-    Ng2ImgMaxModule,
-    AppRoutingModule
-    // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
-  ],
-  providers: [
-    SubscriptionsService,
-    AuthenticationService,
-    AuthenticationGuardService,
-    UserService,
-    MapStyleService,
-    MessageService,
-    RestaurantService,
-    RestaurantCategoryService,
-    PublicationService,
-    MenuItemService,
-    MenuItemCategoryService,
-    CommentService,
-    FollowRelationshipService,
-    ChatService,
-    ChatRoomService,
-    AppUserService
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        RegisterComponent,
+        MenuComponent,
+        HomeComponent,
+        RestaurantProfileComponent,
+        RestaurantsMapComponent,
+        RegisterMyRestaurantComponent,
+        PageNotFoundComponent,
+        LoaderComponent,
+        RestaurantMenuComponent,
+        UserWallComponent,
+        ChatComponent,
+        ChatRoomsComponent
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        AngularFireModule.initializeApp(environment.firebase, 'good-food'),
+        AngularFirestoreModule,
+        AngularFireAuthModule,
+        AngularFireStorageModule,
+        AgmCoreModule.forRoot({
+            apiKey: environment.googlemaps
+        }),
+        Ng2ImgMaxModule,
+        AppRoutingModule
+        // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
+    ],
+    providers: [
+        SubscriptionsService,
+        AuthenticationService,
+        AuthenticationGuardService,
+        UserService,
+        MapStyleService,
+        MessageService,
+        RestaurantService,
+        RestaurantCategoryService,
+        PublicationService,
+        MenuItemService,
+        MenuItemCategoryService,
+        CommentService,
+        FollowRelationshipService,
+        ChatService,
+        ChatRoomService,
+        AppUserService,
+        InternalGuard,
+        HomeService
+    ],
+    bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

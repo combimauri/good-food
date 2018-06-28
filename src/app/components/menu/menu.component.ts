@@ -6,7 +6,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { IappUser } from '../../interfaces/iapp-user';
 import { AppUserService } from '../../services/user/app-user.service';
-import { IuserId } from '../../interfaces/iuser-id';
+import { HomeService } from '../../services/home/home.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -26,6 +26,7 @@ export class MenuComponent implements OnInit {
     @ViewChild('toggleButton') private toggleButtonElement: ElementRef;
 
     constructor(
+        public homeService: HomeService,
         public authService: AuthenticationService,
         private appUserService: AppUserService,
         private restaurantService: RestaurantService,
@@ -43,6 +44,7 @@ export class MenuComponent implements OnInit {
     changeCurrentAppUser(user: IappUser): void {
         this.appUserService.changeCurrentAppUser(user);
         this.currentUser = user;
+        this.homeService.goHome();
     }
 
     private getCurrentUser(): void {

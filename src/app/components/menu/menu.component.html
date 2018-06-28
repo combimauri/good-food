@@ -1,7 +1,7 @@
 <div class="wrapper">
 
   <header class="main-header">
-    <a class="logo hidden-xs" routerLink="/home-feed">
+    <a class="logo hidden-xs" (click)="homeService.goHome()">
       <span class="logo-mini">
         <b>G</b>F</span>
       <span class="logo-lg">
@@ -21,7 +21,7 @@
       </a>
 
       <div class="navbar-header visible-xs">
-        <a class="navbar-brand" routerLink="/home-feed">
+        <a class="navbar-brand" (click)="homeService.goHome()">
           <b>Good</b>Food</a>
       </div>
     </nav>
@@ -53,7 +53,7 @@
 
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
-        <li>
+        <li *ngIf="!currentUser.isRestaurant">
           <a routerLink="/restaurants-map" data-toggle="push-menu">
             <i class="fa fa-map-marker"></i>
             <span>Ubicación restaurante</span>
@@ -63,6 +63,12 @@
           <a routerLink="/messages" data-toggle="push-menu">
             <i class="fa fa-envelope"></i>
             <span>Mensajes</span>
+          </a>
+        </li>
+        <li *ngIf="!currentUser.isRestaurant">
+          <a routerLink="/home-feed" data-toggle="push-menu">
+            <i class="fa fa-envelope"></i>
+            <span>Feed</span>
           </a>
         </li>
         <li class="header">SESIÓN</li>
@@ -100,15 +106,17 @@
             </li>
           </ul>
         </div>
-        <h3 class="control-sidebar-heading">Más Opciones</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a routerLink='/register-my-restaurant' data-toggle="control-sidebar">
-              <i class="fa fa-cutlery"></i>
-              <span>Registrar mi restaurante</span>
-            </a>
-          </li>
-        </ul>
+        <div *ngIf="!currentUser.isRestaurant">
+          <h3 class="control-sidebar-heading">Más Opciones</h3>
+          <ul class="control-sidebar-menu">
+            <li>
+              <a routerLink='/register-my-restaurant' data-toggle="control-sidebar">
+                <i class="fa fa-cutlery"></i>
+                <span>Registrar mi restaurante</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </aside>
