@@ -5,7 +5,6 @@ import { SubscriptionsService } from '../../services/subscriptions/subscriptions
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { IappUser } from '../../interfaces/iapp-user';
-import { AppUserService } from '../../services/user/app-user.service';
 import { HomeService } from '../../services/home/home.service';
 
 declare const $: any;
@@ -33,12 +32,12 @@ export class MenuComponent implements OnInit {
         private restaurantService: RestaurantService,
         private subscriptions: SubscriptionsService
     ) {
-        this.currentUser = this.authService.appUserService.buildAppUser(
+        this.currentUser = this.authService.buildAppUser(
             '',
             '',
             noPhotoURL
         );
-        this.loggedUser = this.authService.appUserService.buildAppUser(
+        this.loggedUser = this.authService.buildAppUser(
             '',
             '',
             ''
@@ -53,7 +52,7 @@ export class MenuComponent implements OnInit {
     }
 
     changeCurrentAppUser(user: IappUser): void {
-        this.authService.appUserService.changeCurrentAppUser(user);
+        this.authService.changeCurrentAppUser(user);
         this.currentUser = user;
         this.homeService.goHome();
         this.setIsAppUserARestaurant();
@@ -63,7 +62,7 @@ export class MenuComponent implements OnInit {
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
-                this.loggedUser = this.authService.appUserService.buildAppUser(
+                this.loggedUser = this.authService.buildAppUser(
                     user.id,
                     user.name,
                     user.photoURL
@@ -84,39 +83,37 @@ export class MenuComponent implements OnInit {
     }
 
     private getUserRestaurants(): void {
-        this.restaurantService
-            .getBusinessOwnerRestaurants(this.loggedUser.id)
-            .subscribe(restaurants => {
-                this.userRestaurants = [];
-                restaurants.forEach(restaurant => {
-                    if (restaurant.hasProfilePic) {
-                        this.restaurantService
-                            .getRestaurantProfilePic(restaurant.id)
-                            .subscribe(
-                                url => {
-                                    this.buildRestaurantAppUser(
-                                        restaurant.id,
-                                        restaurant.name,
-                                        url
-                                    );
-                                },
-                                () => {
-                                    this.buildRestaurantAppUser(
-                                        restaurant.id,
-                                        restaurant.name,
-                                        noPhotoURL
-                                    );
-                                }
-                            );
-                    } else {
-                        this.buildRestaurantAppUser(
-                            restaurant.id,
-                            restaurant.name,
-                            noPhotoURL
+        this.authService.userRestaurants.subscribe(restaurants => {
+            this.userRestaurants = [];
+            restaurants.forEach(restaurant => {
+                if (restaurant.hasProfilePic) {
+                    this.restaurantService
+                        .getRestaurantProfilePic(restaurant.id)
+                        .subscribe(
+                            url => {
+                                this.buildRestaurantAppUser(
+                                    restaurant.id,
+                                    restaurant.name,
+                                    url
+                                );
+                            },
+                            () => {
+                                this.buildRestaurantAppUser(
+                                    restaurant.id,
+                                    restaurant.name,
+                                    noPhotoURL
+                                );
+                            }
                         );
-                    }
-                });
+                } else {
+                    this.buildRestaurantAppUser(
+                        restaurant.id,
+                        restaurant.name,
+                        noPhotoURL
+                    );
+                }
             });
+        });
     }
 
     private buildRestaurantAppUser(
@@ -124,7 +121,7 @@ export class MenuComponent implements OnInit {
         userName: string,
         userPhotoURL: string
     ): void {
-        const appUser: IappUser = this.authService.appUserService.buildAppUser(
+        const appUser: IappUser = this.authService.buildAppUser(
             userId,
             userName,
             userPhotoURL

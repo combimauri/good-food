@@ -5,18 +5,13 @@ import { IappUser } from '../../interfaces/iapp-user';
 const userItemKey: string = 'appUser';
 
 @Injectable()
-export class AppUserService {
+export abstract class AppUserService {
     buildAppUser(id: string, name: string, photoURL: string): IappUser {
         return {
             id: id,
             name: name,
             photoURL: photoURL
         } as IappUser;
-    }
-
-    getCurrentAppUser(): IappUser {
-        let appUserJSON = localStorage.getItem(userItemKey);
-        return JSON.parse(appUserJSON) as IappUser;
     }
 
     changeCurrentAppUser(appUser: IappUser): void {
@@ -27,4 +22,11 @@ export class AppUserService {
     deleteCurrentAppUser(): void {
         localStorage.removeItem(userItemKey);
     }
+
+    protected getCurrentUser(): IappUser {
+        let appUserJSON = localStorage.getItem(userItemKey);
+        return JSON.parse(appUserJSON) as IappUser;
+    }
+
+    protected abstract validateUser(user: IappUser): any;
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -20,7 +20,6 @@ import { IfollowRelationship } from '../../interfaces/ifollow-relationship';
 import { FollowRelationshipService } from '../../services/relationship/follow-relationship.service';
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
-import { AppUserService } from '../../services/user/app-user.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -54,7 +53,6 @@ export class RestaurantProfileComponent implements OnInit {
     isMessageButtonReady: boolean;
 
     constructor(
-        private appUserService: AppUserService,
         private restaurantService: RestaurantService,
         private publicationService: PublicationService,
         private commentService: CommentService,

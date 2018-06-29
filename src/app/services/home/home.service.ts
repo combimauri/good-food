@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthenticationService } from '../authentication/authentication.service';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @Injectable()
 export class HomeService {
@@ -18,9 +19,11 @@ export class HomeService {
     }
 
     getHomeURL(): Observable<string> {
-        return this.authService.isAppUserARestaurant().map(isRestaurant => {
+        return combineLatest(
+            this.authService.isAppUserARestaurant(),
+            this.authService.getCurrentAppUser()
+        ).map(([isRestaurant, currentUser]) => {
             if (isRestaurant) {
-                let currentUser = this.authService.appUserService.getCurrentAppUser();
                 return '/restaurant-profile/' + currentUser.id;
             }
             return '/home';

@@ -7,27 +7,33 @@ import * as firebase from 'firebase/app';
 
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { UserService } from '../../services/user/user.service';
+import { RestaurantService } from '../restaurant/restaurant.service';
 import { MessageService } from '../message/message.service';
 import { Iuser } from '../../interfaces/iuser';
 import { IuserId } from '../../interfaces/iuser-id';
 import { AppUserService } from '../user/app-user.service';
 import { IappUser } from '../../interfaces/iapp-user';
+import { IrestaurantId } from '../../interfaces/irestaurant-id';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationService extends AppUserService {
     authUser: Observable<IuserId>;
+
+    userRestaurants: Observable<IrestaurantId[]>;
 
     showLoading: boolean;
 
     constructor(
-        public appUserService: AppUserService,
         private userService: UserService,
+        private restaurantService: RestaurantService,
         private messageService: MessageService,
         private firebaseAuth: AngularFireAuth,
         private afs: AngularFirestore,
         private router: Router,
         private subscriptions: SubscriptionsService
     ) {
+        super();
         this.showLoading = false;
         this.authUser = this.firebaseAuth.authState.switchMap(user => {
             if (user) {
@@ -37,6 +43,9 @@ export class AuthenticationService {
                     .map(action => {
                         const data = action.payload.data() as Iuser;
                         const id = action.payload.id;
+                        this.userRestaurants = this.restaurantService.getBusinessOwnerRestaurants(
+                            id
+                        );
                         return { id, ...data };
                     });
             } else {
@@ -46,27 +55,62 @@ export class AuthenticationService {
     }
 
     getCurrentAppUser(): Observable<IappUser> {
-        let appUser: IappUser = this.appUserService.getCurrentAppUser();
+        let appUser: IappUser = this.getCurrentUser();
         if (!appUser) {
             return this.authUser.map(user => {
-                return this.appUserService.buildAppUser(
+                let appUser: IappUser = this.buildAppUser(
                     user.id,
                     user.name,
                     user.photoURL
                 );
+                this.changeCurrentAppUser(appUser);
+                return appUser;
             });
         }
         return Observable.of(appUser);
     }
 
+    getCurrentAppUser2(): Observable<IappUser> {
+        let appUser: IappUser = this.getCurrentUser();
+        return combineLatest(this.validateUser(appUser), this.authUser).map(
+            ([isValid, user]) => {
+                if (!isValid) {
+                    appUser = this.buildAppUser(
+                        user.id,
+                        user.name,
+                        user.photoURL
+                    );
+                    this.changeCurrentAppUser(appUser);
+                }
+                return appUser;
+            }
+        );
+    }
+
     isAppUserARestaurant(): Observable<boolean> {
         return this.authUser.map(user => {
-            let appUser: IappUser = this.appUserService.getCurrentAppUser();
+            let appUser: IappUser = this.getCurrentUser();
             if (appUser) {
                 return user.id !== appUser.id;
             }
+            appUser = this.buildAppUser(user.id, user.name, user.photoURL);
+            this.changeCurrentAppUser(appUser);
             return false;
         });
+    }
+
+    isAppUserARestaurant2(): Observable<boolean> {
+        let appUser: IappUser = this.getCurrentUser();
+        return combineLatest(this.validateUser(appUser), this.authUser).map(
+            ([isValid, user]) => {
+                if (isValid) {
+                    return user.id !== appUser.id;
+                }
+                appUser = this.buildAppUser(user.id, user.name, user.photoURL);
+                this.changeCurrentAppUser(appUser);
+                return false;
+            }
+        );
     }
 
     signUp(email: string, password: string, confirmPassword: string): void {
@@ -126,7 +170,7 @@ export class AuthenticationService {
         this.firebaseAuth.auth
             .signOut()
             .then(() => {
-                this.appUserService.deleteCurrentAppUser();
+                this.deleteCurrentAppUser();
                 this.router.navigate(['/login']);
             })
             .catch(error => {
@@ -139,6 +183,25 @@ export class AuthenticationService {
         this.subscriptions.revive();
         this.userService.saveUser(user);
         this.router.navigate(['/home']);
+    }
+
+    protected validateUser(user: IappUser): Observable<boolean> {
+        if (user) {
+            return combineLatest(this.authUser, this.userRestaurants).map(
+                ([authUser, userRestaurants]) => {
+                    if (user.id !== authUser.id) {
+                        let currentRestaurant: IrestaurantId = userRestaurants.find(
+                            restaurant => {
+                                return restaurant.id === user.id;
+                            }
+                        );
+                        return currentRestaurant ? true : false;
+                    }
+                    return true;
+                }
+            );
+        }
+        return Observable.of(false);
     }
 
     private handleError(errorMessage: string): void {
