@@ -23,17 +23,28 @@ export class MenuComponent implements OnInit {
 
     userRestaurants: IappUser[];
 
+    isCurrentUserARestaurant: boolean;
+
     @ViewChild('toggleButton') private toggleButtonElement: ElementRef;
 
     constructor(
         public homeService: HomeService,
         public authService: AuthenticationService,
-        private appUserService: AppUserService,
         private restaurantService: RestaurantService,
         private subscriptions: SubscriptionsService
     ) {
-        this.loggedUser = this.appUserService.buildAppUser('', '', '', false);
+        this.currentUser = this.authService.appUserService.buildAppUser(
+            '',
+            '',
+            noPhotoURL
+        );
+        this.loggedUser = this.authService.appUserService.buildAppUser(
+            '',
+            '',
+            ''
+        );
         this.userRestaurants = [];
+        this.isCurrentUserARestaurant = true;
         this.getCurrentUser();
     }
 
@@ -42,25 +53,34 @@ export class MenuComponent implements OnInit {
     }
 
     changeCurrentAppUser(user: IappUser): void {
-        this.appUserService.changeCurrentAppUser(user);
+        this.authService.appUserService.changeCurrentAppUser(user);
         this.currentUser = user;
         this.homeService.goHome();
+        this.setIsAppUserARestaurant();
     }
 
     private getCurrentUser(): void {
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
-                this.loggedUser = this.appUserService.buildAppUser(
+                this.loggedUser = this.authService.appUserService.buildAppUser(
                     user.id,
                     user.name,
-                    user.photoURL,
-                    false
+                    user.photoURL
                 );
                 this.getUserRestaurants();
             });
 
-        this.currentUser = this.appUserService.getCurrentAppUser();
+        this.authService.getCurrentAppUser().subscribe(user => {
+            this.currentUser = user;
+        });
+        this.setIsAppUserARestaurant();
+    }
+
+    private setIsAppUserARestaurant(): void {
+        this.authService.isAppUserARestaurant().subscribe(isRestaurant => {
+            this.isCurrentUserARestaurant = isRestaurant;
+        });
     }
 
     private getUserRestaurants(): void {
@@ -104,11 +124,10 @@ export class MenuComponent implements OnInit {
         userName: string,
         userPhotoURL: string
     ): void {
-        const appUser: IappUser = this.appUserService.buildAppUser(
+        const appUser: IappUser = this.authService.appUserService.buildAppUser(
             userId,
             userName,
-            userPhotoURL,
-            true
+            userPhotoURL
         );
 
         this.addRestaurantToUserRestaurants(appUser);

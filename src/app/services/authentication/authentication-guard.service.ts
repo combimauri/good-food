@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, state } from '@angular/core';
 import {
     CanActivate,
     Router,
@@ -11,12 +11,14 @@ import 'rxjs/add/operator/take';
 
 import { AuthenticationService } from './authentication.service';
 import { MessageService } from '../message/message.service';
+import { HomeService } from '../home/home.service';
 
 @Injectable()
 export class AuthenticationGuardService implements CanActivate {
     constructor(
         private messageService: MessageService,
         private authService: AuthenticationService,
+        private homeService: HomeService,
         private router: Router
     ) {}
 
@@ -28,17 +30,22 @@ export class AuthenticationGuardService implements CanActivate {
         let authState = this.authService.authUser.take(1);
         if (state.url === '/login' || state.url === '/register') {
             return authState.map(user => {
-                return this.checkLogIn(user !== null, '/home');
+                return this.checkLogIn(
+                    user !== null,
+                    this.homeService.getHomeURL()
+                );
             });
         }
         return authState.map(user => {
-            return this.checkLogIn(user === null, '/login');
+            return this.checkLogIn(user === null, Observable.of('/login'));
         });
     }
 
-    checkLogIn(condition: boolean, stateUrl: string): boolean {
+    checkLogIn(condition: boolean, stateUrl: Observable<string>): boolean {
         if (condition) {
-            this.router.navigate([stateUrl]);
+            stateUrl.subscribe(url => {
+                this.router.navigate([url]);
+            });
             return false;
         }
         return true;

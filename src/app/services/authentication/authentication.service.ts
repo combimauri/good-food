@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
-import {
-    AngularFirestore,
-    AngularFirestoreDocument
-} from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
@@ -14,6 +11,7 @@ import { MessageService } from '../message/message.service';
 import { Iuser } from '../../interfaces/iuser';
 import { IuserId } from '../../interfaces/iuser-id';
 import { AppUserService } from '../user/app-user.service';
+import { IappUser } from '../../interfaces/iapp-user';
 
 @Injectable()
 export class AuthenticationService {
@@ -22,8 +20,8 @@ export class AuthenticationService {
     showLoading: boolean;
 
     constructor(
+        public appUserService: AppUserService,
         private userService: UserService,
-        private appUserService: AppUserService,
         private messageService: MessageService,
         private firebaseAuth: AngularFireAuth,
         private afs: AngularFirestore,
@@ -44,6 +42,30 @@ export class AuthenticationService {
             } else {
                 return Observable.of(null);
             }
+        });
+    }
+
+    getCurrentAppUser(): Observable<IappUser> {
+        let appUser: IappUser = this.appUserService.getCurrentAppUser();
+        if (!appUser) {
+            return this.authUser.map(user => {
+                return this.appUserService.buildAppUser(
+                    user.id,
+                    user.name,
+                    user.photoURL
+                );
+            });
+        }
+        return Observable.of(appUser);
+    }
+
+    isAppUserARestaurant(): Observable<boolean> {
+        return this.authUser.map(user => {
+            let appUser: IappUser = this.appUserService.getCurrentAppUser();
+            if (appUser) {
+                return user.id !== appUser.id;
+            }
+            return false;
         });
     }
 
@@ -116,7 +138,7 @@ export class AuthenticationService {
         this.showLoading = false;
         this.subscriptions.revive();
         this.userService.saveUser(user);
-        this.router.navigate(['/home-feed']);
+        this.router.navigate(['/home']);
     }
 
     private handleError(errorMessage: string): void {

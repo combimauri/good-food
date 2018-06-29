@@ -49,8 +49,7 @@ export class UserService {
         const appUser: IappUser = this.appUserService.buildAppUser(
             user.uid,
             newUser.name,
-            newUser.photoURL,
-            false
+            newUser.photoURL
         );
 
         this.usersCollection.doc(user.uid).set(newUser, { merge: true });

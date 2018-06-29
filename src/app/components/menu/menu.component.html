@@ -53,7 +53,7 @@
 
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
-        <li *ngIf="!currentUser.isRestaurant">
+        <li *ngIf="!isCurrentUserARestaurant">
           <a routerLink="/restaurants-map" data-toggle="push-menu">
             <i class="fa fa-map-marker"></i>
             <span>Ubicación restaurante</span>
@@ -65,7 +65,7 @@
             <span>Mensajes</span>
           </a>
         </li>
-        <li *ngIf="!currentUser.isRestaurant">
+        <li *ngIf="!isCurrentUserARestaurant">
           <a routerLink="/home-feed" data-toggle="push-menu">
             <i class="fa fa-envelope"></i>
             <span>Feed</span>
@@ -85,7 +85,7 @@
   <aside class="control-sidebar control-sidebar-dark">
     <div class="tab-content">
       <div class="tab-pane active" id="control-sidebar-settings-tab">
-        <div *ngIf="currentUser.isRestaurant">
+        <div *ngIf="isCurrentUserARestaurant">
           <ul class="control-sidebar-menu">
             <li>
               <a (click)="changeCurrentAppUser(loggedUser)" class="restaurant-link" data-toggle="control-sidebar">
@@ -95,7 +95,7 @@
             </li>
           </ul>
         </div>
-        <div *ngIf="!currentUser.isRestaurant && userRestaurants.length > 0">
+        <div *ngIf="!isCurrentUserARestaurant && userRestaurants.length > 0">
           <h3 class="control-sidebar-heading">Tus Restaurantes</h3>
           <ul class="control-sidebar-menu">
             <li *ngFor="let restaurant of userRestaurants">
@@ -106,7 +106,7 @@
             </li>
           </ul>
         </div>
-        <div *ngIf="!currentUser.isRestaurant">
+        <div *ngIf="!isCurrentUserARestaurant">
           <h3 class="control-sidebar-heading">Más Opciones</h3>
           <ul class="control-sidebar-menu">
             <li>
