@@ -31,9 +31,9 @@ export class UserWallComponent {
 
     postSubscriptions: Observable<IpublicationId[]>[];
 
-    noPhotoURL: string;
-
     currentUserProfilePicURL: string;
+
+    private noPhotoURL: string;
 
     constructor(
         private userService: UserService,
@@ -149,16 +149,25 @@ export class UserWallComponent {
 
     private setCommentsUsers(comments: Comment[]): void {
         comments.forEach(comment => {
-            comment.user = new User();
+            comment.user = this.authService.buildAppUser('', '', noPhotoURL);
             comment.user.photoURL = noPhotoURL;
-            this.userService.getUser(comment.ownerId).subscribe(
-                user => {
-                    comment.user = user;
-                },
-                error => {
-                    console.error(error);
-                }
-            );
+            this.userService
+                .getUser(comment.ownerId)
+                .map(user => {
+                    return this.authService.buildAppUser(
+                        comment.ownerId,
+                        user.name,
+                        user.photoURL
+                    );
+                })
+                .subscribe(
+                    user => {
+                        comment.user = user;
+                    },
+                    error => {
+                        console.error(error);
+                    }
+                );
         });
     }
 }

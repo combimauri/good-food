@@ -24,6 +24,7 @@ export class CommentService {
     let newComment: Icomment = {
       comment: comment.comment,
       ownerId: comment.ownerId,
+      isOwnerARestaurant: comment.isOwnerARestaurant,
       postId: comment.postId,
       date: new Date()
     };

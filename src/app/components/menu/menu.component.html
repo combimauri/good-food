@@ -16,8 +16,8 @@
         <span class="icon-bar"></span>
       </a>
 
-      <a class="sidebar-toggle-right" data-toggle="control-sidebar">
-        <i class="fa fa-gears"></i>
+      <a class="sidebar-toggle sidebar-toggle-right" data-toggle="control-sidebar">
+        <i class="fa fa-exchange"></i>
       </a>
 
       <div class="navbar-header visible-xs">
@@ -54,21 +54,21 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
         <li *ngIf="!isCurrentUserARestaurant">
+          <a routerLink="/home-feed" data-toggle="push-menu">
+            <i class="fa fa-list"></i>
+            <span>Publicaciones</span>
+          </a>
+        </li>
+        <li *ngIf="!isCurrentUserARestaurant">
           <a routerLink="/restaurants-map" data-toggle="push-menu">
             <i class="fa fa-map-marker"></i>
-            <span>Ubicación restaurante</span>
+            <span>Mapa de Restaurantes</span>
           </a>
         </li>
         <li>
           <a routerLink="/messages" data-toggle="push-menu">
             <i class="fa fa-envelope"></i>
             <span>Mensajes</span>
-          </a>
-        </li>
-        <li *ngIf="!isCurrentUserARestaurant">
-          <a routerLink="/home-feed" data-toggle="push-menu">
-            <i class="fa fa-envelope"></i>
-            <span>Feed</span>
           </a>
         </li>
         <li class="header">SESIÓN</li>

@@ -56,22 +56,6 @@ export class AuthenticationService extends AppUserService {
 
     getCurrentAppUser(): Observable<IappUser> {
         let appUser: IappUser = this.getCurrentUser();
-        if (!appUser) {
-            return this.authUser.map(user => {
-                let appUser: IappUser = this.buildAppUser(
-                    user.id,
-                    user.name,
-                    user.photoURL
-                );
-                this.changeCurrentAppUser(appUser);
-                return appUser;
-            });
-        }
-        return Observable.of(appUser);
-    }
-
-    getCurrentAppUser2(): Observable<IappUser> {
-        let appUser: IappUser = this.getCurrentUser();
         return combineLatest(this.validateUser(appUser), this.authUser).map(
             ([isValid, user]) => {
                 if (!isValid) {
@@ -88,18 +72,6 @@ export class AuthenticationService extends AppUserService {
     }
 
     isAppUserARestaurant(): Observable<boolean> {
-        return this.authUser.map(user => {
-            let appUser: IappUser = this.getCurrentUser();
-            if (appUser) {
-                return user.id !== appUser.id;
-            }
-            appUser = this.buildAppUser(user.id, user.name, user.photoURL);
-            this.changeCurrentAppUser(appUser);
-            return false;
-        });
-    }
-
-    isAppUserARestaurant2(): Observable<boolean> {
         let appUser: IappUser = this.getCurrentUser();
         return combineLatest(this.validateUser(appUser), this.authUser).map(
             ([isValid, user]) => {
@@ -185,7 +157,7 @@ export class AuthenticationService extends AppUserService {
         this.router.navigate(['/home']);
     }
 
-    protected validateUser(user: IappUser): Observable<boolean> {
+    private validateUser(user: IappUser): Observable<boolean> {
         if (user) {
             return combineLatest(this.authUser, this.userRestaurants).map(
                 ([authUser, userRestaurants]) => {

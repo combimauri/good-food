@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { AuthenticationService } from '../authentication/authentication.service';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @Injectable()
 export class HomeService {
