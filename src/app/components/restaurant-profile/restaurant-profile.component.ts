@@ -14,14 +14,12 @@ import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Icomment } from '../../interfaces/icomment';
 import { CommentService } from '../../services/publication/comment.service';
 import { UserService } from '../../services/user/user.service';
-import { User } from '../../models/user';
 import { IuserId } from '../../interfaces/iuser-id';
 import { IfollowRelationship } from '../../interfaces/ifollow-relationship';
 import { FollowRelationshipService } from '../../services/relationship/follow-relationship.service';
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
 import { IappUser } from '../../interfaces/iapp-user';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -38,13 +36,9 @@ export class RestaurantProfileComponent implements OnInit {
 
     restaurantProfilePicURL: string;
 
-    currentUserProfilePicURL: string;
-
     publications: Publication[];
 
     newPublication: Publication;
-
-    currentUser: IuserId;
 
     isFollowButtonReady: boolean;
 
@@ -57,6 +51,8 @@ export class RestaurantProfileComponent implements OnInit {
     isCurrentUserARestaurant: boolean;
 
     currentAppUser: IappUser;
+
+    private loggedUser: IuserId;
 
     constructor(
         private restaurantService: RestaurantService,
@@ -73,13 +69,16 @@ export class RestaurantProfileComponent implements OnInit {
         this.restaurant = new Restaurant();
         this.newPublication = new Publication();
         this.restaurantProfilePicURL = noPhotoURL;
-        this.currentUserProfilePicURL = noPhotoURL;
         this.isFollowButtonReady = false;
         this.isFollow = false;
         this.isUnfollow = false;
         this.isMessageButtonReady = false;
         this.isCurrentUserARestaurant = false;
         this.currentAppUser = this.authService.buildAppUser('', '', noPhotoURL);
+
+        this.authService.changeUserObservable.subscribe(() => {
+            this.setCurrentUser();
+        });
     }
 
     ngOnInit(): void {
@@ -103,14 +102,13 @@ export class RestaurantProfileComponent implements OnInit {
         if (this.isMessageButtonReady) {
             this.router.navigate([
                 '/chat-room',
-                this.restaurantId + '_' + this.currentUser.id
+                this.restaurantId + '_' + this.loggedUser.id
             ]);
         }
     }
 
     savePublication(): void {
         this.newPublication.ownerName = this.restaurant.name;
-        this.newPublication.status = '';
         this.newPublication.restaurantId = this.restaurantId;
         this.publicationService.savePublication(this.newPublication).subscribe(
             () => {
@@ -136,13 +134,13 @@ export class RestaurantProfileComponent implements OnInit {
     follow(): void {
         let relationship: IfollowRelationship = {
             restaurantId: this.restaurantId,
-            userId: this.currentUser.id,
+            userId: this.loggedUser.id,
             createdAt: new Date()
         };
 
         let chatRoom: IchatRoom = {
             restaurantId: this.restaurantId,
-            userId: this.currentUser.id,
+            userId: this.loggedUser.id,
             lastMessage: '...',
             date: new Date()
         };
@@ -154,13 +152,13 @@ export class RestaurantProfileComponent implements OnInit {
     unfollow(): void {
         this.relationshipService.deleteRelationship(
             this.restaurantId,
-            this.currentUser.id
+            this.loggedUser.id
         );
     }
 
     private setInitialData(restaurant: Irestaurant): void {
         this.setRestaurantData(restaurant);
-        this.getCurrentUser();
+        this.setCurrentUser();
     }
 
     private setRestaurantData(restaurant: Irestaurant): void {
@@ -178,7 +176,7 @@ export class RestaurantProfileComponent implements OnInit {
         }
     }
 
-    private getCurrentUser(): void {
+    private setCurrentUser(): void {
         this.authService.getCurrentAppUser().subscribe(user => {
             this.currentAppUser = user;
         });
@@ -194,42 +192,28 @@ export class RestaurantProfileComponent implements OnInit {
     private setRestaurantPublications(): void {
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
-            .subscribe(
-                user => {
-                    this.currentUser = user;
-                    this.currentUserProfilePicURL = this.currentUser.photoURL;
-                    this.isMessageButtonReady = true;
-                    this.getFollowRelationships();
-                    this.publicationService
-                        .getPublicationsByRestaurantId(this.restaurantId)
-                        .subscribe(
-                            posts => {
-                                this.publications = posts;
-                                this.setPostsComments();
-                            },
-                            error => {
-                                console.error(error);
-                            }
-                        );
-                },
-                error => {
-                    console.error(error);
-                }
-            );
+            .subscribe(user => {
+                this.loggedUser = user;
+                this.isMessageButtonReady = true;
+                this.getFollowRelationships();
+                this.publicationService
+                    .getPublicationsByRestaurantId(this.restaurantId)
+                    .subscribe(posts => {
+                        this.publications = posts;
+                        this.setPostsComments();
+                    });
+            });
     }
 
     private setPostsComments(): void {
         this.publications.forEach(post => {
             post.comments = [];
-            this.commentService.getCommentsByPostId(post.id).subscribe(
-                comments => {
+            this.commentService
+                .getCommentsByPostId(post.id)
+                .subscribe(comments => {
                     post.comments = comments as Comment[];
                     this.setCommentsUsers(post.comments);
-                },
-                error => {
-                    console.error(error);
-                }
-            );
+                });
         });
     }
 
@@ -274,24 +258,19 @@ export class RestaurantProfileComponent implements OnInit {
         this.relationshipService
             .getRelationshipsByRestaurantAndUserId(
                 this.restaurantId,
-                this.currentUser.id
+                this.loggedUser.id
             )
-            .subscribe(
-                relationship => {
-                    this.updateFollowersCount();
-                    this.isFollowButtonReady = true;
-                    if (relationship[0]) {
-                        this.isFollow = false;
-                        this.isUnfollow = true;
-                    } else {
-                        this.isFollow = true;
-                        this.isUnfollow = false;
-                    }
-                },
-                error => {
-                    console.error(error);
+            .subscribe(relationship => {
+                this.updateFollowersCount();
+                this.isFollowButtonReady = true;
+                if (relationship[0]) {
+                    this.isFollow = false;
+                    this.isUnfollow = true;
+                } else {
+                    this.isFollow = true;
+                    this.isUnfollow = false;
                 }
-            );
+            });
     }
 
     private updateFollowersCount(): void {

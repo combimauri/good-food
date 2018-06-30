@@ -9,20 +9,20 @@
               <div class="user-block">
                 <img class="img-circle img-bordered-sm" [src]="post.restaurantPictureURL" alt="Restaurant Profile Picture">
                 <span class="username">
-                  <a [routerLink]="['/restaurant-profile', post.restaurantId]">{{ post.ownerName }}</a>
+                  <a [routerLink]="['/restaurant-profile', post.restaurantId]">{{post.ownerName}}</a>
                   <a class="pull-right btn-box-tool">
                     <i class="fa fa-ellipsis-v"></i>
                   </a>
                 </span>
-                <span class="description">{{ post.date.seconds * 1000 | date }}</span>
+                <span class="description">{{post.date.getTime() | date}}</span>
               </div>
               <p>
-                {{ post.paragraph }}
+                {{post.paragraph}}
               </p>
               <ul class="list-inline">
                 <li>
                   <div class="text-sm">
-                    <i class="fa fa-comments-o margin-r-5"></i> Comentarios ({{ post.comments.length }})
+                    <i class="fa fa-comments-o margin-r-5"></i> Comentarios ({{post.comments.length}})
                   </div>
                 </li>
               </ul>
@@ -39,10 +39,10 @@
                   <p class="message">
                     <a class="name">
                       <small class="text-muted pull-right">
-                        <i class="fa fa-clock-o"></i> {{ comment.date.seconds * 1000 | date }}</small>
-                      {{ comment.user.name }}
+                        <i class="fa fa-clock-o"></i> {{comment.date.getTime() | date}}</small>
+                      {{comment.user.name}}
                     </a>
-                    {{ comment.comment }}
+                    {{comment.comment}}
                   </p>
                 </div>
               </div>

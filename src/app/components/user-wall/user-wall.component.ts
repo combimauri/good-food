@@ -33,8 +33,6 @@ export class UserWallComponent {
 
     currentUserProfilePicURL: string;
 
-    private noPhotoURL: string;
-
     constructor(
         private userService: UserService,
         private restaurantService: RestaurantService,
@@ -46,13 +44,13 @@ export class UserWallComponent {
     ) {
         this.publications = [];
         this.postSubscriptions = [];
-        this.noPhotoURL = noPhotoURL;
         this.currentUserProfilePicURL = noPhotoURL;
 
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
                 this.currentUser = user;
+                this.currentUserProfilePicURL = this.currentUser.photoURL;
                 this.relationshipService
                     .getRelationshipsByUserId(this.currentUser.id)
                     .subscribe(relationships => {
@@ -70,6 +68,7 @@ export class UserWallComponent {
         newComment.comment = publication.newComment;
         newComment.ownerId = this.currentUser.id;
         newComment.postId = publication.id;
+        newComment.isOwnerARestaurant = false;
 
         publication.newComment = '';
         this.commentService.saveComment(newComment);
@@ -117,40 +116,57 @@ export class UserWallComponent {
             })
             .subscribe(posts => {
                 this.publications = posts;
-                this.setPostsComments();
+                this.setPostsData();
             });
     }
 
-    private setPostsComments(): void {
+    private setPostsData(): void {
         this.publications.forEach(post => {
             post.comments = [];
-            this.setPostRestaurantPicture(post);
-            this.commentService.getCommentsByPostId(post.id).subscribe(
-                comments => {
-                    post.comments = comments as Comment[];
-                    this.setCommentsUsers(post.comments);
-                },
-                error => {
-                    console.error(error);
-                }
-            );
+            this.setPostPictureAndComments(post);
         });
     }
 
-    private setPostRestaurantPicture(post: Publication): void {
-        if (post.restaurantPicture) {
-            post.restaurantPicture.subscribe(URLObservable => {
-                URLObservable.subscribe(URL => {
-                    post.restaurantPictureURL = URL;
-                });
+    private setPostPictureAndComments(post: Publication): void {
+        post.restaurantPicture.subscribe(URLObservable => {
+            URLObservable.subscribe(URL => {
+                post.restaurantPictureURL = URL;
+
+                this.commentService
+                    .getCommentsByPostId(post.id)
+                    .subscribe(comments => {
+                        post.comments = comments as Comment[];
+                        this.setPostCommentsUsers(post);
+                    });
             });
-        }
+        });
     }
 
-    private setCommentsUsers(comments: Comment[]): void {
-        comments.forEach(comment => {
+    private setPostCommentsUsers(post: Publication): void {
+        post.comments.forEach(comment => {
             comment.user = this.authService.buildAppUser('', '', noPhotoURL);
-            comment.user.photoURL = noPhotoURL;
+            this.setCommentUser(comment, post.restaurantPictureURL);
+        });
+    }
+
+    private setCommentUser(
+        comment: Comment,
+        restaurantPictureURL: string
+    ): void {
+        if (comment.isOwnerARestaurant) {
+            this.restaurantService
+                .getRestaurant(comment.ownerId)
+                .map(restaurant => {
+                    return this.authService.buildAppUser(
+                        comment.ownerId,
+                        restaurant.name,
+                        restaurantPictureURL
+                    );
+                })
+                .subscribe(restaurant => {
+                    comment.user = restaurant;
+                });
+        } else {
             this.userService
                 .getUser(comment.ownerId)
                 .map(user => {
@@ -160,14 +176,9 @@ export class UserWallComponent {
                         user.photoURL
                     );
                 })
-                .subscribe(
-                    user => {
-                        comment.user = user;
-                    },
-                    error => {
-                        console.error(error);
-                    }
-                );
-        });
+                .subscribe(user => {
+                    comment.user = user;
+                });
+        }
     }
 }

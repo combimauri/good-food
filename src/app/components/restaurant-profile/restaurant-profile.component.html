@@ -111,7 +111,7 @@
                   <p class="message">
                     <a class="name">
                       <small class="text-muted pull-right">
-                        <i class="fa fa-clock-o"></i> {{comment.date.seconds * 1000 | date}}</small>
+                        <i class="fa fa-clock-o"></i> {{comment.date.getTime() | date}}</small>
                       {{comment.user.name}}
                     </a>
                     {{comment.comment}}
