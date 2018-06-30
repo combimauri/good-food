@@ -1,10 +1,19 @@
+.main-header .sidebar-toggle {
+    color: #002db3;
+}
+
 .main-header .sidebar-toggle-right {
     float: right;
     background-color: transparent;
     background-image: none;
     padding: 15px;
     font-family: fontAwesome;
-    color: tomato;
+    color: #002db3;
+    cursor: pointer;
+}
+
+.sidebar-toggle.sidebar-toggle-right:before {
+    content: none;
 }
 
 .main-sidebar {
@@ -13,4 +22,31 @@
 
 .control-sidebar {
     padding-top: 50px;
+}
+
+.user-panel {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-right: 0px !important;
+    padding-left: 5px !important;
+}
+
+.user-panel > .info {
+    padding-left: 0px !important;
+}
+
+.profile-img {
+    width: 40px !important;
+    height: 41px !important;
+}
+
+.logo,
+.navbar-brand,
+.restaurant-link {
+    cursor: pointer;
+}
+
+.restaurant-link div {
+    padding-top: 5px;
+    padding-left: 35px;
 }

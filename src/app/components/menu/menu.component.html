@@ -1,7 +1,7 @@
 <div class="wrapper">
 
   <header class="main-header">
-    <a class="logo hidden-xs" routerLink="/home-feed">
+    <a class="logo hidden-xs" (click)="homeService.goHome()">
       <span class="logo-mini">
         <b>G</b>F</span>
       <span class="logo-lg">
@@ -16,12 +16,12 @@
         <span class="icon-bar"></span>
       </a>
 
-      <a class="sidebar-toggle-right" data-toggle="control-sidebar">
-        <i class="fa fa-gears"></i>
+      <a class="sidebar-toggle sidebar-toggle-right" data-toggle="control-sidebar">
+        <i class="fa fa-exchange"></i>
       </a>
 
       <div class="navbar-header visible-xs">
-        <a class="navbar-brand" routerLink="/home-feed">
+        <a class="navbar-brand" (click)="homeService.goHome()">
           <b>Good</b>Food</a>
       </div>
     </nav>
@@ -31,10 +31,10 @@
     <section class="sidebar">
       <div class="user-panel">
         <div class="pull-left image">
-          <img [src]="userPhotoURL" class="img-circle" alt="User Image">
+          <img [src]="currentUser.photoURL" class="img-circle profile-img" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>{{ (authService.authUser | async)?.name }}</p>
+          <p>{{currentUser.name}}</p>
           <p>
             <i class="fa fa-circle text-success"></i> En línea</p>
         </div>
@@ -53,15 +53,21 @@
 
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">RESTAURANTES</li>
-        <li>
+        <li *ngIf="!isCurrentUserARestaurant">
+          <a routerLink="/home-feed" data-toggle="push-menu">
+            <i class="fa fa-list"></i>
+            <span>Publicaciones</span>
+          </a>
+        </li>
+        <li *ngIf="!isCurrentUserARestaurant">
           <a routerLink="/restaurants-map" data-toggle="push-menu">
             <i class="fa fa-map-marker"></i>
-            <span>Ubicación restaurante</span>
+            <span>Mapa de Restaurantes</span>
           </a>
         </li>
         <li>
           <a routerLink="/messages" data-toggle="push-menu">
-            <i class="fa fa-map-marker"></i>
+            <i class="fa fa-envelope"></i>
             <span>Mensajes</span>
           </a>
         </li>
@@ -77,34 +83,40 @@
   </aside>
 
   <aside class="control-sidebar control-sidebar-dark">
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li>
-        <a href="#control-sidebar-home-tab" data-toggle="tab">
-          <i class="fa fa-home"></i>
-        </a>
-      </li>
-      <li class="active">
-        <a href="#control-sidebar-settings-tab" data-toggle="tab">
-          <i class="fa fa-gears"></i>
-        </a>
-      </li>
-    </ul>
-
     <div class="tab-content">
-      <div class="tab-pane" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Actividad Reciente</h3>
-      </div>
-
       <div class="tab-pane active" id="control-sidebar-settings-tab">
-        <h3 class="control-sidebar-heading">Configuraciones</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a routerLink='/register-my-restaurant' data-toggle="control-sidebar">
-              <i class="fa fa-cutlery"></i>
-              <span>Registrar mi restaurante</span>
-            </a>
-          </li>
-        </ul>
+        <div *ngIf="isCurrentUserARestaurant">
+          <ul class="control-sidebar-menu">
+            <li>
+              <a (click)="changeCurrentAppUser(loggedUser)" class="restaurant-link" data-toggle="control-sidebar">
+                <img class="img-responsive img-circle img-sm" [src]="loggedUser.photoURL" alt="Restaurant Profile Picture">
+                <div>{{loggedUser.name}}</div>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="!isCurrentUserARestaurant && userRestaurants.length > 0">
+          <h3 class="control-sidebar-heading">Tus Restaurantes</h3>
+          <ul class="control-sidebar-menu">
+            <li *ngFor="let restaurant of userRestaurants">
+              <a (click)="changeCurrentAppUser(restaurant)" class="restaurant-link" data-toggle="control-sidebar">
+                <img class="img-responsive img-circle img-sm" [src]="restaurant.photoURL" alt="Restaurant Profile Picture">
+                <div>{{restaurant.name}}</div>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="!isCurrentUserARestaurant">
+          <h3 class="control-sidebar-heading">Más Opciones</h3>
+          <ul class="control-sidebar-menu">
+            <li>
+              <a routerLink='/register-my-restaurant' data-toggle="control-sidebar">
+                <i class="fa fa-cutlery"></i>
+                <span>Registrar mi restaurante</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </aside>

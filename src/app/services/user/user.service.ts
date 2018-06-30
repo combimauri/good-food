@@ -9,6 +9,8 @@ import { Observable } from 'rxjs/Observable';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Iuser } from '../../interfaces/iuser';
 import { IuserId } from '../../interfaces/iuser-id';
+import { AppUserService } from './app-user.service';
+import { IappUser } from '../../interfaces/iapp-user';
 
 const noDisplayName: string = 'Nuevo Usuario';
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -19,6 +21,7 @@ export class UserService {
 
     constructor(
         private afs: AngularFirestore,
+        private appUserService: AppUserService,
         private subscriptions: SubscriptionsService
     ) {
         this.usersCollection = this.afs.collection<any>('users');
@@ -43,8 +46,14 @@ export class UserService {
                 normalUser: true
             }
         };
+        const appUser: IappUser = this.appUserService.buildAppUser(
+            user.uid,
+            newUser.name,
+            newUser.photoURL
+        );
 
         this.usersCollection.doc(user.uid).set(newUser, { merge: true });
+        this.appUserService.changeCurrentAppUser(appUser);
     }
 
     updateUserToFoodBusinessOwner(user: IuserId): void {
