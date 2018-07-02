@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 
-import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ChatRoomService } from '../../services/chat/chat-room.service';
-import { IuserId } from '../../interfaces/iuser-id';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
-import { ChatRoom } from '../../models/chat-room';
-import { Restaurant } from '../../models/restaurant';
-import { BusinessOwnerChatRoom } from '../../models/business-owner-chat-room';
-import { User } from '../../models/user';
 import { UserService } from '../../services/user/user.service';
+import { ChatRoom } from '../../models/chat-room';
+import { IappUser } from '../../interfaces/iapp-user';
+import { IchatRoomId } from '../../interfaces/ichat-room-id';
+
+const noPhotoURL: string = './assets/img/nophoto.png';
 
 @Component({
     selector: 'food-chat-rooms',
@@ -17,88 +16,149 @@ import { UserService } from '../../services/user/user.service';
     styleUrls: ['./chat-rooms.component.scss']
 })
 export class ChatRoomsComponent {
-    currentUser: IuserId;
-
-    businessOwnerRestaurants: BusinessOwnerChatRoom[];
-
-    restaurantChatRooms: ChatRoom[];
-
-    userChatRooms: ChatRoom[];
+    chatRooms: ChatRoom[];
 
     currentChatRoom: ChatRoom;
+
+    private isCurrentUserARestaurant: boolean;
+
+    private currentUser: IappUser;
 
     constructor(
         private authService: AuthenticationService,
         private restaurantService: RestaurantService,
         private userService: UserService,
-        private chatRoomService: ChatRoomService,
-        private subscriptions: SubscriptionsService
+        private chatRoomService: ChatRoomService
     ) {
-        this.businessOwnerRestaurants = [];
-        this.userChatRooms = [];
-        this.restaurantChatRooms = [];
+        this.chatRooms = [];
         this.currentChatRoom = new ChatRoom();
+        this.isCurrentUserARestaurant = false;
+        this.currentUser = this.authService.buildAppUser('', '', noPhotoURL);
 
-        this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
-            .subscribe(user => {
-                this.currentUser = user;
-                this.getUserChatRooms();
+        this.authService.getCurrentAppUser().subscribe(user => {
+            this.currentUser = user;
+            this.authService.isAppUserARestaurant().subscribe(isRestaurant => {
+                this.isCurrentUserARestaurant = isRestaurant;
+                this.setChatRooms();
             });
+        });
     }
 
     setCurrentChatRoom(chatRoom: ChatRoom): void {
+        this.chatRoomService.selectedChatUserId = chatRoom.contactUser.id;
         this.currentChatRoom = chatRoom;
     }
 
-    private getUserChatRooms(): void {
-        this.chatRoomService
-            .getChatRoomsByUserId(this.currentUser.id)
-            .subscribe(chatRooms => {
-                this.userChatRooms = chatRooms;
-                this.getRoomRestaurants();
-            });
+    deleteCurrentContact(): void {
+        this.chatRoomService.selectedChatUserId = '';
+        this.currentChatRoom = new ChatRoom();
+    }
 
-        if (this.currentUser.roles['businessOwner']) {
-            this.restaurantService
-                .getBusinessOwnerRestaurants(this.currentUser.id)
-                .subscribe(restaurants => {
-                    restaurants.forEach(restaurant => {
-                        this.chatRoomService
-                            .getChatRoomsByRestaurantId(restaurant.id)
-                            .subscribe(chatRooms => {
-                                let userChat: BusinessOwnerChatRoom = new BusinessOwnerChatRoom(
-                                    restaurant,
-                                    chatRooms
-                                );
-
-                                this.getRoomUsers(userChat);
-                                this.businessOwnerRestaurants.push(userChat);
-                            });
-                    });
-                });
+    private setChatRooms(): void {
+        if (!this.isCurrentUserARestaurant) {
+            this.setUserChatRooms();
+        } else {
+            this.setRestaurantChatRooms();
         }
     }
 
-    private getRoomRestaurants(): void {
-        this.userChatRooms.forEach(chatRoom => {
-            chatRoom.restaurant = new Restaurant();
-            chatRoom.user = this.currentUser;
+    private setUserChatRooms(): void {
+        this.chatRoomService
+            .getChatRoomsByUserId(this.currentUser.id)
+            .subscribe(chatRooms => {
+                if (chatRooms.length !== this.chatRooms.length) {
+                    this.chatRooms = chatRooms;
+                    this.setRestaurantsUserData();
+                } else {
+                    this.setChatRoomsIfChanged(chatRooms);
+                }
+                let selectedChatRoom: ChatRoom = this.chatRooms.find(
+                    chatRoom => {
+                        return (
+                            chatRoom.restaurantId ===
+                            this.chatRoomService.selectedChatUserId
+                        );
+                    }
+                );
+                if (selectedChatRoom) {
+                    this.setCurrentChatRoom(selectedChatRoom);
+                }
+            });
+    }
+
+    private setRestaurantsUserData(): void {
+        this.chatRooms.forEach(chatRoom => {
+            chatRoom.contactUser = this.authService.buildAppUser(
+                chatRoom.restaurantId,
+                '',
+                noPhotoURL
+            );
             this.restaurantService
                 .getRestaurant(chatRoom.restaurantId)
                 .subscribe(restaurant => {
-                    chatRoom.restaurant = restaurant;
+                    chatRoom.contactUser.name = restaurant.name;
+                    if (restaurant.hasProfilePic) {
+                        this.setRestaurantPhotoURL(chatRoom.contactUser);
+                    }
                 });
         });
     }
 
-    private getRoomUsers(userChat: BusinessOwnerChatRoom): void {
-        userChat.chatRooms.forEach(chatRoom => {
-            chatRoom.restaurant = userChat.restaurant;
-            chatRoom.user = new User();
+    private setRestaurantPhotoURL(restaurantUser: IappUser): void {
+        this.restaurantService
+            .getRestaurantProfilePic(restaurantUser.id)
+            .subscribe(url => {
+                restaurantUser.photoURL = url;
+            });
+    }
+
+    private setRestaurantChatRooms(): void {
+        this.chatRoomService
+            .getChatRoomsByRestaurantId(this.currentUser.id)
+            .subscribe(chatRooms => {
+                if (chatRooms.length !== this.chatRooms.length) {
+                    this.chatRooms = chatRooms;
+                    this.setNormalUserData();
+                } else {
+                    this.setChatRoomsIfChanged(chatRooms);
+                }
+                let selectedChatRoom: ChatRoom = this.chatRooms.find(
+                    chatRoom => {
+                        return (
+                            chatRoom.userId ===
+                            this.chatRoomService.selectedChatUserId
+                        );
+                    }
+                );
+                if (selectedChatRoom) {
+                    this.setCurrentChatRoom(selectedChatRoom);
+                }
+            });
+    }
+
+    private setNormalUserData(): void {
+        this.chatRooms.forEach(chatRoom => {
+            chatRoom.contactUser = this.authService.buildAppUser(
+                chatRoom.userId,
+                '',
+                noPhotoURL
+            );
             this.userService.getUser(chatRoom.userId).subscribe(user => {
-                chatRoom.user = user;
+                chatRoom.contactUser.name = user.name;
+                chatRoom.contactUser.photoURL = user.photoURL;
             });
         });
+    }
+
+    private setChatRoomsIfChanged(chatRooms: IchatRoomId[]): void {
+        let firstChatRoomId: string = chatRooms[0].id;
+        let chatRoom: ChatRoom = this.chatRooms.find(room => {
+            return room.id === firstChatRoomId;
+        });
+        let chatRoomIndex: number = this.chatRooms.findIndex(room => {
+            return room.id === firstChatRoomId;
+        });
+        this.chatRooms.splice(chatRoomIndex, 1);
+        this.chatRooms.unshift(chatRoom);
     }
 }

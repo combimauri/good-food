@@ -1,15 +1,14 @@
 <section class="content">
   <div class="row">
-    <div class="col-sm-4 col-md-3">
+    <div class="col-sm-4 col-md-3" [ngClass]="{'hidden-xs': this.currentChatRoom.id}">
       <div class="black-contacts-container">
         <ul class="contacts-list">
-          <li *ngFor="let room of userChatRooms; let i = index">
+          <li *ngFor="let room of chatRooms" class="contact-item" [ngClass]="{'selected-contact': room.id === currentChatRoom.id}">
             <a (click)="setCurrentChatRoom(room)">
-              <img class="contacts-list-img" src="./assets/img/nophoto.png" alt="User Image">
-
+              <img class="contacts-list-img" [src]="room.contactUser.photoURL" alt="Contact Image">
               <div class="contacts-list-info">
                 <span class="contacts-list-name">
-                  {{room.restaurant.name}}
+                  {{room.contactUser.name}}
                   <small class="pull-right">{{room.date.getTime() | date}}</small>
                 </span>
                 <span>{{room.lastMessage}}</span>
@@ -20,47 +19,8 @@
       </div>
     </div>
 
-    <div class="col-sm-6">
-      <food-chat [chatRoom]="currentChatRoom"></food-chat>
+    <div class="col-sm-6" [ngClass]="{'hidden-xs': !this.currentChatRoom.id}" style="height: calc(100vh - 80px);">
+      <food-chat [chatRoom]="currentChatRoom" (onDeleteCurrentContact)="deleteCurrentContact()"></food-chat>
     </div>
   </div>
 </section>
-
-<a class="float">
-  <img src="./assets/img/baseline_add_white_18dp_2.png" class="my-float" data-toggle="modal" data-target="#modal-new-message">
-</a>
-
-<div class="modal modal-info fade in" id="modal-new-message">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title">Restaurantes que sigues</h4>
-      </div>
-      <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Restaurant</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let room of userChatRooms; let i = index">
-                <th scope="row">{{i + 1}}</th>
-                <td>{{room.restaurant.name}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-        <!-- <button type="button" class="btn btn-outline">Save changes</button> -->
-      </div>
-    </div>
-  </div>
-</div>

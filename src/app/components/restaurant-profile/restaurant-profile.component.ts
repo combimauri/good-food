@@ -46,6 +46,8 @@ export class RestaurantProfileComponent implements OnInit {
 
     isUnfollow: boolean;
 
+    restaurantHasOwner: boolean;
+
     isMessageButtonReady: boolean;
 
     isCurrentUserARestaurant: boolean;
@@ -72,6 +74,7 @@ export class RestaurantProfileComponent implements OnInit {
         this.isFollowButtonReady = false;
         this.isFollow = false;
         this.isUnfollow = false;
+        this.restaurantHasOwner = false;
         this.isMessageButtonReady = false;
         this.isCurrentUserARestaurant = false;
         this.currentAppUser = this.authService.buildAppUser('', '', noPhotoURL);
@@ -100,24 +103,33 @@ export class RestaurantProfileComponent implements OnInit {
 
     goToChatRoom(): void {
         if (this.isMessageButtonReady) {
-            this.router.navigate([
-                '/chat-room',
-                this.restaurantId + '_' + this.loggedUser.id
-            ]);
+            if (this.isUnfollow) {
+                this.chatRoomService.selectedChatUserId = this.restaurantId;
+                this.router.navigate(['/messages']);
+            } else {
+                let chatRoom: IchatRoom = {
+                    restaurantId: this.restaurantId,
+                    userId: this.loggedUser.id,
+                    lastMessage: '...',
+                    date: new Date()
+                };
+
+                this.chatRoomService.saveChatRoom(chatRoom).subscribe(room => {
+                    this.chatRoomService.selectedChatUserId = this.restaurantId;
+                    this.router.navigate(['/messages']);
+                });
+            }
         }
     }
 
     savePublication(): void {
         this.newPublication.ownerName = this.restaurant.name;
         this.newPublication.restaurantId = this.restaurantId;
-        this.publicationService.savePublication(this.newPublication).subscribe(
-            () => {
+        this.publicationService
+            .savePublication(this.newPublication)
+            .subscribe(() => {
                 this.newPublication = new Publication();
-            },
-            error => {
-                console.error(error);
-            }
-        );
+            });
     }
 
     addComment(publication: Publication): void {
@@ -163,6 +175,7 @@ export class RestaurantProfileComponent implements OnInit {
 
     private setRestaurantData(restaurant: Irestaurant): void {
         this.restaurant = restaurant;
+        this.restaurantHasOwner = this.restaurant.ownerId ? true : false;
         if (this.restaurant.hasProfilePic) {
             this.restaurantService
                 .getRestaurantProfilePic(this.restaurantId)
