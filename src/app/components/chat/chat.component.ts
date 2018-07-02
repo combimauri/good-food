@@ -1,20 +1,14 @@
-import {
-    Component,
-    ViewChild,
-    ElementRef,
-    Input,
-    OnChanges,
-    SimpleChanges
-} from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
 
-import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
 import { ChatService } from '../../services/chat/chat.service';
+import { ChatRoomService } from '../../services/chat/chat-room.service';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { Ichat } from '../../interfaces/ichat';
 import { ChatMessage } from '../../models/chat-message';
 import { ChatRoom } from '../../models/chat-room';
-import { ChatRoomService } from '../../services/chat/chat-room.service';
+import { IappUser } from '../../interfaces/iapp-user';
 
 const noPhotoURL: string = './assets/img/nophoto.png';
 
@@ -26,7 +20,7 @@ const noPhotoURL: string = './assets/img/nophoto.png';
 export class ChatComponent implements OnChanges {
     @Input() chatRoom: ChatRoom;
 
-    chatName: string;
+    @Output() onDeleteCurrentContact = new EventEmitter();
 
     noPhotoURL: string;
 
@@ -34,24 +28,32 @@ export class ChatComponent implements OnChanges {
 
     newMessage: Ichat;
 
-    // @ViewChild('chatContainerElement') private chatContainerElement: ElementRef;
+    private isCurrentAppUserARestaurant: boolean;
+
+    private currentUser: IappUser;
 
     constructor(
         private chatService: ChatService,
         private chatRoomService: ChatRoomService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private subscriptions: SubscriptionsService
+        private authService: AuthenticationService,
+        private router: Router
     ) {
-        this.chatName = '';
         this.noPhotoURL = noPhotoURL;
         this.messages = [];
         this.newMessage = new ChatMessage();
+        this.isCurrentAppUserARestaurant = false;
+        this.currentUser = this.authService.buildAppUser('', '', noPhotoURL);
+
+        this.authService.isAppUserARestaurant().subscribe(isRestaurant => {
+            this.isCurrentAppUserARestaurant = isRestaurant;
+        });
+        this.authService.getCurrentAppUser().subscribe(user => {
+            this.currentUser = user;
+        });
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    ngOnChanges(): void {
         if (this.chatRoom.id) {
-            this.chatName = this.chatRoom.restaurant.name;
             this.setChatRoomMessages();
         }
     }
@@ -59,22 +61,29 @@ export class ChatComponent implements OnChanges {
     sendMessage(): void {
         if (this.newMessage.message) {
             this.newMessage.chatRoomId = this.chatRoom.id;
+            this.newMessage.senderId = this.currentUser.id;
             this.chatService.saveChat(this.newMessage);
 
             this.newMessage = new ChatMessage();
         }
     }
 
+    goToUserProfile(): void {
+        if (!this.isCurrentAppUserARestaurant) {
+            this.router.navigate([
+                '/restaurant-profile',
+                this.chatRoom.restaurantId
+            ]);
+        }
+    }
+
     private setChatRoomMessages(): void {
-        this.chatService.getChatsByChatRoomId(this.chatRoom.id).subscribe(
-            messages => {
+        this.messages = [];
+        this.chatService
+            .getChatsByChatRoomId(this.chatRoom.id)
+            .subscribe(messages => {
                 this.messages = messages;
-                // this.scrollToBottom();
-            },
-            error => {
-                console.error(error);
-            }
-        );
+            });
 
         this.chatService
             .getLastChatByChatRoomId(this.chatRoom.id)
@@ -92,16 +101,4 @@ export class ChatComponent implements OnChanges {
                 }
             });
     }
-
-    // private scrollToBottom(): void {
-    //     let isScrolledToBottom =
-    //         this.chatContainerElement.nativeElement.scrollHeight -
-    //             this.chatContainerElement.nativeElement.clientHeight <=
-    //         this.chatContainerElement.nativeElement.scrollTop + 1;
-    //     if (isScrolledToBottom) {
-    //         this.chatContainerElement.nativeElement.scrollTop =
-    //             this.chatContainerElement.nativeElement.scrollHeight -
-    //             this.chatContainerElement.nativeElement.clientHeight;
-    //     }
-    // }
 }

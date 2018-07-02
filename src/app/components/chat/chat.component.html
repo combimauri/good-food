@@ -1,85 +1,37 @@
-<!-- <section class="content">
-  <div class="row">
-
-    <div class="col-md-6"> -->
-<div class="box box-primary direct-chat direct-chat-success">
+<div class="box box-primary direct-chat direct-chat-success gf-chat">
   <div class="box-header with-border">
-    <h3 class="box-title">{{chatName ? chatName : 'Selecciona un contacto'}}</h3>
-
+    <img class="img-responsive img-circle img-sm" [src]="chatRoom.contactUser ? chatRoom.contactUser.photoURL : noPhotoURL" alt="User Profile Picture">
+    <h3 class="box-title message-title">
+      <div *ngIf="chatRoom.contactUser ? false : true">Selecciona un contacto</div>
+      <a *ngIf="chatRoom.contactUser ? true : false" (click)="goToUserProfile()" class="pointer-link">{{chatRoom.contactUser.name}}</a>
+    </h3>
     <div class="box-tools pull-right">
-      <span data-toggle="tooltip" title="" class="badge bg-green" data-original-title="3 New Messages">3</span>
-      <button type="button" class="btn btn-box-tool" data-widget="collapse">
-        <i class="fa fa-minus"></i>
-      </button>
-      <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
-        <i class="fa fa-comments"></i>
-      </button>
-      <button type="button" class="btn btn-box-tool" data-widget="remove">
-        <i class="fa fa-times"></i>
+      <button *ngIf="true" type="button" class="btn btn-box-tool" (click)="onDeleteCurrentContact.emit()">
+        <i class="fa fa-address-book contacts-button-img"></i>
       </button>
     </div>
   </div>
-  <div class="box-body" style="height: calc(100vh - 199px);">
-    <div #chatContainerElement class="direct-chat-messages" style="height: 100%;">
-
-      <!-- Message. Default to the left -->
-      <!-- <div class="direct-chat-msg">
-              <div class="direct-chat-info clearfix">
-                <span class="direct-chat-name pull-left">Alexander Pierce</span>
-                <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-              </div>
-              <img class="direct-chat-img" [src]="noPhotoURL" alt="Message User Image">
-              <div class="direct-chat-text">
-                Is this template really for free? That's unbelievable!
-              </div>
-            </div> -->
-
-      <!-- Message to the right -->
-      <div class="direct-chat-msg right" *ngFor="let message of messages">
-        <div class="direct-chat-info clearfix">
-          <!-- <span class="direct-chat-name pull-right">{{message.user.name}}</span> -->
-          <span class="direct-chat-timestamp pull-left">{{message.date.getTime() | date:'short'}}</span>
-        </div>
-        <img class="direct-chat-img" [src]="noPhotoURL" alt="Message User Image">
-        <div class="direct-chat-text">
-          {{ message.message }}
+  <div class="box-body">
+    <div #chatContainerElement class="direct-chat-messages">
+      <div *ngFor="let message of messages">
+        <div class="direct-chat-msg" [ngClass]="{'right': message.senderId === currentUser.id}">
+          <div class="direct-chat-info clearfix">
+            <span class="direct-chat-timestamp" [ngClass]="{'pull-left': message.senderId === currentUser.id, 'pull-right': message.senderId !== currentUser.id}">{{message.date.getTime() | date:'short'}}</span>
+          </div>
+          <div class="direct-chat-text">
+            {{message.message}}
+          </div>
         </div>
       </div>
-
     </div>
-
-    <!-- Contacts are loaded here -->
-    <div class="direct-chat-contacts" *ngIf="true">
-      <ul class="contacts-list">
-        <li>
-          <a href="#">
-            <img class="contacts-list-img" [src]="noPhotoURL" alt="User Image">
-
-            <div class="contacts-list-info">
-              <span class="contacts-list-name">
-                Count Dracula
-                <small class="contacts-list-date pull-right">2/28/2015</small>
-              </span>
-              <span class="contacts-list-msg">How have you been? I was...</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-
   </div>
-  <div class="box-footer">
-    <form action="#" method="post">
-      <div class="input-group">
-        <input type="text" name="message" placeholder="Escribe un mensaje..." class="form-control" [(ngModel)]="newMessage.message">
-        <span class="input-group-btn">
-          <button type="submit" class="btn btn-primary btn-flat" (click)="sendMessage()">Enviar</button>
-        </span>
-      </div>
-    </form>
+  <div *ngIf="chatRoom.contactUser ? true : false" class="box-footer">
+    <div class="input-group">
+      <input (keyup.enter)="sendMessage()" type="text" name="message" placeholder="Escribe un mensaje..." class="form-control"
+        [(ngModel)]="newMessage.message">
+      <span class="input-group-btn">
+        <button class="btn btn-primary btn-flat" (click)="sendMessage()">Enviar</button>
+      </span>
+    </div>
   </div>
 </div>
-<!-- </div>
-
-  </div>
-</section> -->

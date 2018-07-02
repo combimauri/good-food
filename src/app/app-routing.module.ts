@@ -13,7 +13,6 @@ import { RegisterMyRestaurantComponent } from './components/register-my-restaura
 import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
-import { ChatComponent } from './components/chat/chat.component';
 import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { InternalGuard } from './services/authentication/internal.guard';
 
@@ -69,10 +68,6 @@ const routes: Routes = [
             {
                 path: 'messages',
                 component: ChatRoomsComponent
-            },
-            {
-                path: 'chat-room/:id',
-                component: ChatComponent
             }
         ]
     },

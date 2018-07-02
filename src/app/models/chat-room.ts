@@ -1,13 +1,11 @@
-import { Irestaurant } from '../interfaces/irestaurant';
-import { Iuser } from '../interfaces/iuser';
 import { IchatRoomId } from '../interfaces/ichat-room-id';
+import { IappUser } from '../interfaces/iapp-user';
 
 export class ChatRoom implements IchatRoomId {
     id: string;
     restaurantId: string;
     userId: string;
-    restaurant?: Irestaurant;
-    user?: Iuser;
     lastMessage: string;
     date: Date;
+    contactUser?: IappUser;
 }

@@ -61,6 +61,7 @@ export class ChatService {
         const chatMessage: Ichat = {
             message: chat.message,
             chatRoomId: chat.chatRoomId,
+            senderId: chat.senderId,
             date: new Date()
         };
 

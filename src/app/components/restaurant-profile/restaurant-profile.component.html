@@ -26,7 +26,7 @@
           <a [routerLink]="['/restaurant-menu', restaurantId]" class="btn btn-info btn-block">
             <b>Ver Menú</b>
           </a>
-          <button [disabled]="!isMessageButtonReady" (click)="isMessageButtonReady && goToChatRoom()" class="btn btn-info btn-block">
+          <button *ngIf="restaurantHasOwner" [disabled]="!isMessageButtonReady" (click)="isMessageButtonReady && goToChatRoom()" class="btn btn-info btn-block">
             <b>Mensajes</b>
           </button>
         </div>
@@ -97,7 +97,7 @@
                 </li>
               </ul>
 
-              <img class="img-responsive img-circle img-sm" [src]="currentAppUser.photoURL" alt="Restaurant Profile Picture">
+              <img class="img-responsive img-circle img-sm" [src]="currentAppUser.photoURL" alt="User Profile Picture">
               <div class="img-push">
                 <input (keyup.enter)="addComment(post)" type="text" class="form-control input-sm" placeholder="Deja un comentario" name="comment"
                   [(ngModel)]="post.newComment">

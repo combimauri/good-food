@@ -1,0 +1,23 @@
+.gf-chat {
+    height: 100%;
+    margin-bottom: 0px;
+}
+
+.direct-chat-messages {
+    height: calc(100vh - 189px);
+    overflow-x: hidden;
+}
+
+.direct-chat-text {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.message-title {
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.contacts-button-img {
+    padding-top: 5px;
+}
