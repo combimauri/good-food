@@ -6,13 +6,13 @@
       <a *ngIf="chatRoom.contactUser ? true : false" (click)="goToUserProfile()" class="pointer-link">{{chatRoom.contactUser.name}}</a>
     </h3>
     <div class="box-tools pull-right">
-      <button *ngIf="true" type="button" class="btn btn-box-tool" (click)="onDeleteCurrentContact.emit()">
+      <button type="button" class="btn btn-box-tool hidden-sm hidden-md hidden-lg" (click)="deleteCurrentContactMessages()">
         <i class="fa fa-address-book contacts-button-img"></i>
       </button>
     </div>
   </div>
   <div class="box-body">
-    <div #chatContainerElement class="direct-chat-messages">
+    <div id="chat-container" class="direct-chat-messages">
       <div *ngFor="let message of messages">
         <div class="direct-chat-msg" [ngClass]="{'right': message.senderId === currentUser.id}">
           <div class="direct-chat-info clearfix">
