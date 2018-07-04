@@ -12,7 +12,7 @@ export class Restaurant implements IrestaurantId {
     addUserId: string;
     hasOwner?: boolean;
     ownerId?: string;
-    profilePic: File;
+    profilePic?: File;
     followersCount: number;
 
     constructor() {
