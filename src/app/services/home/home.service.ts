@@ -4,11 +4,13 @@ import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { AuthenticationService } from '../authentication/authentication.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 
 @Injectable()
 export class HomeService {
     constructor(
         private authService: AuthenticationService,
+        private subscriptions: SubscriptionsService,
         private router: Router
     ) {}
 
@@ -18,15 +20,17 @@ export class HomeService {
         });
     }
 
-    getHomeURL(): Observable<string> {
+    private getHomeURL(): Observable<string> {
         return combineLatest(
             this.authService.isAppUserARestaurant(),
             this.authService.getCurrentAppUser()
-        ).map(([isRestaurant, currentUser]) => {
-            if (isRestaurant) {
-                return '/restaurant-profile/' + currentUser.id;
-            }
-            return '/home';
-        });
+        )
+            .map(([isRestaurant, currentUser]) => {
+                if (isRestaurant) {
+                    return '/restaurant-profile/' + currentUser.id;
+                }
+                return '/home';
+            })
+            .takeUntil(this.subscriptions.unsubscribe);
     }
 }

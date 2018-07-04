@@ -172,14 +172,20 @@ export class RestaurantProfileComponent implements OnInit {
     }
 
     registerAsMyRestaurant(): void {
-        let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
-            this.restaurantId,
-            this.restaurant
-        );
-        restaurant.ownerId = this.loggedUser.id;
-        this.restaurantService.updateRestaurant(restaurant).subscribe(() => {
-            this.userService.updateUserToFoodBusinessOwner(this.loggedUser);
-        });
+        if (this.showRegisterButton) {
+            let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
+                this.restaurantId,
+                this.restaurant
+            );
+            restaurant.ownerId = this.loggedUser.id;
+            this.restaurantService
+                .updateRestaurant(restaurant)
+                .subscribe(() => {
+                    this.userService.updateUserToFoodBusinessOwner(
+                        this.loggedUser
+                    );
+                });
+        }
     }
 
     private setInitialData(restaurant: Irestaurant): void {
