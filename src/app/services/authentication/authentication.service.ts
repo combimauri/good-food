@@ -56,8 +56,8 @@ export class AuthenticationService extends AppUserService {
 
     getCurrentAppUser(): Observable<IappUser> {
         let appUser: IappUser = this.getCurrentUser();
-        return combineLatest(this.validateUser(appUser), this.authUser).map(
-            ([isValid, user]) => {
+        return combineLatest(this.validateUser(appUser), this.authUser)
+            .map(([isValid, user]) => {
                 if (!isValid) {
                     appUser = this.buildAppUser(
                         user.id,
@@ -67,22 +67,22 @@ export class AuthenticationService extends AppUserService {
                     this.changeCurrentAppUser(appUser);
                 }
                 return appUser;
-            }
-        );
+            })
+            .takeUntil(this.subscriptions.unsubscribe);
     }
 
     isAppUserARestaurant(): Observable<boolean> {
         let appUser: IappUser = this.getCurrentUser();
-        return combineLatest(this.validateUser(appUser), this.authUser).map(
-            ([isValid, user]) => {
+        return combineLatest(this.validateUser(appUser), this.authUser)
+            .map(([isValid, user]) => {
                 if (isValid) {
                     return user.id !== appUser.id;
                 }
                 appUser = this.buildAppUser(user.id, user.name, user.photoURL);
                 this.changeCurrentAppUser(appUser);
                 return false;
-            }
-        );
+            })
+            .takeUntil(this.subscriptions.unsubscribe);
     }
 
     signUp(email: string, password: string, confirmPassword: string): void {
@@ -159,8 +159,8 @@ export class AuthenticationService extends AppUserService {
 
     private validateUser(user: IappUser): Observable<boolean> {
         if (user) {
-            return combineLatest(this.authUser, this.userRestaurants).map(
-                ([authUser, userRestaurants]) => {
+            return combineLatest(this.authUser, this.userRestaurants)
+                .map(([authUser, userRestaurants]) => {
                     if (user.id !== authUser.id) {
                         let currentRestaurant: IrestaurantId = userRestaurants.find(
                             restaurant => {
@@ -170,10 +170,10 @@ export class AuthenticationService extends AppUserService {
                         return currentRestaurant ? true : false;
                     }
                     return true;
-                }
-            );
+                })
+                .takeUntil(this.subscriptions.unsubscribe);
         }
-        return Observable.of(false);
+        return Observable.of(false).takeUntil(this.subscriptions.unsubscribe);
     }
 
     private handleError(errorMessage: string): void {

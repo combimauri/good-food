@@ -8,9 +8,24 @@
     overflow-x: hidden;
 }
 
+.direct-chat-msg {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
 .direct-chat-text {
-    margin-right: 0px;
+    margin-top: 0px;
+    margin-right: 100px;
     margin-left: 0px;
+}
+
+.right .direct-chat-text {
+    margin-right: 0px;
+    margin-left: 100px;
+}
+
+.message-date {
+    font-size: xx-small;
 }
 
 .message-title {
@@ -19,5 +34,5 @@
 }
 
 .contacts-button-img {
-    padding-top: 5px;
+    padding-top: 1px;
 }

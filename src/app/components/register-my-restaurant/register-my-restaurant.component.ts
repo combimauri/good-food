@@ -154,6 +154,11 @@ export class RegisterMyRestaurantComponent implements OnInit {
         task.downloadURL().subscribe(url => {
             if (!url) {
                 console.error('Error retrieving the URL.');
+            } else {
+                this.restaurantService.restaurantPhotoSubject.next({
+                    restaurantId: restaurantId,
+                    photoURL: url
+                });
             }
             this.loaderPercent = 100;
         });

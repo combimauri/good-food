@@ -32,19 +32,17 @@ export class MenuComponent implements OnInit {
         private restaurantService: RestaurantService,
         private subscriptions: SubscriptionsService
     ) {
-        this.currentUser = this.authService.buildAppUser(
-            '',
-            '',
-            noPhotoURL
-        );
-        this.loggedUser = this.authService.buildAppUser(
-            '',
-            '',
-            ''
-        );
+        this.currentUser = this.authService.buildAppUser('', '', noPhotoURL);
+        this.loggedUser = this.authService.buildAppUser('', '', '');
         this.userRestaurants = [];
         this.isCurrentUserARestaurant = true;
-        this.getCurrentUser();
+        this.setCurrentUser();
+
+        this.restaurantService.restaurantPhotoObservable.subscribe(
+            restaurantPhotoURLInterface => {
+                this.setRestaurantNewPhoto(restaurantPhotoURLInterface);
+            }
+        );
     }
 
     ngOnInit(): void {
@@ -58,7 +56,7 @@ export class MenuComponent implements OnInit {
         this.setIsAppUserARestaurant();
     }
 
-    private getCurrentUser(): void {
+    private setCurrentUser(): void {
         this.authService.authUser
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
@@ -67,7 +65,7 @@ export class MenuComponent implements OnInit {
                     user.name,
                     user.photoURL
                 );
-                this.getUserRestaurants();
+                this.setUserRestaurants();
             });
 
         this.authService.getCurrentAppUser().subscribe(user => {
@@ -82,7 +80,7 @@ export class MenuComponent implements OnInit {
         });
     }
 
-    private getUserRestaurants(): void {
+    private setUserRestaurants(): void {
         this.authService.userRestaurants.subscribe(restaurants => {
             this.userRestaurants = [];
             restaurants.forEach(restaurant => {
@@ -140,5 +138,12 @@ export class MenuComponent implements OnInit {
         if (!isRestaurantInArray) {
             this.userRestaurants.push(appUser);
         }
+    }
+
+    private setRestaurantNewPhoto(restaurantPhotoURLInterface: any): void {
+        this.userRestaurants.find(restaurant => {
+            return restaurant.id === restaurantPhotoURLInterface.restaurantId;
+        }).photoURL =
+            restaurantPhotoURLInterface.photoURL;
     }
 }

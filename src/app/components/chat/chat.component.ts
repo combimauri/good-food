@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnChanges,
+    Output,
+    EventEmitter
+} from '@angular/core';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
 
@@ -77,12 +83,18 @@ export class ChatComponent implements OnChanges {
         }
     }
 
+    deleteCurrentContactMessages(): void {
+        this.messages = [];
+        this.onDeleteCurrentContact.emit();
+    }
+
     private setChatRoomMessages(): void {
         this.messages = [];
         this.chatService
             .getChatsByChatRoomId(this.chatRoom.id)
             .subscribe(messages => {
                 this.messages = messages;
+                this.scrollDown();
             });
 
         this.chatService
@@ -100,5 +112,12 @@ export class ChatComponent implements OnChanges {
                     });
                 }
             });
+    }
+
+    private scrollDown(): void {
+        setTimeout(() => {
+            let objDiv = document.getElementById('chat-container');
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }, 1);
     }
 }

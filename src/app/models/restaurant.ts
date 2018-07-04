@@ -1,4 +1,4 @@
-import { IrestaurantId } from "../interfaces/irestaurant-id";
+import { IrestaurantId } from '../interfaces/irestaurant-id';
 
 export class Restaurant implements IrestaurantId {
     id: string;
@@ -10,12 +10,14 @@ export class Restaurant implements IrestaurantId {
     hasProfilePic: boolean;
     photoURL?: string;
     addUserId: string;
+    hasOwner?: boolean;
     ownerId?: string;
     profilePic: File;
     followersCount: number;
 
     constructor() {
         this.hasProfilePic = false;
+        this.hasOwner = false;
         this.followersCount = 0;
     }
 }
