@@ -14,10 +14,20 @@ import 'rxjs/add/operator/takeUntil';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Irestaurant } from '../../interfaces/irestaurant';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
+import { Subject } from 'rxjs/Subject';
+
+export interface RestaurantPhotoURLMap {
+    restaurantId: string;
+    photoURL: string;
+}
 
 @Injectable()
 export class RestaurantService {
     restaurants: Observable<IrestaurantId[]>;
+
+    restaurantPhotoObservable: Observable<RestaurantPhotoURLMap>;
+
+    restaurantPhotoSubject: Subject<RestaurantPhotoURLMap>;
 
     private restaurantDoc: AngularFirestoreDocument<Irestaurant>;
 
@@ -28,6 +38,8 @@ export class RestaurantService {
         private storage: AngularFireStorage,
         private subscriptions: SubscriptionsService
     ) {
+        this.restaurantPhotoSubject = new Subject<RestaurantPhotoURLMap>();
+        this.restaurantPhotoObservable = this.restaurantPhotoSubject.asObservable();
         this.restaurantsCollection = this.afs.collection<Irestaurant>(
             'restaurants'
         );

@@ -58,6 +58,11 @@
               <option *ngFor="let category of restaurantCategoryService.categories | async" [value]="category.id">{{category.name}}</option>
             </select>
           </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" [checked]="newRestaurant.hasOwner" (change)="newRestaurant.hasOwner = !newRestaurant.hasOwner"> ¿Es este tu restaurante?
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline pull-left" (click)="closeNewRestaurantInfoWindow()" data-dismiss="modal">Cerrar</button>

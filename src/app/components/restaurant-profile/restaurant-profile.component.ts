@@ -52,6 +52,8 @@ export class RestaurantProfileComponent implements OnInit {
 
     isCurrentUserARestaurant: boolean;
 
+    showRegisterButton: boolean;
+
     currentAppUser: IappUser;
 
     private loggedUser: IuserId;
@@ -77,6 +79,7 @@ export class RestaurantProfileComponent implements OnInit {
         this.restaurantHasOwner = false;
         this.isMessageButtonReady = false;
         this.isCurrentUserARestaurant = false;
+        this.showRegisterButton = false;
         this.currentAppUser = this.authService.buildAppUser('', '', noPhotoURL);
 
         this.authService.changeUserObservable.subscribe(() => {
@@ -168,6 +171,17 @@ export class RestaurantProfileComponent implements OnInit {
         );
     }
 
+    registerAsMyRestaurant(): void {
+        let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
+            this.restaurantId,
+            this.restaurant
+        );
+        restaurant.ownerId = this.loggedUser.id;
+        this.restaurantService.updateRestaurant(restaurant).subscribe(() => {
+            this.userService.updateUserToFoodBusinessOwner(this.loggedUser);
+        });
+    }
+
     private setInitialData(restaurant: Irestaurant): void {
         this.setRestaurantData(restaurant);
         this.setCurrentUser();
@@ -199,6 +213,8 @@ export class RestaurantProfileComponent implements OnInit {
     private setIsAppUserARestaurant(): void {
         this.authService.isAppUserARestaurant().subscribe(isRestaurant => {
             this.isCurrentUserARestaurant = isRestaurant;
+            this.showRegisterButton =
+                !this.isCurrentUserARestaurant && !this.restaurantHasOwner;
         });
     }
 

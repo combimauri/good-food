@@ -8,6 +8,7 @@ import { RestaurantCategoryService } from '../../services/restaurant/restaurant-
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { Restaurant } from '../../models/restaurant';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { UserService } from '../../services/user/user.service';
 
 declare const google: any;
 const cochaLat: number = -17.393695;
@@ -48,6 +49,7 @@ export class RestaurantsMapComponent implements OnInit {
     constructor(
         public restaurantService: RestaurantService,
         public restaurantCategoryService: RestaurantCategoryService,
+        private userService: UserService,
         private authService: AuthenticationService,
         private styleService: MapStyleService,
         private subscriptions: SubscriptionsService
@@ -112,22 +114,25 @@ export class RestaurantsMapComponent implements OnInit {
             .takeUntil(this.subscriptions.unsubscribe)
             .subscribe(user => {
                 this.newRestaurant.addUserId = user.id;
+                if (this.newRestaurant.hasOwner) {
+                    this.newRestaurant.ownerId = user.id;
+                }
                 this.restaurantService
                     .saveRestaurant(this.newRestaurant)
-                    .subscribe(
-                        restaurantDoc => {
-                            if (this.newRestaurant.hasProfilePic) {
-                                this.saveRestaurantProfilePic(restaurantDoc.id);
-                            } else {
-                                this.loaderPercent = 100;
-                            }
-                            this.newRestaurant = new Restaurant();
-                            this.restaurantPictureElement.nativeElement.src = noPhotoURL;
-                        },
-                        error => {
-                            console.error(error);
+                    .subscribe(restaurantDoc => {
+                        if (this.newRestaurant.hasOwner) {
+                            this.userService.updateUserToFoodBusinessOwner(
+                                user
+                            );
                         }
-                    );
+                        if (this.newRestaurant.hasProfilePic) {
+                            this.saveRestaurantProfilePic(restaurantDoc.id);
+                        } else {
+                            this.loaderPercent = 100;
+                        }
+                        this.newRestaurant = new Restaurant();
+                        this.restaurantPictureElement.nativeElement.src = noPhotoURL;
+                    });
             });
         this.closeNewRestaurantInfoWindow();
     }
@@ -177,6 +182,11 @@ export class RestaurantsMapComponent implements OnInit {
         task.downloadURL().subscribe(url => {
             if (!url) {
                 console.error('Error retrieving the URL.');
+            } else {
+                this.restaurantService.restaurantPhotoSubject.next({
+                    restaurantId: restaurantId,
+                    photoURL: url
+                });
             }
             this.loaderPercent = 100;
         });

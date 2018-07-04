@@ -10,9 +10,6 @@
                 <img class="img-circle img-bordered-sm" [src]="post.restaurantPictureURL" alt="Restaurant Profile Picture">
                 <span class="username">
                   <a [routerLink]="['/restaurant-profile', post.restaurantId]">{{post.ownerName}}</a>
-                  <a class="pull-right btn-box-tool">
-                    <i class="fa fa-ellipsis-v"></i>
-                  </a>
                 </span>
                 <span class="description">{{post.date.getTime() | date}}</span>
               </div>

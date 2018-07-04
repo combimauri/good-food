@@ -82,7 +82,7 @@ export class AuthenticationService extends AppUserService {
                 this.changeCurrentAppUser(appUser);
                 return false;
             }
-        );
+        ).takeUntil(this.subscriptions.unsubscribe);
     }
 
     signUp(email: string, password: string, confirmPassword: string): void {
@@ -171,9 +171,9 @@ export class AuthenticationService extends AppUserService {
                     }
                     return true;
                 }
-            );
+            ).takeUntil(this.subscriptions.unsubscribe);
         }
-        return Observable.of(false);
+        return Observable.of(false).takeUntil(this.subscriptions.unsubscribe);
     }
 
     private handleError(errorMessage: string): void {

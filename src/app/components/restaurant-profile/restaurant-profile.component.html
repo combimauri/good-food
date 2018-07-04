@@ -41,7 +41,12 @@
             <i class="fa fa-map-marker margin-r-5"></i> Ubicación</strong>
 
           <p class="text-muted">Cochabamba, Bolivia</p>
-
+          <div *ngIf="showRegisterButton">
+            <hr>
+            <button (click)="registerAsMyRestaurant()" class="btn btn-info btn-block">
+              <b>¿Es este tu restaurante?</b>
+            </button>
+          </div>
           <!-- <hr>
           <strong>
             <i class="fa fa-mobile margin-r-5"></i> Teléfonos</strong>
