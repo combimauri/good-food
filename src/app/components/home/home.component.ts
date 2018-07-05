@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { Restaurant } from '../../models/restaurant';
 
+declare const $: any;
 const noRestaurantPhotoURL: string = './assets/img/noRestaurantPhoto.png';
 
 @Component({
@@ -17,6 +18,14 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        $('.select2').select2({
+            placeholder: 'Buscar restaurante...',
+            language: {
+                noResults: params => {
+                    return 'No hay resultados...';
+                }
+            }
+        });
         this.restaurantService.getRestaurants().subscribe(restaurants => {
             this.restaurants = restaurants;
             this.restaurants.forEach(restaurant => {
