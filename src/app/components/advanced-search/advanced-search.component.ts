@@ -18,6 +18,10 @@ export class AdvancedSearchComponent implements OnInit {
 
     searchedCategoryId: string;
 
+    minPrice: number;
+
+    maxPrice: number;
+
     resultRestaurants: Restaurant[];
 
     constructor(
@@ -31,6 +35,11 @@ export class AdvancedSearchComponent implements OnInit {
     ngOnInit() {}
 
     search(): void {
+        let minPrice = this.minPrice ? this.minPrice : 0;
+        let maxPrice = this.maxPrice ? this.maxPrice : 0;
+        if (minPrice || maxPrice) {
+            console.log('Search by price range');
+        }
         if (this.searchedCategoryId) {
             this.restaurantService
                 .getRestaurantsByCategoryId(this.searchedCategoryId)

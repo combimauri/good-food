@@ -8,13 +8,13 @@
         <label>Por precio</label>
         <div class="row">
           <div class="col-xs-5">
-            <input type="number" class="form-control" placeholder="Mínimo">
+            <input type="number" class="form-control" placeholder="Mínimo" name="min-price" [(ngModel)]="minPrice">
           </div>
           <div class="col-xs-2 text-center">
             <p>-</p>
           </div>
           <div class="col-xs-5">
-            <input type="number" class="form-control" placeholder="Máximo">
+            <input type="number" class="form-control" placeholder="Máximo" name="max-price" [(ngModel)]="maxPrice">
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <div class="box box-primary">
+  <div class="box box-primary" *ngIf="resultRestaurants.length > 0">
     <div class="box-body">
       <div *ngFor="let restaurant of resultRestaurants">
         <div class="col-xs-12 col-sm-4 col-md-3">
