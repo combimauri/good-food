@@ -15,6 +15,7 @@ import { PageNotFoundComponent } from './components/errors/page-not-found/page-n
 import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { InternalGuard } from './services/authentication/internal.guard';
+import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 
 const routes: Routes = [
     {
@@ -68,6 +69,11 @@ const routes: Routes = [
             {
                 path: 'messages',
                 component: ChatRoomsComponent
+            },
+            {
+                path: 'search',
+                component: AdvancedSearchComponent,
+                canActivate: [InternalGuard]
             }
         ]
     },

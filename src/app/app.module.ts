@@ -47,6 +47,7 @@ import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component
 import { AppUserService } from './services/user/app-user.service';
 import { InternalGuard } from './services/authentication/internal.guard';
 import { HomeService } from './services/home/home.service';
+import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 
 @NgModule({
     declarations: [
@@ -63,7 +64,8 @@ import { HomeService } from './services/home/home.service';
         RestaurantMenuComponent,
         UserWallComponent,
         ChatComponent,
-        ChatRoomsComponent
+        ChatRoomsComponent,
+        AdvancedSearchComponent
     ],
     imports: [
         BrowserModule,

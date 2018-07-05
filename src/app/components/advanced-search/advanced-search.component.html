@@ -1,0 +1,65 @@
+<section class="container">
+  <div class="box box-primary">
+    <div class="box-body">
+      <div class="page-header">
+        <h4>Búsqueda Avanzada</h4>
+      </div>
+      <div>
+        <label>Por precio</label>
+        <div class="row">
+          <div class="col-xs-5">
+            <input type="number" class="form-control" placeholder="Mínimo">
+          </div>
+          <div class="col-xs-2 text-center">
+            <p>-</p>
+          </div>
+          <div class="col-xs-5">
+            <input type="number" class="form-control" placeholder="Máximo">
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <div>
+        <label>Por proximidad</label>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"> ¿Buscar solo restaurantes cercanos?
+          </label>
+        </div>
+      </div>
+      <hr>
+
+      <div class="form-group">
+        <label for="restaurant-category">Por categoría</label>
+        <select id="restaurant-category" class="form-control" name="category" [(ngModel)]="searchedCategoryId">
+          <option [value]="undefined" disabled selected>Ingrese la categoría</option>
+          <option *ngFor="let category of categories | async" [value]="category.id">{{category.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="box-footer">
+      <button class="btn btn-info pull-right" (click)="search()">Buscar</button>
+    </div>
+  </div>
+
+  <div class="box box-primary">
+    <div class="box-body">
+      <div *ngFor="let restaurant of resultRestaurants">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+          <div class="card" [routerLink]="['/restaurant-profile', restaurant.id]">
+            <img [src]="restaurant.photoURL" alt="Avatar" style="width: 100%; height: 120px;">
+            <div class="card-container">
+              <h4>
+                <b>{{restaurant.name}}</b>
+              </h4>
+              <p>{{restaurant.type}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
