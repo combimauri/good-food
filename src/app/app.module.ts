@@ -48,6 +48,7 @@ import { AppUserService } from './services/user/app-user.service';
 import { InternalGuard } from './services/authentication/internal.guard';
 import { HomeService } from './services/home/home.service';
 import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
+import { RestaurantSearcherService } from './services/searcher/restaurant-searcher.service';
 
 @NgModule({
     declarations: [
@@ -100,7 +101,8 @@ import { AdvancedSearchComponent } from './components/advanced-search/advanced-s
         ChatRoomService,
         AppUserService,
         InternalGuard,
-        HomeService
+        HomeService,
+        RestaurantSearcherService
     ],
     bootstrap: [AppComponent]
 })

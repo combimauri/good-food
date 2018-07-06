@@ -1,19 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
 import { IcategoryId } from '../../interfaces/icategory-id';
-import { RestaurantService } from '../../services/restaurant/restaurant.service';
-import { Restaurant } from '../../models/restaurant';
+import { RestaurantSearcherService } from '../../services/searcher/restaurant-searcher.service';
 
-const noRestaurantPhotoURL: string = './assets/img/good-food-4.png';
 
 @Component({
     selector: 'food-advanced-search',
     templateUrl: './advanced-search.component.html',
     styleUrls: ['./advanced-search.component.scss']
 })
-export class AdvancedSearchComponent implements OnInit {
+export class AdvancedSearchComponent {
     categories: Observable<IcategoryId[]>;
 
     searchedCategoryId: string;
@@ -22,44 +20,20 @@ export class AdvancedSearchComponent implements OnInit {
 
     maxPrice: number;
 
-    resultRestaurants: Restaurant[];
-
     constructor(
-        private restaurantService: RestaurantService,
+        public searchService: RestaurantSearcherService,
         private categoryService: RestaurantCategoryService
     ) {
         this.categories = this.categoryService.getCategories();
-        this.resultRestaurants = [];
     }
-
-    ngOnInit() {}
 
     search(): void {
         let minPrice = this.minPrice ? this.minPrice : 0;
         let maxPrice = this.maxPrice ? this.maxPrice : 0;
-        if (minPrice || maxPrice) {
-            console.log('Search by price range');
-        }
-        if (this.searchedCategoryId) {
-            this.restaurantService
-                .getRestaurantsByCategoryId(this.searchedCategoryId)
-                .subscribe(restaurants => {
-                    this.resultRestaurants = restaurants;
-                    this.resultRestaurants.forEach(current => {
-                        this.setRestaurantPicture(current);
-                    });
-                });
-        }
-    }
+        this.searchService.searchByRangePrice(minPrice, maxPrice);
 
-    private setRestaurantPicture(restaurant: Restaurant): void {
-        restaurant.photoURL = noRestaurantPhotoURL;
-        if (restaurant.hasProfilePic) {
-            this.restaurantService
-                .getRestaurantProfilePic(restaurant.id)
-                .subscribe(url => {
-                    restaurant.photoURL = url;
-                });
+        if (this.searchedCategoryId) {
+            this.searchService.searchByCategoryId(this.searchedCategoryId);
         }
     }
 }
