@@ -4,7 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { RestaurantCategoryService } from '../../services/restaurant/restaurant-category.service';
 import { IcategoryId } from '../../interfaces/icategory-id';
 import { RestaurantSearcherService } from '../../services/searcher/restaurant-searcher.service';
-
+import { Restaurant } from '../../models/restaurant';
+import { IrestaurantId } from '../../interfaces/irestaurant-id';
 
 @Component({
     selector: 'food-advanced-search',
@@ -16,15 +17,23 @@ export class AdvancedSearchComponent {
 
     searchedCategoryId: string;
 
+    onlyNearbyRestaurants: boolean;
+
     minPrice: number;
 
     maxPrice: number;
+
+    resultRestaurants: Restaurant[];
+
+    private searchObservables: Observable<IrestaurantId>[];
 
     constructor(
         public searchService: RestaurantSearcherService,
         private categoryService: RestaurantCategoryService
     ) {
         this.categories = this.categoryService.getCategories();
+        this.onlyNearbyRestaurants = false;
+        this.resultRestaurants = [];
     }
 
     search(): void {
@@ -34,6 +43,10 @@ export class AdvancedSearchComponent {
 
         if (this.searchedCategoryId) {
             this.searchService.searchByCategoryId(this.searchedCategoryId);
+        }
+
+        if (this.onlyNearbyRestaurants) {
+            this.searchService.searchNearbyRestaurants();
         }
     }
 }

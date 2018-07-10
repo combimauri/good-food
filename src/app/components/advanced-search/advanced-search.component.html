@@ -24,7 +24,7 @@
         <label>Por proximidad</label>
         <div class="checkbox">
           <label>
-            <input type="checkbox"> ¿Buscar solo restaurantes cercanos?
+            <input type="checkbox" [checked]="onlyNearbyRestaurants" (change)="onlyNearbyRestaurants = !onlyNearbyRestaurants"> ¿Buscar solo restaurantes cercanos?
           </label>
         </div>
       </div>
@@ -49,7 +49,7 @@
       <div *ngFor="let restaurant of searchService.resultRestaurants">
         <div class="col-xs-12 col-sm-4 col-md-3">
           <div class="card" [routerLink]="['/restaurant-profile', restaurant.id]">
-            <img [src]="restaurant.photoURL" alt="Avatar" style="width: 100%; height: 120px;">
+            <img [src]="restaurant.photoURL" alt="restaurant" style="width: 100%; height: 120px;">
             <div class="card-container">
               <h4>
                 <b>{{restaurant.name}}</b>
