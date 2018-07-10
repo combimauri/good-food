@@ -4,8 +4,11 @@ import { RestaurantService } from '../restaurant/restaurant.service';
 import { MenuItemService } from '../restaurant/menu-item.service';
 import { Restaurant } from '../../models/restaurant';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Observable } from 'rxjs/Observable';
 
 const noRestaurantPhotoURL: string = './assets/img/good-food-4.png';
+const maxDistance: number = 0.5;
 
 export class RestaurantDistance {
     distance: number;
@@ -14,101 +17,107 @@ export class RestaurantDistance {
 
 @Injectable()
 export class RestaurantSearcherService {
-    resultRestaurants: Restaurant[];
-
     constructor(
         private restaurantService: RestaurantService,
         private menuItemService: MenuItemService
-    ) {
-        this.resultRestaurants = [];
-    }
+    ) {}
 
-    searchByRangePrice(minPrice: number, maxPrice: number): void {
+    searchByRangePrice(
+        minPrice: number,
+        maxPrice: number
+    ): Observable<IrestaurantId[]> {
         if (minPrice || maxPrice) {
-            this.menuItemService
-                .getMenuItemsByPriceRange(minPrice, maxPrice)
-                .subscribe(menuItems => {
-                    let restaurantIds = new Set<string>();
-                    menuItems.forEach(menuItem => {
-                        restaurantIds.add(menuItem.restaurantId);
-                    });
-                    restaurantIds.forEach(restaurantId => {
-                        this.restaurantService
-                            .getRestaurant(restaurantId)
-                            .subscribe(restaurant => {
-                                let resultRestaurant: Restaurant = {
-                                    id: restaurantId,
-                                    ...restaurant
-                                };
-                                this.setRestaurantPicture(resultRestaurant);
-                                this.resultRestaurants.push(resultRestaurant);
-                            });
-                    });
+            return combineLatest(
+                this.menuItemService.getMenuItemsByPriceRange(
+                    minPrice,
+                    maxPrice
+                ),
+                this.restaurantService.getRestaurants()
+            ).map(([menuItems, restaurants]) => {
+                let restaurantIds = new Set<string>();
+                let resultRestaurants: IrestaurantId[] = [];
+
+                menuItems.forEach(menuItem => {
+                    restaurantIds.add(menuItem.restaurantId);
                 });
+                restaurantIds.forEach(restaurantId => {
+                    let restaurant: IrestaurantId = restaurants.find(
+                        restaurant => {
+                            return restaurant.id === restaurantId;
+                        }
+                    );
+                    this.setRestaurantPicture(restaurant);
+                    resultRestaurants.push(restaurant);
+                });
+                return resultRestaurants;
+            });
         }
+        return Observable.of([]);
     }
 
-    searchNearbyRestaurants(): void {
+    searchNearbyRestaurants(): Observable<IrestaurantId[]> {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
+            let positionObservable: Observable<any> = Observable.fromPromise(
+                new Promise(position => {
+                    navigator.geolocation.getCurrentPosition(position);
+                })
+            );
+
+            return combineLatest(
+                positionObservable,
+                this.restaurantService.getRestaurants()
+            ).map(([position, restaurants]) => {
+                let resultRestaurants: IrestaurantId[] = [];
                 let currentLat = position.coords.latitude;
                 let currentLng = position.coords.longitude;
                 let minRestaurantDistance = new RestaurantDistance();
 
-                this.restaurantService
-                    .getRestaurants()
-                    .map(restaurants => {
-                        let result: IrestaurantId[] = [];
+                restaurants.forEach(restaurant => {
+                    let distance = this.calculateDistance(
+                        currentLat,
+                        restaurant.lat,
+                        currentLng,
+                        restaurant.lng
+                    );
 
-                        restaurants.forEach(restaurant => {
-                            let distance = this.calculateDistance(
-                                currentLat,
-                                restaurant.lat,
-                                currentLng,
-                                restaurant.lng
-                            );
+                    if (
+                        !minRestaurantDistance.distance ||
+                        (minRestaurantDistance.distance &&
+                            minRestaurantDistance.distance > distance)
+                    ) {
+                        minRestaurantDistance.distance = distance;
+                        minRestaurantDistance.restaurant = restaurant;
+                    }
 
-                            if (
-                                !minRestaurantDistance.distance ||
-                                (minRestaurantDistance.distance &&
-                                    minRestaurantDistance.distance > distance)
-                            ) {
-                                minRestaurantDistance.distance = distance;
-                                minRestaurantDistance.restaurant = restaurant;
-                            }
+                    if (distance <= maxDistance) {
+                        this.setRestaurantPicture(restaurant);
+                        resultRestaurants.push(restaurant);
+                    }
+                });
 
-                            if (distance <= 0.5) {
-                                result.push(restaurant);
-                            }
-                        });
+                if (resultRestaurants.length === 0) {
+                    this.setRestaurantPicture(minRestaurantDistance.restaurant);
+                    resultRestaurants.push(minRestaurantDistance.restaurant);
+                }
 
-                        return result;
-                    })
-                    .subscribe(restaurants => {
-                        this.resultRestaurants = restaurants;
-
-                        if (this.resultRestaurants.length === 0) {
-                            this.resultRestaurants.push(
-                                minRestaurantDistance.restaurant
-                            );
-                        }
-
-                        this.resultRestaurants.forEach(restaurant => {
-                            this.setRestaurantPicture(restaurant);
-                        });
-                    });
+                return resultRestaurants;
             });
         }
+        return Observable.of([]);
     }
 
-    searchByCategoryId(categoryId: string): void {
-        this.restaurantService
+    searchByCategoryId(categoryId: string): Observable<IrestaurantId[]> {
+        return this.restaurantService
             .getRestaurantsByCategoryId(categoryId)
-            .subscribe(restaurants => {
-                this.resultRestaurants = restaurants;
-                this.resultRestaurants.forEach(current => {
+            .map(restaurants => {
+                let resultRestaurants: IrestaurantId[] =
+                    restaurants.length > 0 ? restaurants : [];
+
+                resultRestaurants.forEach(current => {
                     this.setRestaurantPicture(current);
                 });
+
+                return resultRestaurants;
             });
     }
 
@@ -128,9 +137,9 @@ export class RestaurantSearcherService {
         lat2: number,
         long1: number,
         long2: number
-    ) {
-        let p = 0.017453292519943295; // Math.PI / 180
-        let c = Math.cos;
+    ): number {
+        const p = 0.017453292519943295; // Math.PI / 180
+        const c = Math.cos;
         let a =
             0.5 -
             c((lat1 - lat2) * p) / 2 +

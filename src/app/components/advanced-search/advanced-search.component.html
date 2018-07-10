@@ -33,7 +33,7 @@
       <div class="form-group">
         <label for="restaurant-category">Por categoría</label>
         <select id="restaurant-category" class="form-control" name="category" [(ngModel)]="searchedCategoryId">
-          <option [value]="undefined" disabled selected>Ingrese la categoría</option>
+          <option [value]="undefined" selected style="color: graytext">Ingrese la categoría</option>
           <option *ngFor="let category of categories | async" [value]="category.id">{{category.name}}</option>
         </select>
       </div>
@@ -44,9 +44,9 @@
     </div>
   </div>
 
-  <div class="box box-primary" *ngIf="searchService.resultRestaurants.length > 0">
+  <div class="box box-primary" *ngIf="resultRestaurants.length > 0">
     <div class="box-body">
-      <div *ngFor="let restaurant of searchService.resultRestaurants">
+      <div *ngFor="let restaurant of resultRestaurants">
         <div class="col-xs-12 col-sm-4 col-md-3">
           <div class="card" [routerLink]="['/restaurant-profile', restaurant.id]">
             <img [src]="restaurant.photoURL" alt="restaurant" style="width: 100%; height: 120px;">
