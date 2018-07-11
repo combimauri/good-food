@@ -55,6 +55,38 @@ export class RestaurantService {
             .takeUntil(this.subscriptions.unsubscribe);
     }
 
+    getRestaurants(): Observable<IrestaurantId[]> {
+        return this.afs
+            .collection<Irestaurant>('restaurants')
+            .snapshotChanges()
+            .map(actions => {
+                return actions.map(a => {
+                    const data = a.payload.doc.data() as Irestaurant;
+                    const id = a.payload.doc.id;
+                    return { id, ...data };
+                });
+            })
+            .takeUntil(this.subscriptions.unsubscribe);
+    }
+
+    getRestaurantsByCategoryId(
+        categoryId: string
+    ): Observable<IrestaurantId[]> {
+        return this.afs
+            .collection<Irestaurant>('restaurants', ref =>
+                ref.where('categoryId', '==', categoryId)
+            )
+            .snapshotChanges()
+            .map(actions => {
+                return actions.map(a => {
+                    const data = a.payload.doc.data() as Irestaurant;
+                    const id = a.payload.doc.id;
+                    return { id, ...data };
+                });
+            })
+            .takeUntil(this.subscriptions.unsubscribe);
+    }
+
     getBusinessOwnerRestaurants(userId: string): Observable<IrestaurantId[]> {
         return this.afs
             .collection<Irestaurant>('restaurants', ref =>

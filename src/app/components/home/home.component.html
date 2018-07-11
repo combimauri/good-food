@@ -1,7 +1,56 @@
-<section class="content">
+<section class="container">
   <div class="callout callout-info">
     <h4>Good Food</h4>
 
-    <p>Good Food es la aplicación que te ayudará a encontrar el lugar idóneo donde ir a comer.</p>
+    <p class="hidden-xs">Good Food es la aplicación que te ayudará a encontrar el lugar idóneo donde ir a comer.</p>
+  </div>
+  <div class="box box-primary">
+    <div class="box-body">
+      <form action="#" method="get">
+        <div class="form-group">
+          <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+            <option [value]="undefined"></option>
+            <option *ngFor="let restaurant of restaurants" [value]="restaurant.id">{{restaurant.name}}</option>
+          </select>
+        </div>
+      </form>
+      <div class="pull-right">
+        <a class="pointer-link" routerLink="/search">Búsqueda Avanzada</a>
+      </div>
+      <br>
+      <div *ngFor="let restaurant of restaurants">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+          <div class="card" [routerLink]="['/restaurant-profile', restaurant.id]">
+            <img [src]="restaurant.photoURL" alt="Avatar" style="width: 100%; height: 120px;">
+            <div class="card-container">
+              <h4>
+                <b>{{restaurant.name}}</b>
+              </h4>
+              <p>{{restaurant.type}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<!-- <div id="modal-advanced-search" class="modal modal-info fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Búsqueda Avanzada</h4>
+      </div>
+      <div class="modal-body">
+        <p>Body title</p>
+        <strong>Some content</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div> -->

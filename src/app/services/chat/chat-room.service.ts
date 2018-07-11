@@ -4,7 +4,6 @@ import {
     AngularFirestore
 } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
