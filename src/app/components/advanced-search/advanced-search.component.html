@@ -44,7 +44,10 @@
     </div>
   </div>
 
-  <div class="box box-primary" *ngIf="resultRestaurants.length > 0">
+  <div class="box box-primary" *ngIf="resultRestaurants.length > 0 || showMessage">
+    <div class="box-header" *ngIf="showMessage">
+      <h4>No se encontraron resultados</h4>
+    </div>
     <div class="box-body">
       <div *ngFor="let restaurant of resultRestaurants">
         <div class="col-xs-12 col-sm-4 col-md-3">

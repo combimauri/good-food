@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -7,7 +8,6 @@ import { IcategoryId } from '../../interfaces/icategory-id';
 import { RestaurantSearcherService } from '../../services/searcher/restaurant-searcher.service';
 import { Restaurant } from '../../models/restaurant';
 import { IrestaurantId } from '../../interfaces/irestaurant-id';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'food-advanced-search',
@@ -27,6 +27,8 @@ export class AdvancedSearchComponent {
 
     resultRestaurants: Restaurant[];
 
+    showMessage: boolean;
+
     private searchObservables: Observable<IrestaurantId[]>[];
 
     private searchSubscription: Subscription;
@@ -37,6 +39,7 @@ export class AdvancedSearchComponent {
     ) {
         this.categories = this.categoryService.getCategories();
         this.onlyNearbyRestaurants = false;
+        this.showMessage = false;
         this.resultRestaurants = [];
         this.searchObservables = [];
     }
@@ -99,6 +102,7 @@ export class AdvancedSearchComponent {
             })
             .subscribe(restaurants => {
                 this.resultRestaurants = restaurants;
+                this.showMessage = this.resultRestaurants.length === 0;
             });
     }
 
