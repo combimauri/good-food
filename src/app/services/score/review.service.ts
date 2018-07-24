@@ -18,11 +18,19 @@ export class ReviewService {
             let foodRatingSum: number = 0;
             let attentionRatingSum: number = 0;
             let environmentRatingSum: number = 0;
+            let reviewsCount: number = reviews.length;
+            let review: Review = new Review();
 
-            let review: Review;
-            review.foodRating = foodRatingSum;
-            review.attentionRating = attentionRatingSum;
-            review.environmentRating = environmentRatingSum;
+            reviews.forEach(review => {
+                foodRatingSum += review.foodRating;
+                attentionRatingSum += review.attentionRating;
+                environmentRatingSum += review.environmentRating;
+            });
+
+            review.restaurantId = restaurantId;
+            review.foodRating = foodRatingSum / reviewsCount;
+            review.attentionRating = attentionRatingSum / reviewsCount;
+            review.environmentRating = environmentRatingSum / reviewsCount;
             return review;
         });
     }
