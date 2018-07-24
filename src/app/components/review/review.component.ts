@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Review } from '../../models/review';
 
 @Component({
     selector: 'food-review',
@@ -6,16 +7,41 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
     styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent {
-    rating: number;
+    userReview: Review;
 
     @Input() text: string;
 
     @Output() onRatingChange = new EventEmitter();
 
-    constructor() {}
+    constructor() {
+        this.userReview = new Review();
+    }
 
-    onClick(event): void {
-        this.rating = event.rating;
-        this.onRatingChange.emit(this.rating);
+    onClickFood(event): void {
+        this.userReview.foodRating = event.rating;
+        this.emitRatingEvent();
+    }
+
+    onClickAttention(event): void {
+        this.userReview.attentionRating = event.rating;
+        this.emitRatingEvent();
+    }
+
+    onClickEnvironment(event): void {
+        this.userReview.environmentRating = event.rating;
+        this.emitRatingEvent();
+    }
+
+    changeOpinion(event): void {
+        this.emitRatingEvent();
+    }
+
+    private emitRatingEvent() {
+        if (
+            this.userReview.foodRating &&
+            this.userReview.attentionRating &&
+            this.userReview.environmentRating
+        )
+            this.onRatingChange.emit(this.userReview);
     }
 }

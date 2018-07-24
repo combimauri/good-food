@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import { IreviewId } from '../../ireview-id';
-import { Ireview } from '../../ireview';
+import { IreviewId } from '../../interfaces/ireview-id';
+import { Ireview } from '../../interfaces/ireview';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { Review } from '../../models/review';
 
 @Injectable()
 export class ReviewService {
@@ -11,6 +12,20 @@ export class ReviewService {
         private afs: AngularFirestore,
         private subscriptions: SubscriptionsService
     ) {}
+
+    getRestarantAverageRating(restaurantId: string): Observable<Review> {
+        return this.getRestaurantReviews(restaurantId).map(reviews => {
+            let foodRatingSum: number = 0;
+            let attentionRatingSum: number = 0;
+            let environmentRatingSum: number = 0;
+
+            let review: Review;
+            review.foodRating = foodRatingSum;
+            review.attentionRating = attentionRatingSum;
+            review.environmentRating = environmentRatingSum;
+            return review;
+        });
+    }
 
     getRestaurantReviews(restaurantId: string): Observable<IreviewId[]> {
         return this.afs
@@ -22,6 +37,8 @@ export class ReviewService {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as Ireview;
                     const id = a.payload.doc.id;
+                    const date: any = data.date;
+                    data.date = new Date(date.seconds * 1000);
                     return { id, ...data };
                 });
             })
@@ -30,12 +47,16 @@ export class ReviewService {
 
     saveRestaurantReview(review: Ireview): Observable<void> {
         const id: string = `${review.restaurantId}_${review.userId}`;
+        const newReview: Ireview = {
+            ...review,
+            date: new Date()
+        };
 
         return Observable.fromPromise(
             this.afs
                 .collection('restaurant-reviews')
                 .doc(id)
-                .set(review)
+                .set(newReview, { merge: true })
         );
     }
 }

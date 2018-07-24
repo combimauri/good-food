@@ -20,6 +20,8 @@ import { FollowRelationshipService } from '../../services/relationship/follow-re
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
 import { IappUser } from '../../interfaces/iapp-user';
+import { Review } from '../../models/review';
+import { ReviewService } from '../../services/score/review.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -58,6 +60,8 @@ export class RestaurantProfileComponent implements OnInit {
 
     private loggedUser: IuserId;
 
+    private currentRestaurantReview: Review;
+
     constructor(
         private restaurantService: RestaurantService,
         private publicationService: PublicationService,
@@ -65,6 +69,7 @@ export class RestaurantProfileComponent implements OnInit {
         private userService: UserService,
         private relationshipService: FollowRelationshipService,
         private chatRoomService: ChatRoomService,
+        private reviewService: ReviewService,
         private route: ActivatedRoute,
         private router: Router,
         private subscriptions: SubscriptionsService,
@@ -189,7 +194,15 @@ export class RestaurantProfileComponent implements OnInit {
     }
 
     changeFoodRating(event): void {
-        console.log(event);
+        this.currentRestaurantReview = event;
+    }
+
+    submitReview(): void {
+        if (this.currentRestaurantReview) {
+            this.currentRestaurantReview.restaurantId = this.restaurantId;
+            this.currentRestaurantReview.userId = this.loggedUser.id;
+            this.reviewService.saveRestaurantReview(this.currentRestaurantReview);
+        }
     }
 
     private setInitialData(restaurant: Irestaurant): void {
