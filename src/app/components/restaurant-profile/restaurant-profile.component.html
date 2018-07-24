@@ -168,7 +168,9 @@
         <h4 class="modal-title">Tu calificación</h4>
       </div>
       <div class="modal-body">
-        <food-review></food-review>
+        <food-review text="Comida:" (onRatingChange)="changeFoodRating($event)"></food-review>
+        <food-review text="Atención:" (onRatingChange)="changeFoodRating($event)"></food-review>
+        <food-review text="Ambiente:" (onRatingChange)="changeFoodRating($event)"></food-review>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancelar</button>

@@ -9,6 +9,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AgmCoreModule } from '@agm/core';
 import { Ng2ImgMaxModule } from 'ng2-img-max';
+import { StarRatingModule } from 'angular-star-rating';
 
 import { environment } from '../environments/environment';
 
@@ -83,6 +84,7 @@ import { ReviewComponent } from './components/review/review.component';
             apiKey: environment.googlemaps
         }),
         Ng2ImgMaxModule,
+        StarRatingModule.forRoot(),
         AppRoutingModule
         // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
     ],

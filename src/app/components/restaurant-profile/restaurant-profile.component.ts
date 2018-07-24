@@ -188,6 +188,10 @@ export class RestaurantProfileComponent implements OnInit {
         }
     }
 
+    changeFoodRating(event): void {
+        console.log(event);
+    }
+
     private setInitialData(restaurant: Irestaurant): void {
         this.setRestaurantData(restaurant);
         this.setCurrentUser();

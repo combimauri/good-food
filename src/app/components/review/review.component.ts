@@ -1,15 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
-  selector: 'food-review',
-  templateUrl: './review.component.html',
-  styleUrls: ['./review.component.scss']
+    selector: 'food-review',
+    templateUrl: './review.component.html',
+    styleUrls: ['./review.component.scss']
 })
-export class ReviewComponent implements OnInit {
+export class ReviewComponent {
+    rating: number;
 
-  constructor() { }
+    @Input() text: string;
 
-  ngOnInit() {
-  }
+    @Output() onRatingChange = new EventEmitter();
 
+    constructor() {}
+
+    onClick(event): void {
+        this.rating = event.rating;
+        this.onRatingChange.emit(this.rating);
+    }
 }
