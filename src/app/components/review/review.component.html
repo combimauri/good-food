@@ -1,11 +1,11 @@
 <h3 class="text-center">Comida:</h3>
-<star-rating [starType]="'svg'" [rating]="userReview.foodRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickFood($event)"
+<star-rating [starType]="'svg'" [rating]="userReview.foodRating" [hoverEnabled]="true" (starClickChange)="onClickFood($event)"
   staticColor="negative" size="large"></star-rating>
 <h3 class="text-center">Atención:</h3>
-<star-rating [starType]="'svg'" [rating]="userReview.attentionRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickAttention($event)"
+<star-rating [starType]="'svg'" [rating]="userReview.attentionRating" [hoverEnabled]="true" (starClickChange)="onClickAttention($event)"
   staticColor="ok" size="large"></star-rating>
 <h3 class="text-center">Ambiente:</h3>
-<star-rating [starType]="'svg'" [rating]="userReview.environmentRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickEnvironment($event)"
+<star-rating [starType]="'svg'" [rating]="userReview.environmentRating" [hoverEnabled]="true" (starClickChange)="onClickEnvironment($event)"
   staticColor="positive" size="large"></star-rating>
 <div class="form-group">
   <label for="review-opinion">Opinión:</label>
