@@ -7,9 +7,7 @@ import { Review } from '../../models/review';
     styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent {
-    userReview: Review;
-
-    @Input() text: string;
+    @Input() userReview: Review;
 
     @Output() onRatingChange = new EventEmitter();
 
@@ -36,12 +34,13 @@ export class ReviewComponent {
         this.emitRatingEvent();
     }
 
-    private emitRatingEvent() {
+    private emitRatingEvent(): void {
         if (
             this.userReview.foodRating &&
             this.userReview.attentionRating &&
             this.userReview.environmentRating
-        )
+        ) {
             this.onRatingChange.emit(this.userReview);
+        }
     }
 }

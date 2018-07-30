@@ -28,9 +28,13 @@ export class ReviewService {
             });
 
             review.restaurantId = restaurantId;
-            review.foodRating = foodRatingSum / reviewsCount;
-            review.attentionRating = attentionRatingSum / reviewsCount;
-            review.environmentRating = environmentRatingSum / reviewsCount;
+            review.foodRating = reviewsCount ? foodRatingSum / reviewsCount : 0;
+            review.attentionRating = reviewsCount
+                ? attentionRatingSum / reviewsCount
+                : 0;
+            review.environmentRating = reviewsCount
+                ? environmentRatingSum / reviewsCount
+                : 0;
             return review;
         });
     }
@@ -50,6 +54,19 @@ export class ReviewService {
                     return { id, ...data };
                 });
             })
+            .takeUntil(this.subscriptions.unsubscribe);
+    }
+
+    getRestaurantReview(
+        restaurantId: string,
+        userId: string
+    ): Observable<Ireview> {
+        const reviewDoc = this.afs.doc<Ireview>(
+            `restaurant-reviews/${restaurantId}_${userId}`
+        );
+
+        return reviewDoc
+            .valueChanges()
             .takeUntil(this.subscriptions.unsubscribe);
     }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -58,9 +59,11 @@ export class RestaurantProfileComponent implements OnInit {
 
     currentAppUser: IappUser;
 
-    private loggedUser: IuserId;
+    restaurantAverageRating: Review;
 
-    private currentRestaurantReview: Review;
+    currentRestaurantReview: Review;
+    
+    private loggedUser: IuserId;
 
     constructor(
         private restaurantService: RestaurantService,
@@ -85,6 +88,8 @@ export class RestaurantProfileComponent implements OnInit {
         this.isMessageButtonReady = false;
         this.isCurrentUserARestaurant = false;
         this.showRegisterButton = false;
+        this.restaurantAverageRating = new Review();
+        this.currentRestaurantReview = new Review();
         this.currentAppUser = this.authService.buildAppUser('', '', noPhotoURL);
 
         this.authService.changeUserObservable.subscribe(() => {
@@ -198,10 +203,12 @@ export class RestaurantProfileComponent implements OnInit {
     }
 
     submitReview(): void {
-        if (this.currentRestaurantReview) {
+        if (this.currentRestaurantReview.foodRating) {
             this.currentRestaurantReview.restaurantId = this.restaurantId;
             this.currentRestaurantReview.userId = this.loggedUser.id;
-            this.reviewService.saveRestaurantReview(this.currentRestaurantReview);
+            this.reviewService.saveRestaurantReview(
+                this.currentRestaurantReview
+            );
         }
     }
 
@@ -213,6 +220,7 @@ export class RestaurantProfileComponent implements OnInit {
     private setRestaurantData(restaurant: Irestaurant): void {
         this.restaurant = restaurant;
         this.restaurantHasOwner = this.restaurant.ownerId ? true : false;
+        this.setRestaurantRating();
         if (this.restaurant.hasProfilePic) {
             this.restaurantService
                 .getRestaurantProfilePic(this.restaurantId)
@@ -224,6 +232,14 @@ export class RestaurantProfileComponent implements OnInit {
             this.restaurantProfilePicURL = noPhotoURL;
             this.setRestaurantPublications();
         }
+    }
+
+    private setRestaurantRating() {
+        this.reviewService
+            .getRestarantAverageRating(this.restaurantId)
+            .subscribe(rating => {
+                this.restaurantAverageRating = rating;
+            });
     }
 
     private setCurrentUser(): void {
@@ -247,6 +263,7 @@ export class RestaurantProfileComponent implements OnInit {
             .subscribe(user => {
                 this.loggedUser = user;
                 this.isMessageButtonReady = true;
+                this.setCurrentRestaurantReview();
                 this.getFollowRelationships();
                 this.publicationService
                     .getPublicationsByRestaurantId(this.restaurantId)
@@ -254,6 +271,14 @@ export class RestaurantProfileComponent implements OnInit {
                         this.publications = posts;
                         this.setPostsComments();
                     });
+            });
+    }
+
+    private setCurrentRestaurantReview(): void {
+        this.reviewService
+            .getRestaurantReview(this.restaurantId, this.loggedUser.id)
+            .subscribe(review => {
+                this.currentRestaurantReview = review ? review : this.currentRestaurantReview;
             });
     }
 

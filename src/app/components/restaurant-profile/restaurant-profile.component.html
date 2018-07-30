@@ -11,6 +11,13 @@
 
           <p class="text-muted text-center">{{restaurant.type}}</p>
 
+          <div class="row">
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.attentionRating" size="small" labelText="Atención"
+              labelPosition="bottom"></star-rating>
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.foodRating" labelText="Comida" labelPosition="bottom"></star-rating>
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.environmentRating" size="small" labelText="Ambiente"
+              labelPosition="bottom"></star-rating>
+          </div>
           <button *ngIf="!isCurrentUserARestaurant" [disabled]="!isMessageButtonReady" data-toggle="modal" data-target="#modal-review-restaurant"
             class="btn btn-info btn-block">
             <b>Calificar</b>
@@ -162,11 +169,11 @@
         <h4 class="modal-title">Tu calificación</h4>
       </div>
       <div class="modal-body">
-        <food-review (onRatingChange)="changeFoodRating($event)"></food-review>
+        <food-review [userReview]="currentRestaurantReview" (onRatingChange)="changeFoodRating($event)"></food-review>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-outline" data-dismiss="modal" (click)="isMessageButtonReady && submitReview()" [disabled]="!this.currentRestaurantReview">Confirmar</button>
+        <button type="button" class="btn btn-outline" data-dismiss="modal" (click)="isMessageButtonReady && submitReview()" [disabled]="!this.currentRestaurantReview.foodRating">Confirmar</button>
       </div>
     </div>
   </div>
