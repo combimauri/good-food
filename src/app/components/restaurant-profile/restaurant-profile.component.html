@@ -11,6 +11,19 @@
 
           <p class="text-muted text-center">{{restaurant.type}}</p>
 
+          <div class="row">
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.attentionRating" size="small" labelText="Atención"
+              labelPosition="bottom"></star-rating>
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.foodRating" labelText="Comida" labelPosition="bottom"></star-rating>
+            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.environmentRating" size="small" labelText="Ambiente"
+              labelPosition="bottom"></star-rating>
+          </div>
+          <button *ngIf="!isCurrentUserARestaurant" [disabled]="!isMessageButtonReady" data-toggle="modal" data-target="#modal-review-restaurant"
+            class="btn btn-info btn-block">
+            <b>Calificar</b>
+          </button>
+          <br>
+
           <ul class="list-group list-group-unbordered">
             <li class="list-group-item">
               <b>Seguidores</b>
@@ -47,10 +60,6 @@
               <b>¿Es este tu restaurante?</b>
             </button>
           </div>
-          <!-- <hr>
-          <strong>
-            <i class="fa fa-mobile margin-r-5"></i> Teléfonos</strong>
-          <p class="text-muted">44444444</p> -->
         </div>
       </div>
     </div>
@@ -85,9 +94,6 @@
                 <img class="img-circle img-bordered-sm" [src]="restaurantProfilePicURL" alt="Restaurant Profile Picture">
                 <span class="username">
                   <a>{{post.ownerName}}</a>
-                  <!-- <a class="pull-right btn-box-tool">
-                    <i class="fa fa-ellipsis-v"></i>
-                  </a> -->
                 </span>
                 <span class="description">{{post.date.getTime() | date}}</span>
               </div>
@@ -148,6 +154,26 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-outline" (click)="registerAsMyRestaurant()" data-dismiss="modal" [disabled]="!showRegisterButton">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-review-restaurant" class="modal modal-info fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Tu calificación</h4>
+      </div>
+      <div class="modal-body">
+        <food-review [userReview]="currentRestaurantReview" (onRatingChange)="changeFoodRating($event)"></food-review>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-outline" data-dismiss="modal" (click)="isMessageButtonReady && submitReview()" [disabled]="!this.currentRestaurantReview.foodRating">Confirmar</button>
       </div>
     </div>
   </div>

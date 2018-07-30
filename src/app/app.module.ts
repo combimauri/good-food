@@ -9,6 +9,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AgmCoreModule } from '@agm/core';
 import { Ng2ImgMaxModule } from 'ng2-img-max';
+import { StarRatingModule } from 'angular-star-rating';
 
 import { environment } from '../environments/environment';
 
@@ -49,6 +50,8 @@ import { InternalGuard } from './services/authentication/internal.guard';
 import { HomeService } from './services/home/home.service';
 import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 import { RestaurantSearcherService } from './services/searcher/restaurant-searcher.service';
+import { ReviewService } from './services/score/review.service';
+import { ReviewComponent } from './components/review/review.component';
 
 @NgModule({
     declarations: [
@@ -66,7 +69,8 @@ import { RestaurantSearcherService } from './services/searcher/restaurant-search
         UserWallComponent,
         ChatComponent,
         ChatRoomsComponent,
-        AdvancedSearchComponent
+        AdvancedSearchComponent,
+        ReviewComponent
     ],
     imports: [
         BrowserModule,
@@ -80,6 +84,7 @@ import { RestaurantSearcherService } from './services/searcher/restaurant-search
             apiKey: environment.googlemaps
         }),
         Ng2ImgMaxModule,
+        StarRatingModule.forRoot(),
         AppRoutingModule
         // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
     ],
@@ -102,7 +107,8 @@ import { RestaurantSearcherService } from './services/searcher/restaurant-search
         AppUserService,
         InternalGuard,
         HomeService,
-        RestaurantSearcherService
+        RestaurantSearcherService,
+        ReviewService
     ],
     bootstrap: [AppComponent]
 })

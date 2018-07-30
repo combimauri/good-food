@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -20,6 +21,8 @@ import { FollowRelationshipService } from '../../services/relationship/follow-re
 import { ChatRoomService } from '../../services/chat/chat-room.service';
 import { IchatRoom } from '../../interfaces/ichat-room';
 import { IappUser } from '../../interfaces/iapp-user';
+import { Review } from '../../models/review';
+import { ReviewService } from '../../services/score/review.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -56,6 +59,10 @@ export class RestaurantProfileComponent implements OnInit {
 
     currentAppUser: IappUser;
 
+    restaurantAverageRating: Review;
+
+    currentRestaurantReview: Review;
+    
     private loggedUser: IuserId;
 
     constructor(
@@ -65,6 +72,7 @@ export class RestaurantProfileComponent implements OnInit {
         private userService: UserService,
         private relationshipService: FollowRelationshipService,
         private chatRoomService: ChatRoomService,
+        private reviewService: ReviewService,
         private route: ActivatedRoute,
         private router: Router,
         private subscriptions: SubscriptionsService,
@@ -80,6 +88,8 @@ export class RestaurantProfileComponent implements OnInit {
         this.isMessageButtonReady = false;
         this.isCurrentUserARestaurant = false;
         this.showRegisterButton = false;
+        this.restaurantAverageRating = new Review();
+        this.currentRestaurantReview = new Review();
         this.currentAppUser = this.authService.buildAppUser('', '', noPhotoURL);
 
         this.authService.changeUserObservable.subscribe(() => {
@@ -188,6 +198,20 @@ export class RestaurantProfileComponent implements OnInit {
         }
     }
 
+    changeFoodRating(event): void {
+        this.currentRestaurantReview = event;
+    }
+
+    submitReview(): void {
+        if (this.currentRestaurantReview.foodRating) {
+            this.currentRestaurantReview.restaurantId = this.restaurantId;
+            this.currentRestaurantReview.userId = this.loggedUser.id;
+            this.reviewService.saveRestaurantReview(
+                this.currentRestaurantReview
+            );
+        }
+    }
+
     private setInitialData(restaurant: Irestaurant): void {
         this.setRestaurantData(restaurant);
         this.setCurrentUser();
@@ -196,6 +220,7 @@ export class RestaurantProfileComponent implements OnInit {
     private setRestaurantData(restaurant: Irestaurant): void {
         this.restaurant = restaurant;
         this.restaurantHasOwner = this.restaurant.ownerId ? true : false;
+        this.setRestaurantRating();
         if (this.restaurant.hasProfilePic) {
             this.restaurantService
                 .getRestaurantProfilePic(this.restaurantId)
@@ -207,6 +232,14 @@ export class RestaurantProfileComponent implements OnInit {
             this.restaurantProfilePicURL = noPhotoURL;
             this.setRestaurantPublications();
         }
+    }
+
+    private setRestaurantRating() {
+        this.reviewService
+            .getRestarantAverageRating(this.restaurantId)
+            .subscribe(rating => {
+                this.restaurantAverageRating = rating;
+            });
     }
 
     private setCurrentUser(): void {
@@ -230,6 +263,7 @@ export class RestaurantProfileComponent implements OnInit {
             .subscribe(user => {
                 this.loggedUser = user;
                 this.isMessageButtonReady = true;
+                this.setCurrentRestaurantReview();
                 this.getFollowRelationships();
                 this.publicationService
                     .getPublicationsByRestaurantId(this.restaurantId)
@@ -237,6 +271,14 @@ export class RestaurantProfileComponent implements OnInit {
                         this.publications = posts;
                         this.setPostsComments();
                     });
+            });
+    }
+
+    private setCurrentRestaurantReview(): void {
+        this.reviewService
+            .getRestaurantReview(this.restaurantId, this.loggedUser.id)
+            .subscribe(review => {
+                this.currentRestaurantReview = review ? review : this.currentRestaurantReview;
             });
     }
 

@@ -1,0 +1,13 @@
+<h3 class="text-center">Comida:</h3>
+<star-rating [starType]="'svg'" [rating]="userReview.foodRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickFood($event)"
+  staticColor="negative" size="large"></star-rating>
+<h3 class="text-center">Atención:</h3>
+<star-rating [starType]="'svg'" [rating]="userReview.attentionRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickAttention($event)"
+  staticColor="ok" size="large"></star-rating>
+<h3 class="text-center">Ambiente:</h3>
+<star-rating [starType]="'svg'" [rating]="userReview.environmentRating" [hoverEnabled]="true" [labelText]="rating" (starClickChange)="onClickEnvironment($event)"
+  staticColor="positive" size="large"></star-rating>
+<div class="form-group">
+  <label for="review-opinion">Opinión:</label>
+  <input id="review-opinion" type="text" class="form-control input-sm" [(ngModel)]="userReview.opinion" name="opinion" (change)="changeOpinion($event)">
+</div>
