@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-// import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
@@ -85,8 +85,8 @@ import { ReviewComponent } from './components/review/review.component';
         }),
         Ng2ImgMaxModule,
         StarRatingModule.forRoot(),
-        AppRoutingModule
-        // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
+        AppRoutingModule,
+        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [
         SubscriptionsService,

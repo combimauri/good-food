@@ -24,16 +24,20 @@ export class AuthenticationGuardService implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<boolean> {
-        this.messageService.hideMessage();
-        let authState = this.authService.authUser.take(1);
-        if (state.url === '/login' || state.url === '/register') {
+        if (navigator.onLine) {
+            this.messageService.hideMessage();
+            let authState = this.authService.authUser.take(1);
+            if (state.url === '/login' || state.url === '/register') {
+                return authState.map(user => {
+                    return this.checkLogIn(user !== null, '/home');
+                });
+            }
             return authState.map(user => {
-                return this.checkLogIn(user !== null, '/home');
+                return this.checkLogIn(user === null, '/login');
             });
         }
-        return authState.map(user => {
-            return this.checkLogIn(user === null, '/login');
-        });
+        this.router.navigate(['/404']);
+        return Observable.of(false);
     }
 
     checkLogIn(condition: boolean, url: string): boolean {

@@ -7,7 +7,7 @@
         {
             "root": "src",
             "outDir": "dist",
-            "assets": ["assets", "favicon.ico"],
+            "assets": ["assets", "favicon.ico", "manifest.json"],
             "index": "index.html",
             "main": "main.ts",
             "polyfills": "polyfills.ts",
@@ -36,7 +36,7 @@
                 "dev": "environments/environment.ts",
                 "prod": "environments/environment.prod.ts"
             },
-            "serviceWorker": false
+            "serviceWorker": true
         }
     ],
     "e2e": {
