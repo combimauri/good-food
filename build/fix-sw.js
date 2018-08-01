@@ -2,17 +2,29 @@
 *
 * Temporary fix for https://github.com/angular/angular/issues/21636
 *
-* Explained in this Stack Overflow answer: https://stackoverflow.com/questions/48565629/how-to-handle-routing-in-angular-5-service-workers
+* Include in your project; run after the `ng build --prod` step by running `node location/of/this/script/fix-sw`
 *
 * Warning: removes any instances of setting EXISTING_CLIENTS_ONLY state, which will likely have adverse effects in some situations
 *
 */
 
-const replace = require('replace-in-file');
+/*
+* enter the value set as the --base-href flag when deploying to a live URL
+* if not deploying to a live URL, and only running locally, set this to null, as the URL parsing fix will not be necessary
+*/
+const SITE_BASE_HREF = 'https://mauricioarce.github.io/good-food/';
 
- // enter the value set as the --base-href flag when deploying to a live URL
- // if not deploying to a live URL, and only running locally, can leave blank, as the URL parsing fix will not be necessary
-const SITE_BASE_HREF = 'https://jackkoppa.github.io/cityaq/';
+
+
+
+
+/*
+*
+* Begin script
+*
+*/
+
+const replace = require('replace-in-file');
 
 const existingStateReplacements = {
     files: 'dist/ngsw-worker.js',
