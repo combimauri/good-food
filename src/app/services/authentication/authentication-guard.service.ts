@@ -36,7 +36,6 @@ export class AuthenticationGuardService implements CanActivate {
                 return this.checkLogIn(user === null, '/login');
             });
         }
-        this.router.navigate(['/404']);
         return Observable.of(false);
     }
 
