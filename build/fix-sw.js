@@ -2,35 +2,29 @@
 *
 * Temporary fix for https://github.com/angular/angular/issues/21636
 *
-* Include in your project; run after the `ng build --prod` step by running `node location/of/this/script/fix-sw`
+* Explained in this Stack Overflow answer: https://stackoverflow.com/questions/48565629/how-to-handle-routing-in-angular-5-service-workers
 *
 * Warning: removes any instances of setting EXISTING_CLIENTS_ONLY state, which will likely have adverse effects in some situations
 *
 */
 
-/*
-* enter the value set as the --base-href flag when deploying to a live URL
-* if not deploying to a live URL, and only running locally, set this to null, as the URL parsing fix will not be necessary
-*/
-const SITE_BASE_HREF = 'https://mauricioarce.github.io/good-food/';
-
-
-
-
-
-/*
-*
-* Begin script
-*
-*/
-
 const replace = require('replace-in-file');
+
+ // enter the value set as the --base-href flag when deploying to a live URL
+ // if not deploying to a live URL, and only running locally, can leave blank, as the URL parsing fix will not be necessary
+const SITE_BASE_HREF = 'https://mauricioarce.github.io/good-food/';
 
 const existingStateReplacements = {
     files: 'dist/ngsw-worker.js',
     from: /this\.state = DriverReadyState\.EXISTING_CLIENTS_ONLY;/g,
-    to: '/*this.state = DriverReadyState.EXISTING_CLIENTS_ONLY;*/ ' + 
+    to: '/*this.state = DriverReadyState.EXISTING_CLIENTS_ONLY;*/ ' +
         '// removing EXISTING_CLIENTS_ONLY state, as it behaves incorrectly in offline testing, both locally & on GitHub pages'
+}
+
+const serviceWorkerLoadingPath = {
+  files: 'dist/main.*.bundle.js',
+  from: '"/ngsw-worker.js"',
+  to: '"./ngsw-worker.js"'
 }
 
 const baseHrefInstances = {
@@ -41,10 +35,8 @@ const baseHrefInstances = {
 
 const serviceWorkerURLFix = {
     files: 'dist/ngsw-worker.js',
-    from: /return parsed\.path;/g,
-    to: '/*return parsed.path;*/ ' +
-        'return url; ' +
-        '// overriding default @angular/service-worker URL behavior, to handle routing bug angular/angular #21636'
+    from: /const url = this\.getConfigUrl\(req\.url\);/,
+    to: 'const url = req.url;/*this.getConfigUrl(req.url);*/'
 }
 
 try {
@@ -52,7 +44,15 @@ try {
     console.log('Replacements of EXISTING_CLIENTS_ONLY states: ', existingInstances.join(', '));
 }
 catch(error) {
-    console.error('Error occurred while replacing EXISTING_CLIENTS_ONLY states: ', error);    
+    console.error('Error occurred while replacing EXISTING_CLIENTS_ONLY states: ', error);
+}
+
+try {
+  const pathInstances = replace.sync(serviceWorkerLoadingPath);
+  console.log('Replacements of ngsw-worker path: ', pathInstances.join(', '));
+}
+catch(error) {
+  console.error('Error occurred while replacing ngsw-worker path: ', error);
 }
 
 try {

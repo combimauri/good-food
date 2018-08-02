@@ -27,15 +27,17 @@ export class AuthenticationGuardService implements CanActivate {
         if (navigator.onLine) {
             this.messageService.hideMessage();
             let authState = this.authService.authUser.take(1);
-            if (state.url === '/login' || state.url === '/register') {
+            if (state.url === '/login' || state.url === '/register' || state.url === '/offline') {
                 return authState.map(user => {
-                    return this.checkLogIn(user !== null, '/home');
+                    let condition: boolean = state.url === '/offline' ? true : user !== null;
+                    return this.checkLogIn(condition, '/home');
                 });
             }
             return authState.map(user => {
                 return this.checkLogIn(user === null, '/login');
             });
         }
+        this.router.navigate(['/offline']);
         return Observable.of(false);
     }
 

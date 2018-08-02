@@ -52,6 +52,7 @@ import { AdvancedSearchComponent } from './components/advanced-search/advanced-s
 import { RestaurantSearcherService } from './services/searcher/restaurant-searcher.service';
 import { ReviewService } from './services/score/review.service';
 import { ReviewComponent } from './components/review/review.component';
+import { OfflineComponent } from './components/offline/offline.component';
 
 @NgModule({
     declarations: [
@@ -70,7 +71,8 @@ import { ReviewComponent } from './components/review/review.component';
         ChatComponent,
         ChatRoomsComponent,
         AdvancedSearchComponent,
-        ReviewComponent
+        ReviewComponent,
+        OfflineComponent
     ],
     imports: [
         BrowserModule,
