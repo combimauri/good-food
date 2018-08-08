@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ISubscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()

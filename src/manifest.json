@@ -1,16 +1,16 @@
 {
     "name": "Good Food",
-    "short_name": "GoodFood",
+    "short_name": "Good Food",
     "description": "App to find food in Cochabamba",
     "icons": [
         {
-            "src": "assets/icon-150x150.png",
-            "sizes": "150x150",
+            "src": "assets/icon-128x128.png",
+            "sizes": "128x128",
             "type": "image/png"
         },
         {
-            "src": "assets/icon-192x192.png",
-            "sizes": "192x192",
+            "src": "assets/icon-256x256.png",
+            "sizes": "256x256",
             "type": "image/png"
         },
         {

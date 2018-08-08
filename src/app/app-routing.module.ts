@@ -81,7 +81,7 @@ const routes: Routes = [
     {
         path: 'offline',
         component: OfflineComponent,
-        // canActivate: [AuthenticationGuardService]
+        canActivate: [AuthenticationGuardService]
     },
     {
         path: '**',
