@@ -47,7 +47,7 @@ export class UserWallComponent {
         this.currentUserProfilePicURL = noPhotoURL;
 
         this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(user => {
                 this.currentUser = user;
                 this.currentUserProfilePicURL = this.currentUser.photoURL;

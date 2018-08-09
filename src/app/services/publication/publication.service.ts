@@ -31,7 +31,7 @@ export class PublicationService {
 
         return this.publicationsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as Ipublication;
@@ -50,7 +50,7 @@ export class PublicationService {
 
         return Observable.fromPromise(
             this.publicationsCollection.add(newPublication)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     private buildPublicationInterface(

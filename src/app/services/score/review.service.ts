@@ -54,7 +54,7 @@ export class ReviewService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRestaurantReview(
@@ -67,7 +67,7 @@ export class ReviewService {
 
         return reviewDoc
             .valueChanges()
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveRestaurantReview(review: Ireview): Observable<void> {

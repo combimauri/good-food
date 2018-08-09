@@ -3,29 +3,29 @@ import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class SubscriptionsService {
-    unsubscribe: Subject<void>;
+    destroyUnsubscribe: Subject<void>;
 
-    unsubHome: Subject<void>;
+    homeUnsubscribe: Subject<void>;
 
     constructor() {
-        this.revive();
+        this.onLoginRevive();
     }
 
-    revive(): void {
-        this.unsubscribe = new Subject();
+    onLoginRevive(): void {
+        this.destroyUnsubscribe = new Subject();
     }
 
-    reviveHome(): void {
-        this.unsubHome = new Subject();
+    onDestroyKill(): void {
+        this.destroyUnsubscribe.next();
+        this.destroyUnsubscribe.complete();
     }
 
-    kill(): void {
-        this.unsubscribe.next();
-        this.unsubscribe.complete();
+    homeRevive(): void {
+        this.homeUnsubscribe = new Subject();
     }
 
-    killHome(): void {
-        this.unsubHome.next();
-        this.unsubHome.complete();
+    homeKill(): void {
+        this.homeUnsubscribe.next();
+        this.homeUnsubscribe.complete();
     }
 }

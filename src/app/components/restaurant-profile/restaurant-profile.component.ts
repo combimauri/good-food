@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/takeUntil';
@@ -32,7 +32,7 @@ const noPhotoURL: string = './assets/img/nophoto.png';
     templateUrl: './restaurant-profile.component.html',
     styleUrls: ['./restaurant-profile.component.scss']
 })
-export class RestaurantProfileComponent implements OnInit {
+export class RestaurantProfileComponent implements OnInit, OnDestroy {
     restaurant: Irestaurant;
 
     restaurantId: string;
@@ -62,7 +62,7 @@ export class RestaurantProfileComponent implements OnInit {
     restaurantAverageRating: Review;
 
     currentRestaurantReview: Review;
-    
+
     private loggedUser: IuserId;
 
     constructor(
@@ -99,7 +99,7 @@ export class RestaurantProfileComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(params => {
                 this.restaurantId = params['id'];
                 this.restaurantService
@@ -259,7 +259,7 @@ export class RestaurantProfileComponent implements OnInit {
 
     private setRestaurantPublications(): void {
         this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(user => {
                 this.loggedUser = user;
                 this.isMessageButtonReady = true;
@@ -278,7 +278,9 @@ export class RestaurantProfileComponent implements OnInit {
         this.reviewService
             .getRestaurantReview(this.restaurantId, this.loggedUser.id)
             .subscribe(review => {
-                this.currentRestaurantReview = review ? review : this.currentRestaurantReview;
+                this.currentRestaurantReview = review
+                    ? review
+                    : this.currentRestaurantReview;
             });
     }
 
@@ -363,5 +365,9 @@ export class RestaurantProfileComponent implements OnInit {
                     this.restaurantService.updateRestaurant(restaurant);
                 }
             });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.onDestroyKill();
     }
 }

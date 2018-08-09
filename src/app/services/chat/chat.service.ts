@@ -33,7 +33,7 @@ export class ChatService {
                     return data;
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getLastChatByChatRoomId(chatRoomId: string): Observable<Ichat> {
@@ -54,7 +54,7 @@ export class ChatService {
 
                 return chat;
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveChat(chat: Ichat) {
@@ -67,6 +67,6 @@ export class ChatService {
 
         return Observable.fromPromise(
             this.chatsCollection.add(chatMessage)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 }

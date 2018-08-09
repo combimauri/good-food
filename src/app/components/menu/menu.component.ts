@@ -58,7 +58,7 @@ export class MenuComponent implements OnInit {
 
     private setCurrentUser(): void {
         this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(user => {
                 this.loggedUser = this.authService.buildAppUser(
                     user.id,

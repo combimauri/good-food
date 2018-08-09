@@ -32,7 +32,7 @@ export class ChatRoomService {
 
         return this.chatRoomsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as IchatRoom;
@@ -53,7 +53,7 @@ export class ChatRoomService {
 
         return this.chatRoomsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as IchatRoom;
@@ -74,7 +74,7 @@ export class ChatRoomService {
 
         return Observable.fromPromise(
             roomsCol.doc(id).set(chatRoom, { merge: true })
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     updateChatRoom(chatRoom: IchatRoomId): Observable<any> {
@@ -82,6 +82,6 @@ export class ChatRoomService {
             this.chatRoomsCollection
                 .doc(chatRoom.id)
                 .set(chatRoom, { merge: true })
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 }

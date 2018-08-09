@@ -16,10 +16,10 @@ export class HomeService {
     ) {}
 
     goHome(): void {
-        // this.subscriptions.reviveHome();
+        this.subscriptions.homeRevive();
         this.getHomeURL().subscribe(url => {
             this.router.navigate([url]);
-            // this.subscriptions.killHome();
+            this.subscriptions.homeKill();
         });
     }
 
@@ -27,12 +27,13 @@ export class HomeService {
         return combineLatest(
             this.authService.isAppUserARestaurant(),
             this.authService.getCurrentAppUser()
-        ).map(([isRestaurant, currentUser]) => {
-            if (isRestaurant) {
-                return '/restaurant-profile/' + currentUser.id;
-            }
-            return '/home';
-        });
-        // .takeUntil(this.subscriptions.unsubHome);
+        )
+            .map(([isRestaurant, currentUser]) => {
+                if (isRestaurant) {
+                    return '/restaurant-profile/' + currentUser.id;
+                }
+                return '/home';
+            })
+            .takeUntil(this.subscriptions.homeUnsubscribe);
     }
 }

@@ -34,7 +34,7 @@ export class MenuItemService {
 
         return this.menuItemsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as ImenuItem;
@@ -62,7 +62,7 @@ export class MenuItemService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getMenuItemPicture(
@@ -75,7 +75,7 @@ export class MenuItemService {
 
         return menuItemPictureRef
             .getDownloadURL()
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveMenuItem(menuItem: ImenuItemId): Observable<any> {
@@ -92,7 +92,7 @@ export class MenuItemService {
 
         return Observable.fromPromise(
             this.menuItemsCollection.add(newMenuItem)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveMenuItemPicture(

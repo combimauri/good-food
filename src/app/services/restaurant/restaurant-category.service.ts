@@ -25,7 +25,7 @@ export class RestaurantCategoryService {
         );
         this.categories = this.categoriesCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(action => {
                     const data = action.payload.doc.data() as Icategory;
@@ -39,7 +39,7 @@ export class RestaurantCategoryService {
         return this.afs
             .collection<Icategory>('restaurant-categories')
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(action => {
                     const data = action.payload.doc.data() as Icategory;

@@ -52,7 +52,7 @@ export class RestaurantService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRestaurants(): Observable<IrestaurantId[]> {
@@ -66,7 +66,7 @@ export class RestaurantService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRestaurantsByCategoryId(
@@ -84,7 +84,7 @@ export class RestaurantService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getBusinessOwnerRestaurants(userId: string): Observable<IrestaurantId[]> {
@@ -100,7 +100,7 @@ export class RestaurantService {
                     return { id, ...data };
                 });
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRestaurant(id: string): Observable<Irestaurant> {
@@ -108,7 +108,7 @@ export class RestaurantService {
 
         return this.restaurantDoc
             .valueChanges()
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRestaurantProfilePic(id: string): Observable<any> {
@@ -118,7 +118,7 @@ export class RestaurantService {
 
         return restaurantProfilePicsRef
             .getDownloadURL()
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveRestaurant(restaurant: IrestaurantId): Observable<any> {
@@ -128,7 +128,7 @@ export class RestaurantService {
 
         return Observable.fromPromise(
             this.restaurantsCollection.add(newRestaurant)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveRestaurantProfilePic(
@@ -149,7 +149,7 @@ export class RestaurantService {
             this.restaurantsCollection
                 .doc(restaurant.id)
                 .set(newRestaurant, { merge: true })
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     buildRestaurantIdInterface(
