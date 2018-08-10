@@ -7,16 +7,13 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
-import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
-import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
-import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
-import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { InternalGuard } from './services/authentication/internal.guard';
 import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 import { OfflineComponent } from './components/offline/offline.component';
+import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 
 const routes: Routes = [
     {
@@ -46,7 +43,8 @@ const routes: Routes = [
             },
             {
                 path: 'restaurant-profile/:id',
-                component: RestaurantProfileComponent
+                loadChildren:
+                    'app/components/restaurant-profile/restaurant-profile.module#RestaurantProfileModule'
             },
             {
                 path: 'restaurants-map',
@@ -60,7 +58,8 @@ const routes: Routes = [
             },
             {
                 path: 'restaurant-menu/:id',
-                component: RestaurantMenuComponent
+                loadChildren:
+                    'app/components/restaurant-menu/restaurant-menu.module#RestaurantMenuModule'
             },
             {
                 path: 'home-feed',
@@ -69,7 +68,8 @@ const routes: Routes = [
             },
             {
                 path: 'messages',
-                component: ChatRoomsComponent
+                loadChildren:
+                    'app/components/chat-rooms/chat-rooms.module#ChatRoomsModule'
             },
             {
                 path: 'search',
