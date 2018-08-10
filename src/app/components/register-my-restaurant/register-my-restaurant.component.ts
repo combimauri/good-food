@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { Ng2ImgMaxService } from 'ng2-img-max';
 import 'rxjs/add/operator/takeUntil';
 
 import { SubscriptionsService } from '../../services/subscriptions/subscriptions.service';
@@ -10,7 +9,6 @@ import { UserService } from '../../services/user/user.service';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { MapStyleService } from '../../services/maps/map-style.service';
 import { Restaurant } from '../../models/restaurant';
-import { IrestaurantId } from '../../interfaces/irestaurant-id';
 
 const cochaLat: number = -17.393695;
 const cochaLng: number = -66.157126;
@@ -48,7 +46,6 @@ export class RegisterMyRestaurantComponent implements OnInit {
         private userService: UserService,
         private styleService: MapStyleService,
         private router: Router,
-        private imgToolsService: Ng2ImgMaxService,
         private subscriptions: SubscriptionsService
     ) {
         this.lat = cochaLat;
