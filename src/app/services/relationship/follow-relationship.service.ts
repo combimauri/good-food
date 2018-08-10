@@ -28,7 +28,7 @@ export class FollowRelationshipService {
             () => {
                 return 0;
             }
-        );
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     getRelationshipsByRestaurantId(
@@ -42,7 +42,7 @@ export class FollowRelationshipService {
 
         return this.followRelationshipsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as IfollowRelationship;
@@ -61,7 +61,7 @@ export class FollowRelationshipService {
 
         return this.followRelationshipsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as IfollowRelationship;
@@ -85,7 +85,7 @@ export class FollowRelationshipService {
 
         return this.followRelationshipsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as IfollowRelationship;
@@ -102,7 +102,7 @@ export class FollowRelationshipService {
 
         return Observable.fromPromise(
             this.followRelationshipsCollection.doc(id).set(relationship)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     deleteRelationship(restaurantId: string, userId: string): Observable<any> {

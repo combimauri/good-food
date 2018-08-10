@@ -1,23 +1,31 @@
 import { Injectable } from '@angular/core';
-import { ISubscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class SubscriptionsService {
+    destroyUnsubscribe: Subject<void>;
 
-  unsubscribe: Subject<void>;
+    homeUnsubscribe: Subject<void>;
 
-  constructor() {
-    this.revive();
-  }
+    constructor() {
+        this.onLoginRevive();
+    }
 
-  revive(): void {
-    this.unsubscribe = new Subject();
-  }
+    onLoginRevive(): void {
+        this.destroyUnsubscribe = new Subject();
+    }
 
-  kill(): void {
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-  }
+    onDestroyKill(): void {
+        this.destroyUnsubscribe.next();
+        this.destroyUnsubscribe.complete();
+    }
 
+    homeRevive(): void {
+        this.homeUnsubscribe = new Subject();
+    }
+
+    homeKill(): void {
+        this.homeUnsubscribe.next();
+        this.homeUnsubscribe.complete();
+    }
 }

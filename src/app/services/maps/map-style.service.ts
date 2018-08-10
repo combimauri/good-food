@@ -11,7 +11,7 @@ export class MapStyleService {
   constructor(private http: HttpClient, private subscriptions: SubscriptionsService) { }
 
   public getStyles(): Observable<any> {
-    return this.http.get('./assets/data/map-style.json').takeUntil(this.subscriptions.unsubscribe);
+    return this.http.get('./assets/data/map-style.json').takeUntil(this.subscriptions.destroyUnsubscribe);
   }
 
 }

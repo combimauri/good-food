@@ -26,7 +26,7 @@ export class CommentService {
 
         return this.commentsCollection
             .snapshotChanges()
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as Icomment;
@@ -48,6 +48,6 @@ export class CommentService {
 
         return Observable.fromPromise(
             this.commentsCollection.add(newComment)
-        ).takeUntil(this.subscriptions.unsubscribe);
+        ).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 }

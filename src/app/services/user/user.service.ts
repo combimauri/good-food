@@ -32,7 +32,7 @@ export class UserService {
             `users/${id}`
         );
 
-        return userDoc.valueChanges().takeUntil(this.subscriptions.unsubscribe);
+        return userDoc.valueChanges().takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     saveUser(user: any): void {

@@ -17,7 +17,7 @@ export class MenuItemCategoryService {
   getMenuItemCategoriesByRestaurantId(restaurantId: string): Observable<ImenuItemCategoryId[]> {
     this.menuItemCategoriesCollection = this.afs.collection<ImenuItemCategory>('menu-item-categories', ref => ref.where('restaurantId', '==', restaurantId));
 
-    return this.menuItemCategoriesCollection.snapshotChanges().takeUntil(this.subscriptions.unsubscribe).map(actions => {
+    return this.menuItemCategoriesCollection.snapshotChanges().takeUntil(this.subscriptions.destroyUnsubscribe).map(actions => {
       return actions.map(a => {
         const data = a.payload.doc.data() as ImenuItemCategory;
         const id = a.payload.doc.id;
@@ -32,7 +32,7 @@ export class MenuItemCategoryService {
       restaurantId: restaurantId
     }
 
-    return Observable.fromPromise(this.menuItemCategoriesCollection.add(category)).takeUntil(this.subscriptions.unsubscribe);
+    return Observable.fromPromise(this.menuItemCategoriesCollection.add(category)).takeUntil(this.subscriptions.destroyUnsubscribe);
   }
 
 }

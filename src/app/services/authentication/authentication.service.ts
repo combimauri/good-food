@@ -68,7 +68,7 @@ export class AuthenticationService extends AppUserService {
                 }
                 return appUser;
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     isAppUserARestaurant(): Observable<boolean> {
@@ -82,7 +82,7 @@ export class AuthenticationService extends AppUserService {
                 this.changeCurrentAppUser(appUser);
                 return false;
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     signUp(email: string, password: string, confirmPassword: string): void {
@@ -138,7 +138,7 @@ export class AuthenticationService extends AppUserService {
     }
 
     logOut(): void {
-        this.subscriptions.kill();
+        this.subscriptions.onDestroyKill();
         this.firebaseAuth.auth
             .signOut()
             .then(() => {
@@ -152,7 +152,7 @@ export class AuthenticationService extends AppUserService {
 
     private logIn(user: any): void {
         this.showLoading = false;
-        this.subscriptions.revive();
+        this.subscriptions.onLoginRevive();
         this.userService.saveUser(user);
         this.router.navigate(['/home']);
     }
@@ -171,9 +171,9 @@ export class AuthenticationService extends AppUserService {
                     }
                     return true;
                 })
-                .takeUntil(this.subscriptions.unsubscribe);
+                .takeUntil(this.subscriptions.destroyUnsubscribe);
         }
-        return Observable.of(false).takeUntil(this.subscriptions.unsubscribe);
+        return Observable.of(false).takeUntil(this.subscriptions.destroyUnsubscribe);
     }
 
     private handleError(errorMessage: string): void {

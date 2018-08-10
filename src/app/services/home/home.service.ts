@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
+import 'rxjs/add/operator/takeUntil';
 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
@@ -15,8 +16,10 @@ export class HomeService {
     ) {}
 
     goHome(): void {
+        this.subscriptions.homeRevive();
         this.getHomeURL().subscribe(url => {
             this.router.navigate([url]);
+            this.subscriptions.homeKill();
         });
     }
 
@@ -31,6 +34,6 @@ export class HomeService {
                 }
                 return '/home';
             })
-            .takeUntil(this.subscriptions.unsubscribe);
+            .takeUntil(this.subscriptions.homeUnsubscribe);
     }
 }

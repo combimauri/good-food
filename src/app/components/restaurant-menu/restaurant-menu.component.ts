@@ -88,7 +88,7 @@ export class RestaurantMenuComponent implements OnInit {
         });
 
         this.route.params
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(params => {
                 this.restaurantId = params['id'];
                 this.restaurant = this.restaurantService.getRestaurant(
@@ -149,7 +149,7 @@ export class RestaurantMenuComponent implements OnInit {
 
     private saveNewMenuItem(): void {
         this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(user => {
                 this.newMenuItem.addUserId = user.id;
                 this.newMenuItem.pictureURL = noPhotoURL;

@@ -105,7 +105,7 @@ export class RegisterMyRestaurantComponent implements OnInit {
     saveRestaurant(): void {
         this.loaderPercent = 1;
         this.authService.authUser
-            .takeUntil(this.subscriptions.unsubscribe)
+            .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(user => {
                 this.newRestaurant.addUserId = user.id;
                 this.newRestaurant.ownerId = user.id;

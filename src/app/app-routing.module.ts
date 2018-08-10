@@ -16,6 +16,7 @@ import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { InternalGuard } from './services/authentication/internal.guard';
 import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
+import { OfflineComponent } from './components/offline/offline.component';
 
 const routes: Routes = [
     {
@@ -76,6 +77,11 @@ const routes: Routes = [
                 canActivate: [InternalGuard]
             }
         ]
+    },
+    {
+        path: 'offline',
+        component: OfflineComponent,
+        canActivate: [AuthenticationGuardService]
     },
     {
         path: '**',
