@@ -11,19 +11,18 @@ import { RestaurantsMapComponent } from './components/restaurants-map/restaurant
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { InternalGuard } from './services/authentication/internal.guard';
-import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 import { OfflineComponent } from './components/offline/offline.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 
 const routes: Routes = [
     {
         path: 'login',
-        component: LoginComponent,
+        loadChildren: 'app/components/login/login.module#LoginModule',
         canActivate: [AuthenticationGuardService]
     },
     {
         path: 'register',
-        component: RegisterComponent,
+        loadChildren: 'app/components/register/register.module#RegisterModule',
         canActivate: [AuthenticationGuardService]
     },
     {
@@ -62,7 +61,7 @@ const routes: Routes = [
                     'app/components/restaurant-menu/restaurant-menu.module#RestaurantMenuModule'
             },
             {
-                path: 'home-feed',
+                path: 'user-feed',
                 component: UserWallComponent,
                 canActivate: [InternalGuard]
             },
@@ -73,7 +72,8 @@ const routes: Routes = [
             },
             {
                 path: 'search',
-                component: AdvancedSearchComponent,
+                loadChildren:
+                    'app/components/advanced-search/advanced-search.module#AdvancedSearchModule',
                 canActivate: [InternalGuard]
             }
         ]

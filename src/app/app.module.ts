@@ -16,6 +16,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { SubscriptionsService } from './services/subscriptions/subscriptions.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { InternalGuard } from './services/authentication/internal.guard';
+import { AppUserService } from './services/user/app-user.service';
 import { UserService } from './services/user/user.service';
 import { MapStyleService } from './services/maps/map-style.service';
 import { MessageService } from './services/message/message.service';
@@ -23,39 +25,30 @@ import { RestaurantService } from './services/restaurant/restaurant.service';
 import { RestaurantCategoryService } from './services/restaurant/restaurant-category.service';
 import { PublicationService } from './services/publication/publication.service';
 import { MenuItemService } from './services/restaurant/menu-item.service';
+import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
+import { CommentService } from './services/publication/comment.service';
+import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
+import { HomeService } from './services/home/home.service';
+import { ChatRoomService } from './services/chat/chat-room.service';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
-import { CommentService } from './services/publication/comment.service';
 import { UserWallComponent } from './components/user-wall/user-wall.component';
-import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
-import { AppUserService } from './services/user/app-user.service';
-import { InternalGuard } from './services/authentication/internal.guard';
-import { HomeService } from './services/home/home.service';
-import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
-import { RestaurantSearcherService } from './services/searcher/restaurant-searcher.service';
 import { OfflineComponent } from './components/offline/offline.component';
-import { ChatRoomService } from './services/chat/chat-room.service';
 import { LoaderComponent } from './components/loader/loader.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        LoginComponent,
-        RegisterComponent,
         MenuComponent,
         HomeComponent,
         RestaurantsMapComponent,
         PageNotFoundComponent,
         UserWallComponent,
-        AdvancedSearchComponent,
         OfflineComponent,
         RestaurantsMapComponent,
         LoaderComponent,
@@ -94,7 +87,6 @@ import { RegisterMyRestaurantComponent } from './components/register-my-restaura
         AppUserService,
         InternalGuard,
         HomeService,
-        RestaurantSearcherService,
         ChatRoomService
     ],
     bootstrap: [AppComponent]
