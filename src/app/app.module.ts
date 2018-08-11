@@ -33,22 +33,16 @@ import { ChatRoomService } from './services/chat/chat-room.service';
 
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
-import { HomeComponent } from './components/home/home.component';
 import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
-import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { UserWallComponent } from './components/user-wall/user-wall.component';
-import { OfflineComponent } from './components/offline/offline.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
+import { OfflineComponent } from './components/errors/offline/offline.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         MenuComponent,
-        HomeComponent,
         RestaurantsMapComponent,
-        PageNotFoundComponent,
-        UserWallComponent,
         OfflineComponent,
         RestaurantsMapComponent,
         LoaderComponent,

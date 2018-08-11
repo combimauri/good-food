@@ -2,16 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { MenuComponent } from './components/menu/menu.component';
-import { HomeComponent } from './components/home/home.component';
-import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
-import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { UserWallComponent } from './components/user-wall/user-wall.component';
 import { InternalGuard } from './services/authentication/internal.guard';
-import { OfflineComponent } from './components/offline/offline.component';
+
+import { MenuComponent } from './components/menu/menu.component';
+import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
+import { OfflineComponent } from './components/errors/offline/offline.component';
 import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 
 const routes: Routes = [
@@ -37,7 +32,7 @@ const routes: Routes = [
             },
             {
                 path: 'home',
-                component: HomeComponent,
+                loadChildren: 'app/components/home/home.module#HomeModule',
                 canActivate: [InternalGuard]
             },
             {
@@ -62,7 +57,8 @@ const routes: Routes = [
             },
             {
                 path: 'user-feed',
-                component: UserWallComponent,
+                loadChildren:
+                    'app/components/user-wall/user-wall.module#UserWallModule',
                 canActivate: [InternalGuard]
             },
             {
@@ -85,7 +81,8 @@ const routes: Routes = [
     },
     {
         path: '**',
-        component: PageNotFoundComponent
+        loadChildren:
+            'app/components/errors/page-not-found/page-not-found.module#PageNotFoundModule'
     }
 ];
 
