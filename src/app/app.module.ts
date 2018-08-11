@@ -7,7 +7,6 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireStorageModule } from 'angularfire2/storage';
-import { AgmCoreModule } from '@agm/core';
 
 import { environment } from '../environments/environment';
 
@@ -33,20 +32,14 @@ import { ChatRoomService } from './services/chat/chat-room.service';
 
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
-import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
-import { LoaderComponent } from './components/loader/loader.component';
-import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 import { OfflineComponent } from './components/errors/offline/offline.component';
+import { AgmCoreModule } from '../../node_modules/@agm/core';
 
 @NgModule({
     declarations: [
         AppComponent,
         MenuComponent,
-        RestaurantsMapComponent,
-        OfflineComponent,
-        RestaurantsMapComponent,
-        LoaderComponent,
-        RegisterMyRestaurantComponent
+        OfflineComponent
     ],
     imports: [
         BrowserModule,
@@ -56,10 +49,10 @@ import { OfflineComponent } from './components/errors/offline/offline.component'
         AngularFirestoreModule,
         AngularFireAuthModule,
         AngularFireStorageModule,
-        AgmCoreModule.forRoot({
-            apiKey: environment.googlemaps
-        }),
         AppRoutingModule,
+        // AgmCoreModule.forRoot({
+        //     apiKey: environment.googlemaps
+        // }),
         ServiceWorkerModule.register('./ngsw-worker.js', {
             enabled: environment.production
         })

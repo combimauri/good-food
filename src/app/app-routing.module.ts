@@ -42,12 +42,13 @@ const routes: Routes = [
             },
             {
                 path: 'restaurants-map',
-                component: RestaurantsMapComponent,
+                loadChildren: 'app/components/restaurants-map/restaurants-map.module#RestaurantsMapModule',
                 canActivate: [InternalGuard]
             },
             {
                 path: 'register-my-restaurant',
-                component: RegisterMyRestaurantComponent,
+                loadChildren:
+                    'app/components/register-my-restaurant/register-my-restaurant.module#RegisterMyRestaurantModule',
                 canActivate: [InternalGuard]
             },
             {
