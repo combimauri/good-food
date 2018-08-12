@@ -2,31 +2,20 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { MenuComponent } from './components/menu/menu.component';
-import { HomeComponent } from './components/home/home.component';
-import { RestaurantProfileComponent } from './components/restaurant-profile/restaurant-profile.component';
-import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
-import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
-import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant-menu.component';
-import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { UserWallComponent } from './components/user-wall/user-wall.component';
-import { ChatRoomsComponent } from './components/chat-rooms/chat-rooms.component';
 import { InternalGuard } from './services/authentication/internal.guard';
-import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
-import { OfflineComponent } from './components/offline/offline.component';
+
+import { MenuComponent } from './components/menu/menu.component';
+import { OfflineComponent } from './components/errors/offline/offline.component';
 
 const routes: Routes = [
     {
         path: 'login',
-        component: LoginComponent,
+        loadChildren: 'app/components/login/login.module#LoginModule',
         canActivate: [AuthenticationGuardService]
     },
     {
         path: 'register',
-        component: RegisterComponent,
+        loadChildren: 'app/components/register/register.module#RegisterModule',
         canActivate: [AuthenticationGuardService]
     },
     {
@@ -41,39 +30,45 @@ const routes: Routes = [
             },
             {
                 path: 'home',
-                component: HomeComponent,
+                loadChildren: 'app/components/home/home.module#HomeModule',
                 canActivate: [InternalGuard]
             },
             {
                 path: 'restaurant-profile/:id',
-                component: RestaurantProfileComponent
+                loadChildren:
+                    'app/components/restaurant-profile/restaurant-profile.module#RestaurantProfileModule'
             },
             {
                 path: 'restaurants-map',
-                component: RestaurantsMapComponent,
+                loadChildren: 'app/components/restaurants-map/restaurants-map.module#RestaurantsMapModule',
                 canActivate: [InternalGuard]
             },
             {
                 path: 'register-my-restaurant',
-                component: RegisterMyRestaurantComponent,
+                loadChildren:
+                    'app/components/register-my-restaurant/register-my-restaurant.module#RegisterMyRestaurantModule',
                 canActivate: [InternalGuard]
             },
             {
                 path: 'restaurant-menu/:id',
-                component: RestaurantMenuComponent
+                loadChildren:
+                    'app/components/restaurant-menu/restaurant-menu.module#RestaurantMenuModule'
             },
             {
-                path: 'home-feed',
-                component: UserWallComponent,
+                path: 'user-feed',
+                loadChildren:
+                    'app/components/user-wall/user-wall.module#UserWallModule',
                 canActivate: [InternalGuard]
             },
             {
                 path: 'messages',
-                component: ChatRoomsComponent
+                loadChildren:
+                    'app/components/chat-rooms/chat-rooms.module#ChatRoomsModule'
             },
             {
                 path: 'search',
-                component: AdvancedSearchComponent,
+                loadChildren:
+                    'app/components/advanced-search/advanced-search.module#AdvancedSearchModule',
                 canActivate: [InternalGuard]
             }
         ]
@@ -85,7 +80,8 @@ const routes: Routes = [
     },
     {
         path: '**',
-        component: PageNotFoundComponent
+        loadChildren:
+            'app/components/errors/page-not-found/page-not-found.module#PageNotFoundModule'
     }
 ];
 

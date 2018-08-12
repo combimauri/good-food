@@ -1,3 +1,15 @@
+<header class="main-header error-header">
+  <a class="logo hidden-xs pointer-link" (click)="redirectHome()">
+    <span class="logo-lg">
+      <b>Good</b>Food</span>
+  </a>
+
+  <div class="navbar-header visible-xs">
+    <a class="navbar-brand pointer-link" (click)="redirectHome()">
+      <b>Good</b>Food</a>
+  </div>
+</header>
+
 <section class="content-header">
   <h1>
     404 Página de error
@@ -14,7 +26,7 @@
 
       <p>
         No pudimos encontrar la página que buscabas. Mientras, puedes volver a la
-        <a (click)="redirectToHome()">página principal</a>
+        <a (click)="redirectHome()" class="pointer-link">página principal</a>
       </p>
     </div>
   </div>

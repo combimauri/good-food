@@ -126,7 +126,7 @@ export class RestaurantsMapComponent implements OnInit {
                             );
                         }
                         if (this.newRestaurant.hasProfilePic) {
-                            this.saveRestaurantProfilePic(restaurantDoc.id);
+                            this.saveRestaurantProfilePic(restaurantDoc.id, this.newRestaurant.hasOwner);
                         } else {
                             this.loaderPercent = 100;
                         }
@@ -163,7 +163,7 @@ export class RestaurantsMapComponent implements OnInit {
         }
     }
 
-    private saveRestaurantProfilePic(restaurantId: string): void {
+    private saveRestaurantProfilePic(restaurantId: string, hasOwner: boolean): void {
         const task: any = this.restaurantService.saveRestaurantProfilePic(
             restaurantId,
             this.newRestaurant.profilePic
@@ -182,7 +182,8 @@ export class RestaurantsMapComponent implements OnInit {
         task.downloadURL().subscribe(url => {
             if (!url) {
                 console.error('Error retrieving the URL.');
-            } else {
+            } else if (hasOwner) {
+                console.log(url);
                 this.restaurantService.restaurantPhotoSubject.next({
                     restaurantId: restaurantId,
                     photoURL: url

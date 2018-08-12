@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { IappUser } from '../../interfaces/iapp-user';
 import { HomeService } from '../../services/home/home.service';
+import { InitialLoaderService } from '../../services/initial-loader/initial-loader.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -24,13 +25,15 @@ export class MenuComponent implements OnInit {
 
     isCurrentUserARestaurant: boolean;
 
-    @ViewChild('toggleButton') private toggleButtonElement: ElementRef;
+    @ViewChild('toggleButton')
+    private toggleButtonElement: ElementRef;
 
     constructor(
         public homeService: HomeService,
         public authService: AuthenticationService,
         private restaurantService: RestaurantService,
-        private subscriptions: SubscriptionsService
+        private subscriptions: SubscriptionsService,
+        private initialLoader: InitialLoaderService
     ) {
         this.currentUser = this.authService.buildAppUser('', '', noPhotoURL);
         this.loggedUser = this.authService.buildAppUser('', '', '');
@@ -47,6 +50,7 @@ export class MenuComponent implements OnInit {
 
     ngOnInit(): void {
         $(this.toggleButtonElement.nativeElement).pushMenu('toggle');
+        this.initialLoader.hideInitialLoader();
     }
 
     changeCurrentAppUser(user: IappUser): void {
@@ -141,9 +145,11 @@ export class MenuComponent implements OnInit {
     }
 
     private setRestaurantNewPhoto(restaurantPhotoURLInterface: any): void {
-        this.userRestaurants.find(restaurant => {
+        let appUser: IappUser = this.userRestaurants.find(restaurant => {
             return restaurant.id === restaurantPhotoURLInterface.restaurantId;
-        }).photoURL =
-            restaurantPhotoURLInterface.photoURL;
+        });
+        if (appUser) {
+            appUser.photoURL = restaurantPhotoURLInterface.photoURL;
+        }
     }
 }

@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { InitialLoaderService } from '../../../services/initial-loader/initial-loader.service';
 
 @Component({
-    selector: 'food-page-not-found',
-    templateUrl: './page-not-found.component.html',
-    styleUrls: ['./page-not-found.component.scss']
+    selector: 'food-offline',
+    templateUrl: './offline.component.html',
+    styleUrls: ['./offline.component.scss']
 })
-export class PageNotFoundComponent implements OnInit {
+export class OfflineComponent implements OnInit {
     constructor(
         private router: Router,
         private initialLoader: InitialLoaderService

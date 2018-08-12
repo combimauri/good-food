@@ -2,31 +2,33 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class MessageService {
+    message: string;
 
-  message: string;
+    messageClass: string;
 
-  messageClass: string;
+    messageIcon: string;
 
-  messageIcon: string;
+    showMessage: boolean;
 
-  showMessage: boolean;
+    constructor() {
+        this.hideMessage();
+    }
 
-  constructor() {
-    this.hideMessage();
-  }
+    setMessage(
+        message: string,
+        messageClass: string,
+        messageIcon: string
+    ): void {
+        this.message = message;
+        this.messageClass = messageClass;
+        this.messageIcon = messageIcon;
+        this.showMessage = true;
+    }
 
-  setMessage(message: string, messageClass: string, messageIcon: string): void {
-    this.message = message;
-    this.messageClass = messageClass;
-    this.messageIcon = messageIcon;
-    this.showMessage = true;
-  }
-
-  hideMessage(): void {
-    this.message = '';
-    this.messageClass = '';
-    this.messageIcon = '';
-    this.showMessage = false;
-  }
-
+    hideMessage(): void {
+        this.message = '';
+        this.messageClass = '';
+        this.messageIcon = '';
+        this.showMessage = false;
+    }
 }

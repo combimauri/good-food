@@ -12,7 +12,6 @@ import { Publication } from '../../models/publication';
 import { IfollowRelationshipId } from '../../interfaces/ifollow-relationship-id';
 import { IpublicationId } from '../../interfaces/ipublication-id';
 import { Comment } from '../../models/comment';
-import { User } from '../../models/user';
 import { UserService } from '../../services/user/user.service';
 import { Icomment } from '../../interfaces/icomment';
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
