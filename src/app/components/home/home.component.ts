@@ -4,7 +4,7 @@ import { Restaurant } from '../../models/restaurant';
 import { Router } from '@angular/router';
 
 declare const $: any;
-const noRestaurantPhotoURL: string = './assets/img/good-food-4.png';
+const noRestaurantPhotoURL: string = './assets/img/norestaurantphoto.png';
 
 @Component({
     selector: 'food-home',

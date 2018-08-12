@@ -14,7 +14,7 @@ import { MenuItemCategoryService } from '../../services/restaurant/menu-item-cat
 import { ImenuItemCategoryId } from '../../interfaces/imenu-item-category-id';
 
 declare const $: any;
-const noPhotoURL: string = './assets/img/nophoto.png';
+const noPhotoURL: string = './assets/img/norestaurantphoto.png';
 
 @Component({
     selector: 'food-restaurant-menu',

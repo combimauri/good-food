@@ -7,7 +7,7 @@ import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 
-const noRestaurantPhotoURL: string = './assets/img/good-food-4.png';
+const noRestaurantPhotoURL: string = './assets/img/norestaurantphoto.png';
 const maxDistance: number = 0.5;
 
 export class RestaurantDistance {

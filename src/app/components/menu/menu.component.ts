@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { RestaurantService } from '../../services/restaurant/restaurant.service';
 import { IappUser } from '../../interfaces/iapp-user';
 import { HomeService } from '../../services/home/home.service';
+import { InitialLoaderService } from '../../services/initial-loader/initial-loader.service';
 
 declare const $: any;
 const noPhotoURL: string = './assets/img/nophoto.png';
@@ -31,7 +32,8 @@ export class MenuComponent implements OnInit {
         public homeService: HomeService,
         public authService: AuthenticationService,
         private restaurantService: RestaurantService,
-        private subscriptions: SubscriptionsService
+        private subscriptions: SubscriptionsService,
+        private initialLoader: InitialLoaderService
     ) {
         this.currentUser = this.authService.buildAppUser('', '', noPhotoURL);
         this.loggedUser = this.authService.buildAppUser('', '', '');
@@ -48,6 +50,7 @@ export class MenuComponent implements OnInit {
 
     ngOnInit(): void {
         $(this.toggleButtonElement.nativeElement).pushMenu('toggle');
+        this.initialLoader.hideInitialLoader();
     }
 
     changeCurrentAppUser(user: IappUser): void {

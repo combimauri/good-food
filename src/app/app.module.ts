@@ -29,6 +29,7 @@ import { CommentService } from './services/publication/comment.service';
 import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
 import { HomeService } from './services/home/home.service';
 import { ChatRoomService } from './services/chat/chat-room.service';
+import { InitialLoaderService } from './services/initial-loader/initial-loader.service';
 
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -74,7 +75,8 @@ import { AgmCoreModule } from '../../node_modules/@agm/core';
         AppUserService,
         InternalGuard,
         HomeService,
-        ChatRoomService
+        ChatRoomService,
+        InitialLoaderService
     ],
     bootstrap: [AppComponent]
 })
