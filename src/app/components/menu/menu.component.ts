@@ -24,7 +24,8 @@ export class MenuComponent implements OnInit {
 
     isCurrentUserARestaurant: boolean;
 
-    @ViewChild('toggleButton') private toggleButtonElement: ElementRef;
+    @ViewChild('toggleButton')
+    private toggleButtonElement: ElementRef;
 
     constructor(
         public homeService: HomeService,
@@ -141,9 +142,11 @@ export class MenuComponent implements OnInit {
     }
 
     private setRestaurantNewPhoto(restaurantPhotoURLInterface: any): void {
-        this.userRestaurants.find(restaurant => {
+        let appUser: IappUser = this.userRestaurants.find(restaurant => {
             return restaurant.id === restaurantPhotoURLInterface.restaurantId;
-        }).photoURL =
-            restaurantPhotoURLInterface.photoURL;
+        });
+        if (appUser) {
+            appUser.photoURL = restaurantPhotoURLInterface.photoURL;
+        }
     }
 }

@@ -5,9 +5,7 @@ import { AuthenticationGuardService } from './services/authentication/authentica
 import { InternalGuard } from './services/authentication/internal.guard';
 
 import { MenuComponent } from './components/menu/menu.component';
-import { RestaurantsMapComponent } from './components/restaurants-map/restaurants-map.component';
 import { OfflineComponent } from './components/errors/offline/offline.component';
-import { RegisterMyRestaurantComponent } from './components/register-my-restaurant/register-my-restaurant.component';
 
 const routes: Routes = [
     {

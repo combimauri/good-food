@@ -50,9 +50,9 @@ import { AgmCoreModule } from '../../node_modules/@agm/core';
         AngularFireAuthModule,
         AngularFireStorageModule,
         AppRoutingModule,
-        // AgmCoreModule.forRoot({
-        //     apiKey: environment.googlemaps
-        // }),
+        AgmCoreModule.forRoot({
+            apiKey: environment.googlemaps
+        }),
         ServiceWorkerModule.register('./ngsw-worker.js', {
             enabled: environment.production
         })
