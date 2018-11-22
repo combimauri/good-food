@@ -101,6 +101,21 @@
       <div class="modal-body">
         <p>{{currentMenuItem.description}}</p>
         <strong>Precio: {{currentMenuItem.price | currency}}</strong>
+        <br>
+        <br>
+        <br>
+        <div *ngIf="true" class="row">
+          <p class="col-md-12">Dentro el restaurante puede realizar órdenes</p>
+          <p class="col-md-4">Agregar a la orden:</p>
+          <div class="col-md-8">
+            <div class="input-group">
+              <input type="number" class="form-control" placeholder="Ingrese la cantidad">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-primary">Agregar</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>

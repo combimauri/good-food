@@ -12,10 +12,10 @@
           <p class="text-muted text-center">{{restaurant.type}}</p>
 
           <div class="row">
-            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.attentionRating" size="small" labelText="Atención"
+            <star-rating class="col-xs-4" [disabled]="true" [starType]="'svg'" [rating]="restaurantAverageRating.attentionRating" size="small" labelText="Atención"
               labelPosition="bottom"></star-rating>
-            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.foodRating" labelText="Comida" labelPosition="bottom"></star-rating>
-            <star-rating class="col-xs-4" [starType]="'svg'" [rating]="restaurantAverageRating.environmentRating" size="small" labelText="Ambiente"
+            <star-rating class="col-xs-4" [disabled]="true" [starType]="'svg'" [rating]="restaurantAverageRating.foodRating" labelText="Comida" labelPosition="bottom"></star-rating>
+            <star-rating class="col-xs-4" [disabled]="true" [starType]="'svg'" [rating]="restaurantAverageRating.environmentRating" size="small" labelText="Ambiente"
               labelPosition="bottom"></star-rating>
           </div>
           <button *ngIf="!isCurrentUserARestaurant" [disabled]="!isMessageButtonReady" data-toggle="modal" data-target="#modal-review-restaurant"
