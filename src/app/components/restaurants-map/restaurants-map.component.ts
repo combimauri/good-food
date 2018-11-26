@@ -11,9 +11,9 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { UserService } from '../../services/user/user.service';
 
 declare const google: any;
-const cochaLat: number = -17.393695;
-const cochaLng: number = -66.157126;
-const noPhotoURL: string = './assets/img/nophoto.png';
+const cochaLat = -17.393695;
+const cochaLng = -66.157126;
+const noPhotoURL = './assets/img/nophoto.png';
 
 @Component({
     selector: 'food-restaurants-map',
@@ -96,7 +96,7 @@ export class RestaurantsMapComponent implements OnInit {
     }
 
     setRestaurantPicture(event: any): void {
-        let picture: File = event.target.files[0];
+        const picture: File = event.target.files[0];
 
         if (picture) {
             this.newRestaurant.hasProfilePic = true;
@@ -126,7 +126,10 @@ export class RestaurantsMapComponent implements OnInit {
                             );
                         }
                         if (this.newRestaurant.hasProfilePic) {
-                            this.saveRestaurantProfilePic(restaurantDoc.id, this.newRestaurant.hasOwner);
+                            this.saveRestaurantProfilePic(
+                                restaurantDoc.id,
+                                this.newRestaurant.hasOwner
+                            );
                         } else {
                             this.loaderPercent = 100;
                         }
@@ -163,7 +166,10 @@ export class RestaurantsMapComponent implements OnInit {
         }
     }
 
-    private saveRestaurantProfilePic(restaurantId: string, hasOwner: boolean): void {
+    private saveRestaurantProfilePic(
+        restaurantId: string,
+        hasOwner: boolean
+    ): void {
         const task: any = this.restaurantService.saveRestaurantProfilePic(
             restaurantId,
             this.newRestaurant.profilePic
@@ -212,7 +218,7 @@ export class RestaurantsMapComponent implements OnInit {
     private handleLocationError(browserHasGeolocation: boolean): void {
         this.lat = cochaLat;
         this.lng = cochaLng;
-        let errorMessage = browserHasGeolocation
+        const errorMessage = browserHasGeolocation
             ? 'Error: El servicio de Geolocalización falló.'
             : 'Error: Tu navegador no soporta Geolocalización.';
 

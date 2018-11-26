@@ -1,125 +1,208 @@
 <section class="content">
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-          <li *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{'active': i === 0}">
-            <a href="#{{category.id}}" data-toggle="tab">{{category.name}}</a>
-          </li>
-        </ul>
-        <div class="tab-content">
-          <strong *ngIf="isMenuItemsEmpty">Aún no existen productos en el menú.</strong>
-          <div *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{'active': i === 0, 'tab-pane': true, 'box-body': true}"
-            [attr.id]="category.id">
-            <div *ngFor="let menuItem of menuItems | async">
-
-              <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" *ngIf="menuItem.categoryId === category.id">
-                <div class="card" data-toggle="modal" data-target="#modal-menu-item-info" (click)="showCurrentMenuItemInfo(menuItem)">
-                  <img [src]="menuItem.pictureURL" alt="Avatar">
-                  <div class="card-container">
-                    <h4>
-                      <b>{{menuItem.name}}</b>
-                    </h4>
-                    <p>{{menuItem.price | currency}}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
+    <div *ngIf="isClientInTheRestaurant">
+        <a class="pull-right" data-toggle="modal" data-target="#modal-see-order">Ver orden ({{order.items.length}})</a><br /><br />
     </div>
-  </div>
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{ active: i === 0 }">
+                        <a [href]="'#' + category.id" data-toggle="tab"> {{category.name}} </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <strong *ngIf="isMenuItemsEmpty">Aún no existen productos en el menú.</strong>
+                    <div *ngFor="let category of menuItemCategories; let i = index" [ngClass]="{active: i === 0, 'tab-pane': true, 'box-body': true }"
+                        [attr.id]="category.id">
+                        <div *ngFor="let menuItem of (menuItems | async)">
+                            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" *ngIf="menuItem.categoryId === category.id">
+                                <div class="card" data-toggle="modal" data-target="#modal-menu-item-info" (click)="showCurrentMenuItemInfo(menuItem)">
+                                    <img [src]="menuItem.pictureURL" alt="Avatar" />
+                                    <div class="card-container">
+                                        <h4>
+                                            <b>{{ menuItem.name }}</b>
+                                        </h4>
+                                        <p>{{ menuItem.price | currency }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <a *ngIf="isCurrentUserARestaurant" class="float">
-  <img src="./assets/img/baseline_add_white_18dp_2.png" class="my-float" data-toggle="modal" data-target="#modal-add-menu-item">
+    <img src="./assets/img/baseline_add_white_18dp_2.png" class="my-float" data-toggle="modal" data-target="#modal-add-menu-item" />
 </a>
 
 <div id="modal-add-menu-item" class="modal modal-info fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">Añadir producto al menú</h4>
-      </div>
-      <form #menuItemForm="ngForm" role="form" novalidate>
-        <div class="modal-body">
-          <div class="form-group text-center">
-            <label for="upload-file">
-              <img #menuItemPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png">
-            </label>
-            <input type="file" id="upload-file" class="invisible" accept=".jpg, .jpeg, .png" (change)="setMenuItemPicture($event)">
-          </div>
-          <div class="form-group">
-            <label for="menu-item-name">Nombre*</label>
-            <input id="menu-item-name" type="text" class="form-control" placeholder="Ingrese el nombre" name="name" [(ngModel)]="newMenuItem.name"
-              required>
-          </div>
-          <div class="form-group">
-            <label for="menu-item-description">Descripción</label>
-            <input id="menu-item-description" type="text" class="form-control" placeholder="Ingrese una descripción" name="description"
-              [(ngModel)]="newMenuItem.description">
-          </div>
-          <div class="form-group">
-            <label for="menu-item-price">Costo*</label>
-            <input id="menu-item-price" type="number" step="0.01" min="0" class="form-control" placeholder="Ingrese el costo" name="price"
-              [(ngModel)]="newMenuItem.price" required>
-          </div>
-          <div class="form-group">
-            <label for="menu-item-category">Categoría*</label>
-            <select id="menu-item-category" #menuItemCategoriesElement class="form-control select2" style="width: 100%" name="category"
-              [(ngModel)]="categoryName" required>
-              <option [value]="undefined"></option>
-              <option *ngFor="let category of menuItemCategories" [value]="category.name">{{category.name}}</option>
-            </select>
-          </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Añadir producto al menú</h4>
+            </div>
+            <form #menuItemForm="ngForm" role="form" novalidate>
+                <div class="modal-body">
+                    <div class="form-group text-center">
+                        <label for="upload-file">
+                            <img #menuItemPictureElement class="profile-user-img img-responsive img-circle" src="./assets/img/nophoto.png" />
+                        </label>
+                        <input type="file" id="upload-file" class="invisible" accept=".jpg, .jpeg, .png" (change)="setMenuItemPicture($event)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-name">Nombre*</label>
+                        <input id="menu-item-name" type="text" class="form-control" placeholder="Ingrese el nombre"
+                            name="name" [(ngModel)]="newMenuItem.name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-description">Descripción</label>
+                        <input id="menu-item-description" type="text" class="form-control" placeholder="Ingrese una descripción"
+                            name="description" [(ngModel)]="newMenuItem.description" />
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-price">Costo*</label>
+                        <input id="menu-item-price" type="number" step="0.01" min="0" class="form-control" placeholder="Ingrese el costo"
+                            name="price" [(ngModel)]="newMenuItem.price" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-category">Categoría*</label>
+                        <select id="menu-item-category" class="form-control select2" style="width: 100%" name="category"
+                            [(ngModel)]="categoryName" required>
+                            <option [value]="undefined"></option>
+                            <option *ngFor="let category of menuItemCategories" [value]="category.name">{{
+                                category.name }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-outline" (click)="saveMenuItem()" data-dismiss="modal"
+                        [disabled]="menuItemForm.invalid">
+                        Guardar
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-outline" (click)="saveMenuItem()" data-dismiss="modal" [disabled]="menuItemForm.invalid">Guardar</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <div id="modal-menu-item-info" class="modal modal-info fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title">{{currentMenuItem.name}}</h4>
-      </div>
-      <div class="modal-body">
-        <p>{{currentMenuItem.description}}</p>
-        <strong>Precio: {{currentMenuItem.price | currency}}</strong>
-        <br>
-        <br>
-        <br>
-        <div *ngIf="true" class="row">
-          <p class="col-md-12">Dentro el restaurante puede realizar órdenes</p>
-          <p class="col-md-4">Agregar a la orden:</p>
-          <div class="col-md-8">
-            <div class="input-group">
-              <input type="number" class="form-control" placeholder="Ingrese la cantidad">
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-primary">Agregar</button>
-              </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">{{ currentMenuItem.name }}</h4>
             </div>
-          </div>
+            <div class="modal-body">
+                <p>{{ currentMenuItem.description }}</p>
+                <strong>Precio: {{ currentMenuItem.price | currency }}</strong>
+                <br />
+                <br />
+                <br />
+                <div *ngIf="isClientInTheRestaurant" class="row">
+                    <p class="col-md-12">
+                        Dentro el restaurante puede realizar ordenes
+                    </p>
+                    <p class="col-md-4">Agregar a la orden:</p>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input #addQuantity type="number" class="form-control" placeholder="Ingrese la cantidad"
+                                name="add-quantity" [(ngModel)]="quantityOfCurrentMenuItems" />
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary" [disabled]="quantityOfCurrentMenuItems === 0"
+                                    (click)="addItemToTheOrder()" data-dismiss="modal">
+                                    Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-      </div>
     </div>
-  </div>
+</div>
+
+<div id="modal-see-order" class="modal modal-info fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Editar orden</h4>
+            </div>
+            <form #orderForm="ngForm" role="form" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="menu-item-price">Orden a nombre de:</label>
+                        <input type="text" min="0" class="form-control" placeholder="Ingrese su nombre" name="order-client"
+                            [(ngModel)]="order.clientName" required />
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Detalle</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-center">P/U</th>
+                                <th class="text-center">Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of order.items">
+                                <td>{{item.name}}</td>
+                                <td class="text-center" style="width: 30px">
+                                    <input [name]="item.menuItemId" type="number" class="form-control input-sm edit-input-width text-center"
+                                        min="1" [(ngModel)]="item.quantity" (change)="updateOrderTotal()" required />
+                                </td>
+                                <td class="text-center">
+                                    <!-- <input name="unit-amount" type="number" class="form-control input-sm edit-input-width text-center"
+                                        min="0" /> -->
+                                    {{item.price}}
+                                </td>
+                                <td class="text-center">
+                                    {{item.total}}
+                                </td>
+                                <td>
+                                    <a type="button" (click)="deleteItemFromOrder(item)"><i class="fa fa-trash-o text-danger icon-big-size"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">{{order.total}}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-outline" data-dismiss="modal" [disabled]="orderForm.invalid || order.items.length === 0"
+                        (click)="saveOrder()">
+                        Crear orden
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
