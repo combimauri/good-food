@@ -149,10 +149,16 @@
             </div>
             <form #orderForm="ngForm" role="form" novalidate>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="menu-item-price">Orden a nombre de:</label>
-                        <input type="text" min="0" class="form-control" placeholder="Ingrese su nombre" name="order-client"
-                            [(ngModel)]="order.clientName" required />
+                    <div class="row">
+                        <div class="col-xs-8 form-group">
+                            <label for="menu-item-price">Orden a nombre de:</label>
+                            <input type="text" class="form-control" placeholder="Ingrese su nombre" name="order-client"
+                                [(ngModel)]="order.clientName" required />
+                        </div>
+                        <div class="col-xs-4 form-group">
+                            <label for="menu-item-price"># mesa:</label>
+                            <input type="text" class="form-control" name="client-table" [(ngModel)]="order.tableNumber" required />
+                        </div>
                     </div>
                     <table class="table">
                         <thead>

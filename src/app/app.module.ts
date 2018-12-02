@@ -25,7 +25,6 @@ import { RestaurantCategoryService } from './services/restaurant/restaurant-cate
 import { PublicationService } from './services/publication/publication.service';
 import { MenuItemService } from './services/restaurant/menu-item.service';
 import { MenuItemCategoryService } from './services/restaurant/menu-item-category.service';
-import { OrderService } from './services/restaurant/order.service';
 import { CommentService } from './services/publication/comment.service';
 import { FollowRelationshipService } from './services/relationship/follow-relationship.service';
 import { HomeService } from './services/home/home.service';
@@ -36,14 +35,12 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { OfflineComponent } from './components/errors/offline/offline.component';
 import { AgmCoreModule } from '../../node_modules/@agm/core';
-import { FoodOrdersComponent } from './components/food-orders/food-orders.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         MenuComponent,
-        OfflineComponent,
-        FoodOrdersComponent
+        OfflineComponent
     ],
     imports: [
         BrowserModule,
@@ -73,7 +70,6 @@ import { FoodOrdersComponent } from './components/food-orders/food-orders.compon
         PublicationService,
         MenuItemService,
         MenuItemCategoryService,
-        OrderService,
         CommentService,
         FollowRelationshipService,
         AppUserService,

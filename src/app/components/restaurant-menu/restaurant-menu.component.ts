@@ -79,6 +79,7 @@ export class RestaurantMenuComponent implements OnInit {
             restaurantId: '',
             userId: '',
             clientName: '',
+            tableNumber: '',
             items: new Array<OrderItem>(),
             total: 0,
             date: new Date(),
@@ -219,6 +220,7 @@ export class RestaurantMenuComponent implements OnInit {
         if (this.isClientInTheRestaurant && this.order.items.length > 0) {
             this.order.date = new Date();
             this.orderService.saveOrder(this.order);
+            this.router.navigate(['restaurant-menu', this.restaurantId, 'orders']);
         }
     }
 
@@ -279,7 +281,7 @@ export class RestaurantMenuComponent implements OnInit {
     }
 
     private initOrder(): void {
-        const maxDistance = 0.1;
+        const maxDistance = 1;
         this.searcherService
             .searchNearbyRestaurants(maxDistance)
             .first()

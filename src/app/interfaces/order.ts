@@ -12,6 +12,7 @@ export interface Order {
     restaurantId: string;
     userId: string;
     clientName: string;
+    tableNumber: string;
     items: Array<OrderItem>;
     total: number;
     date: Date;
