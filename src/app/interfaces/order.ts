@@ -4,7 +4,8 @@ export enum OrderState {
     CREATED = 'created',
     IN_PROCESS = 'inProgress',
     COMPLETED = 'completed',
-    PAID = 'paid'
+    PAID = 'paid',
+    ARCHIVED = 'archived'
 }
 
 export interface Order {

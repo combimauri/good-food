@@ -23,8 +23,28 @@ export class OrderService {
             .valueChanges();
     }
 
+    getOrdersByRestaurantAndUser(
+        restaurantId: string,
+        userId: string,
+        state: OrderState
+    ): Observable<Array<Order>> {
+        return this.afs
+            .collection<Order>('orders', ref =>
+                ref
+                    .where('restaurantId', '==', restaurantId)
+                    .where('state', '==', state)
+                    .where('userId', '==', userId)
+                    .orderBy('date', 'asc')
+            )
+            .valueChanges();
+    }
+
     saveOrder(order: Order): void {
         order.id = this.afs.createId();
+        this.setOrder(order);
+    }
+
+    updateOrder(order: Order): void {
         this.setOrder(order);
     }
 
