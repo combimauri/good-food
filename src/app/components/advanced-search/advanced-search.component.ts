@@ -69,7 +69,7 @@ export class AdvancedSearchComponent {
         if (this.onlyNearbyRestaurants) {
             const maxDistance = 0.5;
             this.searchObservables.push(
-                this.searchService.searchNearbyRestaurants(maxDistance)
+                this.searchService.searchNearbyRestaurants(maxDistance, true)
             );
         }
 
@@ -112,7 +112,9 @@ export class AdvancedSearchComponent {
         searchResults: IrestaurantId[][]
     ): boolean {
         for (const results of searchResults) {
-            const index: number = results.findIndex(r => r.id === restaurant.id);
+            const index: number = results.findIndex(
+                r => r.id === restaurant.id
+            );
             if (index < 0) {
                 return false;
             }

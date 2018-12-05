@@ -54,7 +54,10 @@ export class RestaurantSearcherService {
         return Observable.of([]);
     }
 
-    searchNearbyRestaurants(maxDistance: number): Observable<IrestaurantId[]> {
+    searchNearbyRestaurants(
+        maxDistance: number,
+        isAdvanceSearch: boolean
+    ): Observable<IrestaurantId[]> {
         if (navigator.geolocation) {
             const positionObservable: Observable<any> = Observable.fromPromise(
                 new Promise(position => {
@@ -94,7 +97,7 @@ export class RestaurantSearcherService {
                     }
                 });
 
-                if (resultRestaurants.length === 0) {
+                if (resultRestaurants.length === 0 && isAdvanceSearch) {
                     this.setRestaurantPicture(minRestaurantDistance.restaurant);
                     resultRestaurants.push(minRestaurantDistance.restaurant);
                 }

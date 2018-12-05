@@ -220,7 +220,11 @@ export class RestaurantMenuComponent implements OnInit {
         if (this.isClientInTheRestaurant && this.order.items.length > 0) {
             this.order.date = new Date();
             this.orderService.saveOrder(this.order);
-            this.router.navigate(['restaurant-menu', this.restaurantId, 'orders']);
+            this.router.navigate([
+                'restaurant-menu',
+                this.restaurantId,
+                'orders'
+            ]);
         }
     }
 
@@ -281,9 +285,9 @@ export class RestaurantMenuComponent implements OnInit {
     }
 
     private initOrder(): void {
-        const maxDistance = 1;
+        const maxDistance = 0.04;
         this.searcherService
-            .searchNearbyRestaurants(maxDistance)
+            .searchNearbyRestaurants(maxDistance, false)
             .first()
             .takeUntil(this.subscriptions.destroyUnsubscribe)
             .subscribe(restaurants => {
