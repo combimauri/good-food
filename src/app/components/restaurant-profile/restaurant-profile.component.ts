@@ -25,7 +25,7 @@ import { Review } from '../../models/review';
 import { ReviewService } from '../../services/score/review.service';
 
 declare const $: any;
-const noPhotoURL: string = './assets/img/nophoto.png';
+const noPhotoURL = './assets/img/nophoto.png';
 
 @Component({
     selector: 'food-restaurant-profile',
@@ -120,7 +120,7 @@ export class RestaurantProfileComponent implements OnInit, OnDestroy {
                 this.chatRoomService.selectedChatUserId = this.restaurantId;
                 this.router.navigate(['/messages']);
             } else {
-                let chatRoom: IchatRoom = {
+                const chatRoom: IchatRoom = {
                     restaurantId: this.restaurantId,
                     userId: this.loggedUser.id,
                     lastMessage: '...',
@@ -146,7 +146,7 @@ export class RestaurantProfileComponent implements OnInit, OnDestroy {
     }
 
     addComment(publication: Publication): void {
-        let newComment: Icomment = new Comment();
+        const newComment: Icomment = new Comment();
         newComment.comment = publication.newComment;
         newComment.ownerId = this.currentAppUser.id;
         newComment.isOwnerARestaurant = this.isCurrentUserARestaurant;
@@ -157,13 +157,13 @@ export class RestaurantProfileComponent implements OnInit, OnDestroy {
     }
 
     follow(): void {
-        let relationship: IfollowRelationship = {
+        const relationship: IfollowRelationship = {
             restaurantId: this.restaurantId,
             userId: this.loggedUser.id,
             createdAt: new Date()
         };
 
-        let chatRoom: IchatRoom = {
+        const chatRoom: IchatRoom = {
             restaurantId: this.restaurantId,
             userId: this.loggedUser.id,
             lastMessage: '...',
@@ -183,7 +183,7 @@ export class RestaurantProfileComponent implements OnInit, OnDestroy {
 
     registerAsMyRestaurant(): void {
         if (this.showRegisterButton) {
-            let restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
+            const restaurant: IrestaurantId = this.restaurantService.buildRestaurantIdInterface(
                 this.restaurantId,
                 this.restaurant
             );

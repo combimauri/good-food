@@ -20,6 +20,10 @@ nav {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+a {
+    cursor: pointer;
+}
+
 .error-header {
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -46,9 +50,10 @@ nav {
 }
 
 .card {
+    border-radius: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     cursor: pointer;
 }
@@ -101,13 +106,15 @@ nav {
     25% {
         -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
     }
+
     50% {
         -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
     }
+
     75% {
-        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg)
-            scale(0.5);
+        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
     }
+
     100% {
         -webkit-transform: rotate(-360deg);
     }
@@ -118,19 +125,22 @@ nav {
         transform: translateX(42px) rotate(-90deg) scale(0.5);
         -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
     }
+
     50% {
         transform: translateX(42px) translateY(42px) rotate(-179deg);
         -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
     }
+
     50.1% {
         transform: translateX(42px) translateY(42px) rotate(-180deg);
         -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
     }
+
     75% {
         transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
-        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg)
-            scale(0.5);
+        -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
     }
+
     100% {
         transform: rotate(-360deg);
         -webkit-transform: rotate(-360deg);

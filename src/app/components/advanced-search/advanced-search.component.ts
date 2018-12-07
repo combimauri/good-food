@@ -49,8 +49,8 @@ export class AdvancedSearchComponent {
         if (this.searchSubscription) {
             this.searchSubscription.unsubscribe();
         }
-        let minPrice = this.minPrice ? this.minPrice : 0;
-        let maxPrice = this.maxPrice ? this.maxPrice : 0;
+        const minPrice = this.minPrice ? this.minPrice : 0;
+        const maxPrice = this.maxPrice ? this.maxPrice : 0;
         if (minPrice || maxPrice) {
             this.searchObservables.push(
                 this.searchService.searchByRangePrice(minPrice, maxPrice)
@@ -67,14 +67,15 @@ export class AdvancedSearchComponent {
         }
 
         if (this.onlyNearbyRestaurants) {
+            const maxDistance = 0.5;
             this.searchObservables.push(
-                this.searchService.searchNearbyRestaurants()
+                this.searchService.searchNearbyRestaurants(maxDistance, true)
             );
         }
 
         this.searchSubscription = combineLatest(...this.searchObservables)
             .map(searchResults => {
-                let restaurantResults: IrestaurantId[] = [];
+                const restaurantResults: IrestaurantId[] = [];
                 if (searchResults.length === 1) {
                     searchResults[0].forEach(restaurant => {
                         {
@@ -110,8 +111,10 @@ export class AdvancedSearchComponent {
         restaurant: IrestaurantId,
         searchResults: IrestaurantId[][]
     ): boolean {
-        for (let results of searchResults) {
-            let index: number = results.findIndex(r => r.id === restaurant.id);
+        for (const results of searchResults) {
+            const index: number = results.findIndex(
+                r => r.id === restaurant.id
+            );
             if (index < 0) {
                 return false;
             }
@@ -123,7 +126,7 @@ export class AdvancedSearchComponent {
         restaurant: IrestaurantId,
         result: IrestaurantId[]
     ): void {
-        let index: number = result.findIndex(r => r.id === restaurant.id);
+        const index: number = result.findIndex(r => r.id === restaurant.id);
         if (index < 0) {
             result.push(restaurant);
         }

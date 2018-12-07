@@ -7,8 +7,7 @@ import { IrestaurantId } from '../../interfaces/irestaurant-id';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
 
-const noRestaurantPhotoURL: string = './assets/img/norestaurantphoto.png';
-const maxDistance: number = 0.5;
+const noRestaurantPhotoURL = './assets/img/norestaurantphoto.png';
 
 export class RestaurantDistance {
     distance: number;
@@ -34,16 +33,16 @@ export class RestaurantSearcherService {
                 ),
                 this.restaurantService.getRestaurants()
             ).map(([menuItems, restaurants]) => {
-                let restaurantIds = new Set<string>();
-                let resultRestaurants: IrestaurantId[] = [];
+                const restaurantIds = new Set<string>();
+                const resultRestaurants: IrestaurantId[] = [];
 
                 menuItems.forEach(menuItem => {
                     restaurantIds.add(menuItem.restaurantId);
                 });
                 restaurantIds.forEach(restaurantId => {
-                    let restaurant: IrestaurantId = restaurants.find(
-                        restaurant => {
-                            return restaurant.id === restaurantId;
+                    const restaurant: IrestaurantId = restaurants.find(
+                        current => {
+                            return current.id === restaurantId;
                         }
                     );
                     this.setRestaurantPicture(restaurant);
@@ -55,9 +54,12 @@ export class RestaurantSearcherService {
         return Observable.of([]);
     }
 
-    searchNearbyRestaurants(): Observable<IrestaurantId[]> {
+    searchNearbyRestaurants(
+        maxDistance: number,
+        isAdvanceSearch: boolean
+    ): Observable<IrestaurantId[]> {
         if (navigator.geolocation) {
-            let positionObservable: Observable<any> = Observable.fromPromise(
+            const positionObservable: Observable<any> = Observable.fromPromise(
                 new Promise(position => {
                     navigator.geolocation.getCurrentPosition(position);
                 })
@@ -67,13 +69,13 @@ export class RestaurantSearcherService {
                 positionObservable,
                 this.restaurantService.getRestaurants()
             ).map(([position, restaurants]) => {
-                let resultRestaurants: IrestaurantId[] = [];
-                let currentLat = position.coords.latitude;
-                let currentLng = position.coords.longitude;
-                let minRestaurantDistance = new RestaurantDistance();
+                const resultRestaurants: IrestaurantId[] = [];
+                const currentLat = position.coords.latitude;
+                const currentLng = position.coords.longitude;
+                const minRestaurantDistance = new RestaurantDistance();
 
                 restaurants.forEach(restaurant => {
-                    let distance = this.calculateDistance(
+                    const distance = this.calculateDistance(
                         currentLat,
                         restaurant.lat,
                         currentLng,
@@ -95,7 +97,7 @@ export class RestaurantSearcherService {
                     }
                 });
 
-                if (resultRestaurants.length === 0) {
+                if (resultRestaurants.length === 0 && isAdvanceSearch) {
                     this.setRestaurantPicture(minRestaurantDistance.restaurant);
                     resultRestaurants.push(minRestaurantDistance.restaurant);
                 }
@@ -110,7 +112,7 @@ export class RestaurantSearcherService {
         return this.restaurantService
             .getRestaurantsByCategoryId(categoryId)
             .map(restaurants => {
-                let resultRestaurants: IrestaurantId[] =
+                const resultRestaurants: IrestaurantId[] =
                     restaurants.length > 0 ? restaurants : [];
 
                 resultRestaurants.forEach(current => {
@@ -140,11 +142,11 @@ export class RestaurantSearcherService {
     ): number {
         const p = 0.017453292519943295; // Math.PI / 180
         const c = Math.cos;
-        let a =
+        const a =
             0.5 -
             c((lat1 - lat2) * p) / 2 +
             (c(lat2 * p) * c(lat1 * p) * (1 - c((long1 - long2) * p))) / 2;
-        let distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+        const distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
         return distance;
     }
 }

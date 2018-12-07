@@ -100,7 +100,7 @@ export class MenuItemService {
         restaurantId: string,
         picture: File
     ): AngularFireUploadTask {
-        let filePath = `images/restaurants/restaurant-${restaurantId}/menu-items/${menuItemId}.jpg`;
+        const filePath = `images/restaurants/restaurant-${restaurantId}/menu-items/${menuItemId}.jpg`;
 
         return this.storage.upload(filePath, picture);
     }

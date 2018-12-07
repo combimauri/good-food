@@ -4,7 +4,7 @@ import { IappUser } from '../../interfaces/iapp-user';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-const userItemKey: string = 'appUser';
+const userItemKey = 'appUser';
 
 @Injectable()
 export class AppUserService {
@@ -26,7 +26,7 @@ export class AppUserService {
     }
 
     changeCurrentAppUser(appUser: IappUser): void {
-        let appUserJSON = JSON.stringify(appUser);
+        const appUserJSON = JSON.stringify(appUser);
         localStorage.setItem(userItemKey, appUserJSON);
         this.changeUserSubject.next(appUser);
     }
@@ -36,7 +36,7 @@ export class AppUserService {
     }
 
     protected getCurrentUser(): IappUser {
-        let appUserJSON = localStorage.getItem(userItemKey);
+        const appUserJSON = localStorage.getItem(userItemKey);
         return JSON.parse(appUserJSON) as IappUser;
     }
 }
